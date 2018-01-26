@@ -1,2 +1,2 @@
 libcyberradio
-17.11.13-unstable
+17.11.13-n8-dev
