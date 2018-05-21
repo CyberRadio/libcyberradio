@@ -26,11 +26,11 @@ namespace LibCyberRadio
 			packetizer(NULL),
 			statusRX(NULL),
 			rc(NULL),
-			txSock(NULL),
+			txSock(0),
 			isGrouped(false),
 			isRunning(false),
 			DUCPaused(true),
-			prefillSampleCount(0)
+			prefillSampleCount(0L)
 		{
 
 			// Create a radio controller (sends cmds to 651)

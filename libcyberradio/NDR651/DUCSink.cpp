@@ -86,7 +86,7 @@ namespace LibCyberRadio
 					d_duc_tx_channels, d_duc_frequency,
 					d_duc_attenuation, d_duc_tx_frequency,
 					d_duc_tx_attenuation, d_duc_stream_id,
-					d_config_tx, d_debug);
+					d_config_tx, _debug);
 			d_tx->setDuchsParameters(d_duchsPfThresh, d_duchsPeThresh, d_duchsPeriod, d_updatePE);
 			d_tx->setDucTxinvMode(d_duc_txinv_mode);
 		}

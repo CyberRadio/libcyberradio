@@ -161,7 +161,7 @@ namespace LibCyberRadio
 		d_udp_port_mtx.lock();
 		// Create UDP port for collecting data
 		this->debug("connect udp %s/%d\n", d_host.c_str(), d_port);
-		d_udp_port = new VitaIqUdpPort(d_host, d_port, d_packet_size, d_debug);
+		d_udp_port = new VitaIqUdpPort(d_host, d_port, d_packet_size, isDebug());
 		this->debug("-- connect result: %d\n", d_udp_port->connected);
 		d_udp_port_mtx.unlock();
 	}

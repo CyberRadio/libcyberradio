@@ -45,8 +45,7 @@ namespace LibCyberRadio
 				 * \param radio_host_name The radio host name.  If this is an empty
 				 *    string, then the block will not connect to a radio.
 				 * \param radio_tcp_port The radio TCP port.
-				 * \param tengig_iface_list The list of 10GigE interfaces used by
-				 *    the radio.
+				 * \param tengig_iface_index The 10GigE interface index.
 				 * \param iq_scale_factor Scale factor for converting I/Q data from
 				 *    complex input to native sample format.
 				 * \param duc_channel The channel number for the DUC in use.
@@ -64,6 +63,12 @@ namespace LibCyberRadio
 				 * \param fc_update_rate Number of updates to make per second.
 				 * \param use_udp Whether or not to use UDP.
 				 * \param use_ring_buffer Whether or not to use a ring buffer.
+				 * \param duchsPfThresh
+                 * \param duchsPeThresh
+                 * \param duchsPeriod
+                 * \param updatePE
+                 * \param txinv_mode
+				 *
 				 */
 				DUCSink(
 						  const std::string& name = "DUCSink",

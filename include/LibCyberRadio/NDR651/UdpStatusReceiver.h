@@ -42,6 +42,7 @@ namespace LibCyberRadio
 				 * \param ifname Ethernet interface name
 				 * \param port UDP port
 				 * \param debug Whether or not to produce debug output
+				 * \param updatePE
 				 */
 				UdpStatusReceiver(std::string ifname, unsigned int port, bool debug, bool updatePE);
 				/*!

@@ -141,7 +141,7 @@ namespace LibCyberRadio
 				delete _mySocket;
 				_mySocket = NULL;
 			}
-			_mySocket = new ClientSocket(hostname, port, d_debug);
+			_mySocket = new ClientSocket(hostname, port, _debug);
 			if ( _mySocket != NULL )
 			{
 				_mySocket->connectToServer();
@@ -618,7 +618,7 @@ namespace LibCyberRadio
 			BasicStringList::iterator rspIter;
 			_fcMutex.lock();
 			if ( (_mySocket != NULL) &&
-				 !_mySocket->sendCmdAndGetRsp(_tbsQuery, rspVec, 100, d_debug))
+				 !_mySocket->sendCmdAndGetRsp(_tbsQuery, rspVec, 100, _debug))
 			{
 				_651freeSpaceLast = _651freeSpace;
 				for (rspIter = rspVec.begin();
@@ -677,7 +677,7 @@ namespace LibCyberRadio
 			BasicStringList rspVec, splitRes;
 			BasicStringList::iterator rspIter;
 			if ( (_mySocket != NULL) &&
-				 !_mySocket->sendCmdAndGetRsp("UTC?\n", rspVec, 100, d_debug)) {
+				 !_mySocket->sendCmdAndGetRsp("UTC?\n", rspVec, 100, _debug)) {
 				for (rspIter=rspVec.begin(); rspIter!=rspVec.end(); rspIter++) {
 					if (strstr((*rspIter).c_str(),"UTC ")!=NULL) {
 						split(splitRes, *rspIter, is_any_of(", "));
@@ -693,14 +693,14 @@ namespace LibCyberRadio
 			BasicStringList rspVec, splitRes;
 			BasicStringList::iterator rspIter;
 			if ( (_mySocket != NULL) ) {
-				_mySocket->sendCmdAndGetRsp("STAT?\n", rspVec, 100, d_debug);
+				_mySocket->sendCmdAndGetRsp("STAT?\n", rspVec, 100, _debug);
 				//~ for (rspIter=rspVec.begin(); rspIter!=rspVec.end(); rspIter++) {
 					//~ if (strstr((*rspIter).c_str(),"STAT ")!=NULL) {
 						//~ split(splitRes, *rspIter, is_any_of(", "));
 						//~ _stat = strtol( splitRes.back().c_str(), NULL, 10 );
 					//~ }
 				//~ }
-				_mySocket->sendCmdAndGetRsp("TSTAT?\n", rspVec, 100, d_debug);
+				_mySocket->sendCmdAndGetRsp("TSTAT?\n", rspVec, 100, _debug);
 				//~ for (rspIter=rspVec.begin(); rspIter!=rspVec.end(); rspIter++) {
 					//~ if (strstr((*rspIter).c_str(),"TSTAT ")!=NULL) {
 						//~ split(splitRes, *rspIter, is_any_of(", "));

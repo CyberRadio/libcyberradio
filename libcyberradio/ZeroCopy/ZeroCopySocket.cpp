@@ -1,4 +1,5 @@
 #include <LibCyberRadio/ZeroCopy/ZeroCopySocket.hpp>
+#include <errno.h>
 
 // Constructor / Destructor
 /*****************************************************************************/
@@ -154,8 +155,10 @@ void ZeroCopySocket::initSocket()
     struct sock_fprog * capture_prog;
     this->generatePacketFilter(this->captureFilter.c_str(), &capture_prog);
     // Attach filter to socket
-    if ((setsockopt(this->sockfd, SOL_SOCKET, SO_ATTACH_FILTER, capture_prog, sizeof(struct sock_fprog))) != 0) {
+    if ((setsockopt(this->sockfd, SOL_SOCKET, SO_ATTACH_FILTER, capture_prog, sizeof(struct sock_fprog))) != 0)
+    {
         std::cerr << "Invalid TCPDUMP Filter" << std::endl;
+        perror("setsockopt[filter]");
         throw "Invalid TCPDUMP Filter";
     }
     // Free filters

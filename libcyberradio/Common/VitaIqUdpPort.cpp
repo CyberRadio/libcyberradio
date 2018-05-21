@@ -35,7 +35,7 @@ namespace LibCyberRadio
 		// Set the object debug name
 		std::ostringstream oss;
 		oss << "VitaIqUdpPort " << port;
-		d_debug_name = oss.str();
+		_debugName = oss.str();
 		// Allocate the receive buffer
 		recv_buffer = new unsigned char[packet_size];
 		memset(recv_buffer, 0, packet_size);

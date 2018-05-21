@@ -14,47 +14,101 @@
 #include "LibCyberRadio/Common/Debuggable.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
-
-#define DEBUGBOOL(x) (x ? "TRUE" : "FALSE")
 
 namespace LibCyberRadio
 {
 
-	Debuggable::Debuggable(bool debug, const std::string& debug_name, FILE* debug_fp) :
-		d_debug(debug),
-		d_debug_name(debug_name),
-		d_debug_fp(debug_fp)
+	Debuggable::Debuggable(
+	        bool debug,
+            const std::string& debug_name,
+            FILE* debug_fp,
+            const std::string& debug_timefmt
+        ) :
+		_debug(debug),
+		_debugName(debug_name),
+		_debugFp(debug_fp),
+		_debugTimeFmt(debug_timefmt),
+		_debugTimestamp(NULL),
+		_debugTimestampSize(80)
 	{
+		_debugTimestamp = new char[_debugTimestampSize];
 	}
 
 	Debuggable::~Debuggable()
 	{
+		delete _debugTimestamp;
 	}
 
-	int Debuggable::debug(const char *format, ...)
+	void Debuggable::setDebugName(
+	        const std::string& debug_name
+        )
+	{
+		_debugName = debug_name;
+	}
+
+	void Debuggable::setDebugFile(
+	        FILE* debug_fp
+        )
+	{
+		_debugFp = debug_fp;
+	}
+
+	void Debuggable::setDebugTimeFormat(
+	        const std::string& debug_timefmt
+        )
+	{
+		_debugTimeFmt = debug_timefmt;
+	}
+
+	int Debuggable::debug(
+	        const char *format,
+	        ...
+        )
 	{
 		int ret = 0;
-		if ( d_debug && (d_debug_fp != NULL) )
+		if ( _debug && (_debugFp != NULL) )
 		{
-			ret += fprintf(d_debug_fp, "[%010lu]", time(NULL));
-			if (d_debug_name.length() > 0)
-				ret += fprintf(d_debug_fp, "[%s] ", d_debug_name.c_str());
+			if (_debugTimeFmt.length() > 0)
+			{
+				time_t now = time(NULL);
+				memset(_debugTimestamp, 0, _debugTimestampSize);
+				strftime(_debugTimestamp,
+						 _debugTimestampSize,
+						 _debugTimeFmt.c_str(),
+						 localtime(&now));
+				ret += fprintf(_debugFp, "[%s]", _debugTimestamp);
+			}
+			if (_debugName.length() > 0)
+				ret += fprintf(_debugFp, "[%s] ", _debugName.c_str());
 			if (ret >= 0)
 			{
 				va_list ap;
 				va_start(ap, format);
-				ret += vfprintf(d_debug_fp, format, ap);
+				ret += vfprintf(_debugFp, format, ap);
 				va_end(ap);
 			}
 		}
 		return ret;
 	}
 
-	const char* Debuggable::debugBool(bool val)
-	{
-		return val ? "true" : "false";
-	}
+    const char* Debuggable::debugBool(
+            bool x
+        )
+    {
+    	return ( x ? "true" : "false" );
+    }
+
+    bool Debuggable::isDebug() const
+    {
+        return _debug;
+    }
+
+    std::string Debuggable::getDebugName() const
+    {
+        return _debugName;
+    }
 
 } /* namespace LibCyberRadio */
 

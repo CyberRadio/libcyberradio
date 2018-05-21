@@ -112,8 +112,8 @@ namespace LibCyberRadio
 			this->debug("construction\n");
 			std::cout << "using local lib" << std::endl;
 			memset(&_frame, 0, sizeof(TxFrame));
-			_fcClient = new FlowControlClient(ducChannel, _config_tx, 4, d_debug);
-			_statusRx = new UdpStatusReceiver(ifname, 65500+ducChannel, d_debug, _updatePE);
+			_fcClient = new FlowControlClient(ducChannel, _config_tx, 4, _debug);
+			_statusRx = new UdpStatusReceiver(ifname, 65500+ducChannel, _debug, _updatePE);
 
 			setRadioParameters(radioHostName, radioTcpPort);
 			setDucInterface(ifname, tenGigIndex);
@@ -348,7 +348,7 @@ namespace LibCyberRadio
 
 		bool TransmitPacketizer::setDebug(bool debug)
 		{
-			d_debug = debug;
+			_debug = debug;
 			return true;
 		}
 

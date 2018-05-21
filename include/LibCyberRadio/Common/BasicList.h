@@ -25,6 +25,8 @@ namespace LibCyberRadio
 	typedef BASIC_LIST_CONTAINER<std::string> BasicStringList;
 	/*! \brief Type representing a list of integers. */
 	typedef BASIC_LIST_CONTAINER<int> BasicIntList;
+	/*! \brief Type representing a list of doubles. */
+	typedef BASIC_LIST_CONTAINER<double> BasicDoubleList;
 }
 
 #endif

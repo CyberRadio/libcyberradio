@@ -44,6 +44,7 @@ namespace LibCyberRadio
 				 * \param ducChannel DUC channel number
 				 * \param ifname Ethernet interface name for the 10GigE interface to use
 				 * \param tenGigIndex 10GigE interface index
+				 * \param dipIndex
 				 * \param ducRate DUC rate index
 				 * \param ducTxChannels Bitmap of transmitters the DUC will use
 				 * \param ducFreq DUC frequency (Hz)
@@ -172,7 +173,6 @@ namespace LibCyberRadio
 				 * \param txFreq Transmitter frequency (Hz)
 				 * \param txAtten Transmitter attenuation (dB)
 				 * \param streamId Stream ID
-				 * \param txinvMode TX Inversion Mode
 				 * \returns True if the action succeeds, false otherwise.
 				 */
 				bool setDucParameters(unsigned int tenGigIndex,

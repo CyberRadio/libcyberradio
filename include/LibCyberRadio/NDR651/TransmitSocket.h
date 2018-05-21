@@ -35,7 +35,7 @@ namespace LibCyberRadio
 				/*!
 				 * \brief Constructs a TransmitSocket object.
 				 * \param ifname Ethernet interface name
-				 * \param useRingBuffer Whether or not to use a ring buffer
+				 * \param sport
 				 */
 				TransmitSocket(const std::string& ifname, unsigned int sport);
 				/*!
