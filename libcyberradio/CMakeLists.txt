@@ -1,17 +1,60 @@
 ########################################################################
 # Setup Library
 ########################################################################
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+# -- C++11 compiler support
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 # -- Source files
-list(APPEND libcyberradio_sources
+LIST(APPEND libcyberradio_sources
+#       Common/App.cpp
        Common/Debuggable.cpp
+#       Common/HttpsSession.cpp
        Common/Pythonesque.cpp
        Common/Thread.cpp
        Common/VitaIqSource.cpp
        Common/VitaIqUdpPort.cpp
        Common/Vita49Packet.cpp
        Common/Throttle.cpp
+#       Driver/NDR308/DataPort.cpp
+#       Driver/NDR308/RadioHandler.cpp
+#       Driver/NDR308/NbddcComponent.cpp
+#       Driver/NDR308/NbddcGroupComponent.cpp
+#       Driver/NDR308/TunerComponent.cpp
+#       Driver/NDR308/WbddcComponent.cpp
+#       Driver/NDR308/WbddcGroupComponent.cpp
+#       Driver/NDR308TS/DataPort.cpp
+#       Driver/NDR308TS/RadioHandler.cpp
+#       Driver/NDR308TS/NbddcComponent.cpp
+#       Driver/NDR308TS/NbddcGroupComponent.cpp
+#       Driver/NDR308TS/TunerComponent.cpp
+#       Driver/NDR308TS/WbddcComponent.cpp
+#       Driver/NDR308TS/WbddcGroupComponent.cpp
+#       Driver/NDR651/CWToneGenComponent.cpp
+#       Driver/NDR651/DataPort.cpp
+#       Driver/NDR651/DucComponent.cpp
+#       Driver/NDR651/RadioHandler.cpp
+#       Driver/NDR651/NbddcComponent.cpp
+#       Driver/NDR651/NbddcGroupComponent.cpp
+#       Driver/NDR651/TransmitterComponent.cpp
+#       Driver/NDR651/TunerComponent.cpp
+#       Driver/NDR651/WbddcComponent.cpp
+#       Driver/NDR651/WbddcGroupComponent.cpp
+#       Driver/ConfigString.cpp
+#       Driver/Configurable.cpp
+#       Driver/CWToneGenComponent.cpp
+#       Driver/DataPort.cpp
+#       Driver/Driver.cpp
+#       Driver/DucComponent.cpp
+#       Driver/NbddcComponent.cpp
+#       Driver/NbddcGroupComponent.cpp
+#       Driver/RadioComponent.cpp
+#       Driver/RadioHandler.cpp
+#       Driver/RadioTransport.cpp
+#       Driver/TransmitterComponent.cpp
+#       Driver/TunerComponent.cpp
+#       Driver/VitaIfSpec.cpp
+#       Driver/WbddcComponent.cpp
+#       Driver/WbddcGroupComponent.cpp
        NDR651/ClientSocket.cpp
        NDR651/DUCSink.cpp
        NDR651/FlowControlClient.cpp
@@ -24,29 +67,51 @@ list(APPEND libcyberradio_sources
        NDR651/TransmitSocket.cpp
        NDR651/UdpStatusReceiver.cpp
        ZeroCopy/ZeroCopySocket.cpp
+       ZeroCopy/ThreadedZeroCopySocket.cpp
 )
-set(libcyberradio_sources "${libcyberradio_sources}" PARENT_SCOPE)
-if(NOT libcyberradio_sources)
+SET(libcyberradio_sources "${libcyberradio_sources}" PARENT_SCOPE)
+IF(NOT libcyberradio_sources)
 	MESSAGE(STATUS "No C++ sources... skipping lib/")
-	return()
-endif(NOT libcyberradio_sources)
+	RETURN()
+ENDIF(NOT libcyberradio_sources)
 # -- Library name
-set(libcyberradio_lib_name cyberradio)
+SET(libcyberradio_lib_name cyberradio)
+# -- Package versioning info
+# Set package versioning info
+SET(PACKAGE_VERSION "@PACKAGE_VERSION@")
+# Deconstruct PACKAGE_VERSION value into "major", "minor", and "patch"
+# values.   
+# -- NOTE: The MATH() commands below strip leading zeros from version
+#    components. The "patch" version needs to strip anything non-numeric
+#    prior to evaluation.
+STRING(REPLACE "." ";" PACKAGE_VERSION_LIST ${PACKAGE_VERSION})
+LIST(GET PACKAGE_VERSION_LIST 0 PACKAGE_VERSION_MAJOR_IN)
+LIST(GET PACKAGE_VERSION_LIST 1 PACKAGE_VERSION_MINOR_IN)
+LIST(GET PACKAGE_VERSION_LIST 2 PACKAGE_VERSION_PATCH_IN)
+MATH(EXPR PACKAGE_VERSION_MAJOR ${PACKAGE_VERSION_MAJOR_IN}+0)
+MATH(EXPR PACKAGE_VERSION_MINOR ${PACKAGE_VERSION_MINOR_IN}+0)
+STRING(REGEX MATCH "[0-9]+" PATCH_STRIPPED ${PACKAGE_VERSION_PATCH_IN})
+MATH(EXPR PACKAGE_VERSION_PATCH ${PATCH_STRIPPED}+0)
 
 ########################################################################
 # Link Library
 ########################################################################
-add_library(${libcyberradio_lib_name} SHARED ${libcyberradio_sources})
-target_link_libraries(${libcyberradio_lib_name} 
+ADD_LIBRARY(${libcyberradio_lib_name} SHARED ${libcyberradio_sources})
+TARGET_LINK_LIBRARIES(${libcyberradio_lib_name} 
                       ${Boost_LIBRARIES}
-                      pcap 
+                      ${PCAP_LIBRARIES} 
+                      #${CURL_LIBRARIES}
+                      #${JSONCPP_LIB}
                       )
-set_target_properties(${libcyberradio_lib_name} PROPERTIES DEFINE_SYMBOL "libcyberradio_EXPORTS")
+SET_TARGET_PROPERTIES(${libcyberradio_lib_name} PROPERTIES 
+                      DEFINE_SYMBOL "libcyberradio_EXPORTS"
+                      VERSION ${PACKAGE_VERSION}
+                      SOVERSION ${PACKAGE_VERSION_MAJOR})
 
 ########################################################################
 # Install Library
 ########################################################################
-install(TARGETS ${libcyberradio_lib_name}
+INSTALL(TARGETS ${libcyberradio_lib_name}
     LIBRARY DESTINATION ${LIBCYBERRADIO_LIBRARY_DIR} # .so/.dylib file
     ARCHIVE DESTINATION ${LIBCYBERRADIO_LIBRARY_DIR} # .lib file
     RUNTIME DESTINATION ${LIBCYBERRADIO_BINARY_DIR}  # .dll file
