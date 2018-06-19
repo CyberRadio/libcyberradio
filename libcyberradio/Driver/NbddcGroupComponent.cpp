@@ -170,7 +170,7 @@ namespace LibCyberRadio
             ret = this->executeNbddcGroupMemberCommand(_index, member, isMember);
             if (ret)
             {
-                BasicIntList::const_iterator it = std::find(_groupMembers.begin(), _groupMembers.end(),
+                BasicIntList::iterator it = std::find(_groupMembers.begin(), _groupMembers.end(),
                                                             member);
                 if ( it != _groupMembers.end() )
                 {
