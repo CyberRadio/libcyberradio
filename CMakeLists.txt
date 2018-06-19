@@ -62,15 +62,15 @@ ELSE()
     MESSAGE(FATAL_ERROR "libpcap required to build ${PROJECT_NAME}")
 ENDIF()
 # -- CURL: This package is required
-#FIND_PACKAGE(CURL)
-#IF(NOT CURL_FOUND)
-#    MESSAGE(FATAL_ERROR "CURL required to build ${PROJECT_NAME}")
-#ENDIF()
+FIND_PACKAGE(CURL)
+IF(NOT CURL_FOUND)
+    MESSAGE(FATAL_ERROR "CURL required to build ${PROJECT_NAME}")
+ENDIF()
 # -- JsonCpp: This package is required
-#FIND_PACKAGE(JsonCpp)
-#IF(NOT JSONCPP_FOUND)
-#    MESSAGE(FATAL_ERROR "JsonCpp required to build ${PROJECT_NAME}")
-#ENDIF()
+FIND_PACKAGE(JsonCpp)
+IF(NOT JSONCPP_FOUND)
+    MESSAGE(FATAL_ERROR "JsonCpp required to build ${PROJECT_NAME}")
+ENDIF()
 # -- Doxygen: This package is optional
 FIND_PACKAGE(Doxygen)
 
@@ -91,7 +91,6 @@ SET(LIBCYBERRADIO_DOC_DIR          ${LIBCYBERRADIO_DATA_DIR}/doc)
 SET(LIBCYBERRADIO_PKG_DOC_DIR      ${LIBCYBERRADIO_DOC_DIR}/${PROJECT_NAME})
 SET(LIBCYBERRADIO_EXAMPLES_DIR     ${LIBCYBERRADIO_PKG_DATA_DIR}/examples)
 SET(LIBCYBERRADIO_CMAKE_MODS_DIR   ${LIBCYBERRADIO_LIBRARY_DIR}/cmake/${PROJECT_NAME})
-set(LIBCYBERRADIO_CMAKE_MODS_DIR   ${LIBCYBERRADIO_LIBRARY_DIR}/cmake/${PROJECT_NAME})
 
 ########################################################################
 # Set Up Include and Linker Paths
@@ -103,13 +102,13 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_BINARY_DIR}/include
     ${Boost_INCLUDE_DIRS}
     ${PCAP_INCLUDE_DIRS}
-    #${CURL_INCLUDE_DIRS}
-    #${JSONCPP_INCLUDE_DIR}
+    ${CURL_INCLUDE_DIRS}
+    ${JSONCPP_INCLUDE_DIR}
 )
 LINK_DIRECTORIES(
     ${Boost_LIBRARY_DIRS}
     ${PCAP_LIBRARY_DIR}
-    #${JSONCPP_LIB_DIR}
+    ${JSONCPP_LIB_DIR}
 )
 
 ########################################################################
