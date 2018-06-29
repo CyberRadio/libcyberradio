@@ -97,8 +97,7 @@ namespace LibCyberRadio
         	bool ret = Configurable::setConfiguration(cfg);
         	// Use the keys provided in the *incoming* dictionary to determine
         	// what needs to be changed.
-            ConfigurationDict::const_iterator it = cfg.find("enable");
-            if ( it != cfg.end() )
+        	if ( cfg.hasKey("enable") && _config.hasKey("enable") )
             {
             	ret = enable( _config["enable"].asBool() );
             }
@@ -123,7 +122,8 @@ namespace LibCyberRadio
         void RadioComponent::updateConfigurationDict()
         {
         	//this->debug("[RadioComponent::updateConfigurationDict] Called\n");
-            _config["enable"] = _enabled;
+            if ( _config.hasKey("enable") )
+                this->setConfigurationValueToBool("enable", _enabled);
             //this->debug("[RadioComponent::updateConfigurationDict] Returning\n");
         }
 

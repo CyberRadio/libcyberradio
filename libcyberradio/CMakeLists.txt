@@ -10,6 +10,7 @@ LIST(APPEND libcyberradio_sources
        Common/Debuggable.cpp
        Common/HttpsSession.cpp
        Common/Pythonesque.cpp
+       Common/SerialPort.cpp
        Common/Thread.cpp
        Common/VitaIqSource.cpp
        Common/VitaIqUdpPort.cpp
@@ -20,6 +21,7 @@ LIST(APPEND libcyberradio_sources
        Driver/NDR308/NbddcComponent.cpp
        Driver/NDR308/NbddcGroupComponent.cpp
        Driver/NDR308/TunerComponent.cpp
+       Driver/NDR308/VitaIfSpec.cpp
        Driver/NDR308/WbddcComponent.cpp
        Driver/NDR308/WbddcGroupComponent.cpp
        Driver/NDR308TS/DataPort.cpp
@@ -27,8 +29,15 @@ LIST(APPEND libcyberradio_sources
        Driver/NDR308TS/NbddcComponent.cpp
        Driver/NDR308TS/NbddcGroupComponent.cpp
        Driver/NDR308TS/TunerComponent.cpp
+       Driver/NDR308TS/VitaIfSpec.cpp
        Driver/NDR308TS/WbddcComponent.cpp
        Driver/NDR308TS/WbddcGroupComponent.cpp
+       Driver/NDR472/RadioHandler.cpp
+       Driver/NDR472/SimpleIpSetup.cpp
+       Driver/NDR472/TunerComponent.cpp
+       Driver/NDR472/VitaIfSpec.cpp
+       Driver/NDR472/WbddcComponent.cpp
+       Driver/NDR472/WbddcGroupComponent.cpp
        Driver/NDR651/CWToneGenComponent.cpp
        Driver/NDR651/DataPort.cpp
        Driver/NDR651/DucComponent.cpp
@@ -37,8 +46,17 @@ LIST(APPEND libcyberradio_sources
        Driver/NDR651/NbddcGroupComponent.cpp
        Driver/NDR651/TransmitterComponent.cpp
        Driver/NDR651/TunerComponent.cpp
+       Driver/NDR651/VitaIfSpec.cpp
        Driver/NDR651/WbddcComponent.cpp
        Driver/NDR651/WbddcGroupComponent.cpp
+       Driver/NDR810/DataPort.cpp
+       Driver/NDR810/RadioHandler.cpp
+       Driver/NDR810/NbddcComponent.cpp
+       Driver/NDR810/NbddcGroupComponent.cpp
+       Driver/NDR810/TunerComponent.cpp
+       Driver/NDR810/VitaIfSpec.cpp
+       Driver/NDR810/WbddcComponent.cpp
+       Driver/NDR810/WbddcGroupComponent.cpp
        Driver/ConfigString.cpp
        Driver/Configurable.cpp
        Driver/CWToneGenComponent.cpp
@@ -50,6 +68,7 @@ LIST(APPEND libcyberradio_sources
        Driver/RadioComponent.cpp
        Driver/RadioHandler.cpp
        Driver/RadioTransport.cpp
+       Driver/SimpleIpSetup.cpp
        Driver/TransmitterComponent.cpp
        Driver/TunerComponent.cpp
        Driver/VitaIfSpec.cpp
@@ -78,7 +97,7 @@ ENDIF(NOT libcyberradio_sources)
 SET(libcyberradio_lib_name cyberradio)
 # -- Package versioning info
 # Set package versioning info
-SET(PACKAGE_VERSION "@PACKAGE_VERSION@")
+#SET(PACKAGE_VERSION "@PACKAGE_VERSION@")
 # Deconstruct PACKAGE_VERSION value into "major", "minor", and "patch"
 # values.   
 # -- NOTE: The MATH() commands below strip leading zeros from version

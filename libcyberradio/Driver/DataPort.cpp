@@ -88,15 +88,15 @@ namespace LibCyberRadio
         	bool ret = Configurable::setConfiguration(cfg);
         	// Use the keys provided in the *incoming* dictionary to determine
         	// what needs to be changed.
-            if ( cfg.find("sourceIP") != cfg.end() )
+            if ( cfg.hasKey("sourceIP") && _config.hasKey("sourceIP") )
             {
             	ret &= setSourceIP(cfg["sourceIP"]);
             }
-            if ( cfg.find("errors") != cfg.end() )
+            if ( cfg.hasKey("errors") && _config.hasKey("errors") )
             {
                 ret &= enableErrors( cfg["errors"].asBool() );
             }
-            if ( cfg.find("flowControl") != cfg.end() )
+            if ( cfg.hasKey("flowControl") && _config.hasKey("flowControl") )
             {
                 ret &= enableFlowControl( cfg["flowControl"].asBool() );
             }
@@ -108,9 +108,12 @@ namespace LibCyberRadio
 		{
         	this->debug("[DataPort::queryConfiguration] Called\n");
         	// Query source and destination information
-            executeSourceIPQuery(_index, _sourceIP);
-            executeErrorEnabledQuery(_index, _errorsEnabled);
-            executeFlowControlEnabledQuery(_index, _flowControlEnabled);
+            if ( _config.hasKey("sourceIP") )
+                executeSourceIPQuery(_index, _sourceIP);
+            if ( _config.hasKey("errors") )
+                executeErrorEnabledQuery(_index, _errorsEnabled);
+            if ( _config.hasKey("flowControl") )
+                executeFlowControlEnabledQuery(_index, _flowControlEnabled);
             for (int dipIndex = _dipEntryIndexBase;
             	 dipIndex < _dipEntryIndexBase + _numDipEntries;
             	 dipIndex++)
@@ -149,12 +152,16 @@ namespace LibCyberRadio
 
 		bool DataPort::setSourceIP(const std::string& ipAddr)
 		{
-            std::string adjSourceIP = ipAddr;
-            bool ret = executeSourceIPCommand(_index, adjSourceIP);
-            if ( ret )
+            bool ret = false;
+            if ( _config.hasKey("sourceIP") )
             {
-                _sourceIP = adjSourceIP;
-                updateConfigurationDict();
+                std::string adjSourceIP = ipAddr;
+                ret = executeSourceIPCommand(_index, adjSourceIP);
+                if ( ret )
+                {
+                    _sourceIP = adjSourceIP;
+                    updateConfigurationDict();
+                }
             }
             return ret;
 		}
@@ -253,12 +260,15 @@ namespace LibCyberRadio
         bool DataPort::enableErrors(bool enabled)
         {
             bool ret = false;
-            bool adjEn = enabled;
-            if ( executeErrorEnabledCommand(_index, adjEn) )
+            if ( _config.hasKey("errors") )
             {
-                _errorsEnabled = enabled;
-                updateConfigurationDict();
-                ret = true;
+                bool adjEn = enabled;
+                if ( executeErrorEnabledCommand(_index, adjEn) )
+                {
+                    _errorsEnabled = enabled;
+                    updateConfigurationDict();
+                    ret = true;
+                }
             }
             return ret;
         }
@@ -271,12 +281,15 @@ namespace LibCyberRadio
         bool DataPort::enableFlowControl(bool enabled)
         {
             bool ret = false;
-            bool adjEn = enabled;
-            if ( executeFlowControlEnabledCommand(_index, adjEn) )
+            if ( _config.hasKey("errors") )
             {
-                _flowControlEnabled = enabled;
-                updateConfigurationDict();
-                ret = true;
+                bool adjEn = enabled;
+                if ( executeFlowControlEnabledCommand(_index, adjEn) )
+                {
+                    _flowControlEnabled = enabled;
+                    updateConfigurationDict();
+                    ret = true;
+                }
             }
             return ret;
         }
@@ -288,6 +301,7 @@ namespace LibCyberRadio
 
         void DataPort::initConfigurationDict()
 		{
+            _config.clear();
         	//this->debug("[DataPort::initConfigurationDict] Called\n");
 			_config["sourceIP"] = _sourceIP;
 			_config["errors"] = _errorsEnabled;
@@ -298,9 +312,12 @@ namespace LibCyberRadio
 		void DataPort::updateConfigurationDict()
 		{
         	this->debug("[DataPort::updateConfigurationDict] Called\n");
-			setConfigurationValue("sourceIP", _sourceIP);
-			setConfigurationValueToBool("errors", _errorsEnabled);
-			setConfigurationValueToBool("flowControl", _flowControlEnabled);
+            if ( _config.hasKey("sourceIP") )
+                setConfigurationValue("sourceIP", _sourceIP);
+            if ( _config.hasKey("errors") )
+                setConfigurationValueToBool("errors", _errorsEnabled);
+            if ( _config.hasKey("flowControl") )
+                setConfigurationValueToBool("flowControl", _flowControlEnabled);
             this->debug("[DataPort::updateConfigurationDict] Returning\n");
 		}
 

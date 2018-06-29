@@ -52,6 +52,7 @@ namespace LibCyberRadio
 							   /* int mode */ mode,
 							   /* unsigned int streamId */ streamId)
 			{
+                initConfigurationDict();
 				// Set rate set
 				_rateSet[0] = 102.4e6;
 				_rateSet[1] = 51.2e6;

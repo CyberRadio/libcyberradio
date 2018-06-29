@@ -69,6 +69,7 @@ namespace LibCyberRadio
 						/* double sweepStep */ sweepStep,
 						/* double dwellTime */ dwellTime )
 			{
+                initConfigurationDict();
 			}
 
     		CWToneGenComponent::~CWToneGenComponent()

@@ -37,7 +37,8 @@ namespace LibCyberRadio
     					   int payloadSizeWords = 0,
 						   int tailSizeWords = 0,
 						   const char* byteOrder = "little",
-						   bool iqSwapped = false);
+						   bool iqSwapped = false,
+						   bool usesV491 = true);
     			virtual ~VitaIfSpec();
     			VitaIfSpec(const VitaIfSpec& other);
     			VitaIfSpec& operator=(const VitaIfSpec& other);
@@ -53,6 +54,8 @@ namespace LibCyberRadio
 				const char* byteOrder;
 				//! Whether the I/Q data in the payload are swapped
 				bool iqSwapped;
+				//! Whether the data packets use VITA 49.1 framing
+				bool usesV491;
 
 		};
 

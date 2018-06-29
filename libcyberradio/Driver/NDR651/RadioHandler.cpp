@@ -13,6 +13,7 @@
 #include "LibCyberRadio/Driver/NDR651/NbddcComponent.h"
 #include "LibCyberRadio/Driver/NDR651/TransmitterComponent.h"
 #include "LibCyberRadio/Driver/NDR651/TunerComponent.h"
+#include "LibCyberRadio/Driver/NDR651/VitaIfSpec.h"
 #include "LibCyberRadio/Driver/NDR651/WbddcComponent.h"
 #include "LibCyberRadio/Driver/NDR651/WbddcGroupComponent.h"
 #include "LibCyberRadio/Driver/NDR651/NbddcGroupComponent.h"
@@ -54,10 +55,12 @@ namespace LibCyberRadio
                                             /* int ddcGroupIndexBase */ 1,
 											/* int numDataPorts */ 2,
 											/* int dataPortIndexBase */ 1,
+                                            /* int numSimpleIpSetups */ 0,
 											/* double adcRate */ 102.4e6,
-											/* VitaIfSpec ifSpec */ VitaIfSpec(9, 1024, 1, "little", false),
+											/* VitaIfSpec ifSpec */ NDR651::VitaIfSpec(),
 											/* bool debug */ debug)
 			{
+                initConfigurationDict();
                 _connModesSupported.push_back("tcp");
                 _defaultDeviceInfo = 8617;
 				// Allocate tuner components
@@ -221,17 +224,17 @@ namespace LibCyberRadio
 						switch( stateTracker )
 						{
 							case 0:
-								if ( it->find("  Revision: ") != std::string::npos )
-									_versionInfo["unitRevision"] = Pythonesque::Replace(*it, "  Revision: ", "");
+                                if ( it->find("  Revision: ") != std::string::npos )
+                                    _versionInfo["unitRevision"] = Pythonesque::Replace(*it, "  Revision: ", "");
 								break;
 							case 1:
 								break;
 							case 2:
 								if ( ( it->find("Tuner Quad") == 0) && ( it->find("Not Installed") != std::string::npos) )
 									_numTunerBoards++;
-								else if ( it->find("  Bandwidth: ") == 0 )
+								else if ( it->find("Bandwidth: ") == 0 )
 								{
-									std::string tmp = Pythonesque::Replace(*it, "  Bandwidth: ", "");
+									std::string tmp = Pythonesque::Replace(*it, "Bandwidth: ", "");
 									std::istringstream iss(tmp);
 									// Handle the corner case where the radio doesn't report its
 									// maximum tuner bandwidth properly (returning 0 for BW).
@@ -289,6 +292,14 @@ namespace LibCyberRadio
 				for (it = _tuners.begin(); it != _tuners.end(); it++)
 				{
 					it->second->setFrequencyRangeMax(_maxTunerBw * 1e6);
+				}
+				// Debug dump
+				if (ret)
+				{
+	                for (BasicStringStringDict::iterator it = _versionInfo.begin(); it != _versionInfo.end(); it++)
+	                {
+	                    this->debug("[NDR651::RadioHandler::queryVersionInfo] %s = \"%s\"\n", it->first.c_str(), it->second.c_str());
+	                }
 				}
 				this->debug("[NDR651::RadioHandler::queryVersionInfo] Returning %s\n", debugBool(ret));
 				return ret;

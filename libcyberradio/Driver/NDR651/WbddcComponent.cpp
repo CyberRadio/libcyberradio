@@ -51,6 +51,7 @@ namespace LibCyberRadio
 							   /* int vitaEnable */ vitaEnable,
 							   /* unsigned int streamId */ streamId)
 			{
+                initConfigurationDict();
 				// Set rate set
 				_rateSet[0] = 51.2e6;
 				_rateSet[1] = 25.6e6;

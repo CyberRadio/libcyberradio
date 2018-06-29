@@ -150,50 +150,50 @@ namespace LibCyberRadio
             bool ddcCmdNeedsExecuting = false;
             bool snapLoadCmdNeedsExecuting = false;
             bool snapTxCmdNeedsExecuting = false;
-			if ( cfg.find("frequency") != cfg.end() )
+            if ( cfg.hasKey("frequency") && _config.hasKey("frequency") )
 			{
 				adjFrequency = getConfigurationValueAsDbl("frequency");
 				ddcCmdNeedsExecuting = true;
 			}
-			if ( cfg.find("attenuation") != cfg.end() )
+            if ( cfg.hasKey("attenuation") && _config.hasKey("attenuation") )
 			{
 				adjAttenuation = getConfigurationValueAsDbl("attenuation");
 				ddcCmdNeedsExecuting = true;
 			}
-			if ( cfg.find("dataPort") != cfg.end() )
+            if ( cfg.hasKey("dataPort") && _config.hasKey("dataPort") )
 			{
 				adjDataPort = getConfigurationValueAsInt("dataPort");
 				ddcCmdNeedsExecuting = true;
 			}
-            if ( cfg.find("rateIndex") != cfg.end() )
+            if ( cfg.hasKey("rateIndex") && _config.hasKey("rateIndex") )
             {
             	adjRateIndex = getConfigurationValueAsInt("rateIndex");
             	ddcCmdNeedsExecuting = true;
             }
-            if ( cfg.find("txChannels") != cfg.end() )
+            if ( cfg.hasKey("txChannels") && _config.hasKey("txChannels") )
             {
             	adjTxChannels = getConfigurationValueAsInt("txChannels");
             	ddcCmdNeedsExecuting = true;
             }
-            if ( cfg.find("mode") != cfg.end() )
+            if ( cfg.hasKey("mode") && _config.hasKey("mode") )
             {
             	adjMode = getConfigurationValueAsInt("mode");
             	ddcCmdNeedsExecuting = true;
             }
-            if ( cfg.find("streamId") != cfg.end() )
+            if ( cfg.hasKey("streamId") && _config.hasKey("streamId") )
             {
             	adjStreamId = getConfigurationValueAsUInt("streamId");
             	ddcCmdNeedsExecuting = true;
             }
-            if ( cfg.find("filename") != cfg.end() )
+            if ( cfg.hasKey("filename") && _config.hasKey("filename") )
             {
             	snapLoadCmdNeedsExecuting = true;
             }
-            if ( cfg.find("singlePlayback") != cfg.end() )
+            if ( cfg.hasKey("singlePlayback") && _config.hasKey("singlePlayback") )
             {
             	snapTxCmdNeedsExecuting = true;
             }
-            if ( cfg.find("pauseUntilEnabled") != cfg.end() )
+            if ( cfg.hasKey("pauseUntilEnabled") && _config.hasKey("pauseUntilEnabled") )
             {
             	snapTxCmdNeedsExecuting = true;
             }
@@ -230,8 +230,20 @@ namespace LibCyberRadio
 		void DucComponent::queryConfiguration()
 		{
             this->debug("[DucComponent::queryConfiguration] Called\n");
-            executeDucQuery(_index, _dataPort, _frequency, _attenuation,
-            		        _rateIndex, _txChannels, _mode, _streamId);
+            if ( _config.hasKey("frequency") &&
+                 _config.hasKey("attenuation") &&
+                 _config.hasKey("dataPort") &&
+                 _config.hasKey("rateIndex") &&
+                 _config.hasKey("txChannels") &&
+                 _config.hasKey("mode") &&
+                 _config.hasKey("streamId") &&
+                 _config.hasKey("filename") &&
+                 _config.hasKey("singlePlayback") &&
+                 _config.hasKey("pauseUntilEnabled") )
+            {
+                executeDucQuery(_index, _dataPort, _frequency, _attenuation,
+                                _rateIndex, _txChannels, _mode, _streamId);
+            }
             updateConfigurationDict();
             this->debug("[DucComponent::queryConfiguration] Returning\n");
 		}
@@ -243,20 +255,24 @@ namespace LibCyberRadio
 
 		bool DucComponent::setDataPort(int port)
 		{
-            int adjDataPort = port;
-			double adjFrequency = _frequency;
-			double adjAttenuation = _attenuation;
-			int adjRateIndex = _rateIndex;
-            int adjTxChannels = _txChannels;
-			int adjMode = _mode;
-			unsigned int adjStreamId = _streamId;
-			bool ret = executeDucCommand(_index, adjDataPort, adjFrequency, adjAttenuation,
-					                     adjRateIndex, adjTxChannels, adjMode, adjStreamId);
-			if ( ret )
-			{
-				_dataPort = adjDataPort;
-				updateConfigurationDict();
-			}
+            bool ret = false;
+            if ( _config.hasKey("dataPort") )
+            {
+                int adjDataPort = port;
+                double adjFrequency = _frequency;
+                double adjAttenuation = _attenuation;
+                int adjRateIndex = _rateIndex;
+                int adjTxChannels = _txChannels;
+                int adjMode = _mode;
+                unsigned int adjStreamId = _streamId;
+                ret = executeDucCommand(_index, adjDataPort, adjFrequency, adjAttenuation,
+                                             adjRateIndex, adjTxChannels, adjMode, adjStreamId);
+                if ( ret )
+                {
+                    _dataPort = adjDataPort;
+                    updateConfigurationDict();
+                }
+            }
             return ret;
 		}
 
@@ -267,20 +283,24 @@ namespace LibCyberRadio
 
 		bool DucComponent::setFrequency(double freq)
 		{
-            int adjDataPort = _dataPort;
-			double adjFrequency = freq;
-			double adjAttenuation = _attenuation;
-			int adjRateIndex = _rateIndex;
-            int adjTxChannels = _txChannels;
-			int adjMode = _mode;
-			unsigned int adjStreamId = _streamId;
-			bool ret = executeDucCommand(_index, adjDataPort, adjFrequency, adjAttenuation,
-					                     adjRateIndex, adjTxChannels, adjMode, adjStreamId);
-			if ( ret )
-			{
-				_frequency = adjFrequency;
-				updateConfigurationDict();
-			}
+            bool ret = false;
+            if ( _config.hasKey("frequency") )
+            {
+                int adjDataPort = _dataPort;
+                double adjFrequency = freq;
+                double adjAttenuation = _attenuation;
+                int adjRateIndex = _rateIndex;
+                int adjTxChannels = _txChannels;
+                int adjMode = _mode;
+                unsigned int adjStreamId = _streamId;
+                ret = executeDucCommand(_index, adjDataPort, adjFrequency, adjAttenuation,
+                                             adjRateIndex, adjTxChannels, adjMode, adjStreamId);
+                if ( ret )
+                {
+                    _frequency = adjFrequency;
+                    updateConfigurationDict();
+                }
+            }
             return ret;
 		}
 
@@ -309,20 +329,24 @@ namespace LibCyberRadio
 
 		bool DucComponent::setAttenuation(double atten)
 		{
-            int adjDataPort = _dataPort;
-			double adjFrequency = _frequency;
-			double adjAttenuation = atten;
-			int adjRateIndex = _rateIndex;
-            int adjTxChannels = _txChannels;
-			int adjMode = _mode;
-			unsigned int adjStreamId = _streamId;
-			bool ret = executeDucCommand(_index, adjDataPort, adjFrequency, adjAttenuation,
-					                     adjRateIndex, adjTxChannels, adjMode, adjStreamId);
-			if ( ret )
-			{
-				_attenuation = adjAttenuation;
-				updateConfigurationDict();
-			}
+            bool ret = false;
+            if ( _config.hasKey("attenuation") )
+            {
+                int adjDataPort = _dataPort;
+                double adjFrequency = _frequency;
+                double adjAttenuation = atten;
+                int adjRateIndex = _rateIndex;
+                int adjTxChannels = _txChannels;
+                int adjMode = _mode;
+                unsigned int adjStreamId = _streamId;
+                ret = executeDucCommand(_index, adjDataPort, adjFrequency, adjAttenuation,
+                                             adjRateIndex, adjTxChannels, adjMode, adjStreamId);
+                if ( ret )
+                {
+                    _attenuation = adjAttenuation;
+                    updateConfigurationDict();
+                }
+            }
             return ret;
 		}
 
@@ -346,20 +370,24 @@ namespace LibCyberRadio
 
 		bool DucComponent::setRateIndex(int index)
 		{
-            int adjDataPort = _dataPort;
-			double adjFrequency = _frequency;
-			double adjAttenuation = _attenuation;
-			int adjRateIndex = index;
-            int adjTxChannels = _txChannels;
-			int adjMode = _mode;
-			unsigned int adjStreamId = _streamId;
-			bool ret = executeDucCommand(_index, adjDataPort, adjFrequency, adjAttenuation,
-					                     adjRateIndex, adjTxChannels, adjMode, adjStreamId);
-			if ( ret )
-			{
-				_rateIndex = adjRateIndex;
-				updateConfigurationDict();
-			}
+            bool ret = false;
+            if ( _config.hasKey("rateIndex") )
+            {
+                int adjDataPort = _dataPort;
+                double adjFrequency = _frequency;
+                double adjAttenuation = _attenuation;
+                int adjRateIndex = index;
+                int adjTxChannels = _txChannels;
+                int adjMode = _mode;
+                unsigned int adjStreamId = _streamId;
+                ret = executeDucCommand(_index, adjDataPort, adjFrequency, adjAttenuation,
+                                             adjRateIndex, adjTxChannels, adjMode, adjStreamId);
+                if ( ret )
+                {
+                    _rateIndex = adjRateIndex;
+                    updateConfigurationDict();
+                }
+            }
             return ret;
 		}
 
@@ -370,20 +398,24 @@ namespace LibCyberRadio
 
 		bool DucComponent::setTxChannelBitmap(int txChannels)
 		{
-            int adjDataPort = _dataPort;
-			double adjFrequency = _frequency;
-			double adjAttenuation = _attenuation;
-			int adjRateIndex = _rateIndex;
-            int adjTxChannels = txChannels;
-			int adjMode = _mode;
-			unsigned int adjStreamId = _streamId;
-			bool ret = executeDucCommand(_index, adjDataPort, adjFrequency, adjAttenuation,
-					                     adjRateIndex, adjTxChannels, adjMode, adjStreamId);
-			if ( ret )
-			{
-				_txChannels = adjTxChannels;
-				updateConfigurationDict();
-			}
+            bool ret = false;
+            if ( _config.hasKey("txChannels") )
+            {
+                int adjDataPort = _dataPort;
+                double adjFrequency = _frequency;
+                double adjAttenuation = _attenuation;
+                int adjRateIndex = _rateIndex;
+                int adjTxChannels = txChannels;
+                int adjMode = _mode;
+                unsigned int adjStreamId = _streamId;
+                bool ret = executeDucCommand(_index, adjDataPort, adjFrequency, adjAttenuation,
+                                             adjRateIndex, adjTxChannels, adjMode, adjStreamId);
+                if ( ret )
+                {
+                    _txChannels = adjTxChannels;
+                    updateConfigurationDict();
+                }
+            }
             return ret;
 		}
 
@@ -394,20 +426,24 @@ namespace LibCyberRadio
 
 		bool DucComponent::setMode(int mode)
 		{
-            int adjDataPort = _dataPort;
-			double adjFrequency = _frequency;
-			double adjAttenuation = _attenuation;
-			int adjRateIndex = _rateIndex;
-            int adjTxChannels = _txChannels;
-			int adjMode = mode;
-			unsigned int adjStreamId = _streamId;
-			bool ret = executeDucCommand(_index, adjDataPort, adjFrequency, adjAttenuation,
-					                     adjRateIndex, adjTxChannels, adjMode, adjStreamId);
-			if ( ret )
-			{
-				_mode = adjMode;
-				updateConfigurationDict();
-			}
+            bool ret = false;
+            if ( _config.hasKey("mode") )
+            {
+                int adjDataPort = _dataPort;
+                double adjFrequency = _frequency;
+                double adjAttenuation = _attenuation;
+                int adjRateIndex = _rateIndex;
+                int adjTxChannels = _txChannels;
+                int adjMode = mode;
+                unsigned int adjStreamId = _streamId;
+                ret = executeDucCommand(_index, adjDataPort, adjFrequency, adjAttenuation,
+                                             adjRateIndex, adjTxChannels, adjMode, adjStreamId);
+                if ( ret )
+                {
+                    _mode = adjMode;
+                    updateConfigurationDict();
+                }
+            }
             return ret;
 		}
 
@@ -418,20 +454,24 @@ namespace LibCyberRadio
 
 		bool DucComponent::setStreamId(unsigned int sid)
 		{
-            int adjDataPort = _dataPort;
-			double adjFrequency = _frequency;
-			double adjAttenuation = _attenuation;
-			int adjRateIndex = _rateIndex;
-            int adjTxChannels = _txChannels;
-			int adjMode = _mode;
-			unsigned int adjStreamId = sid;
-			bool ret = executeDucCommand(_index, adjDataPort, adjFrequency, adjAttenuation,
-					                     adjRateIndex, adjTxChannels, adjMode, adjStreamId);
-			if ( ret )
-			{
-				_streamId = adjStreamId;
-				updateConfigurationDict();
-			}
+            bool ret = false;
+            if ( _config.hasKey("streamId") )
+            {
+                int adjDataPort = _dataPort;
+                double adjFrequency = _frequency;
+                double adjAttenuation = _attenuation;
+                int adjRateIndex = _rateIndex;
+                int adjTxChannels = _txChannels;
+                int adjMode = _mode;
+                unsigned int adjStreamId = sid;
+                ret = executeDucCommand(_index, adjDataPort, adjFrequency, adjAttenuation,
+                                             adjRateIndex, adjTxChannels, adjMode, adjStreamId);
+                if ( ret )
+                {
+                    _streamId = adjStreamId;
+                    updateConfigurationDict();
+                }
+            }
             return ret;
 		}
 
@@ -485,6 +525,7 @@ namespace LibCyberRadio
         void DucComponent::initConfigurationDict()
 		{
             //this->debug("[DucComponent::initConfigurationDict] Called\n");
+            _config.clear();
         	// Call the base-class version
             RadioComponent::initConfigurationDict();
             // Define DUC-specific keys
@@ -507,18 +548,30 @@ namespace LibCyberRadio
 		{
             this->debug("[DucComponent::updateConfigurationDict] Called\n");
             RadioComponent::updateConfigurationDict();
-            setConfigurationValueToInt("dataPort", _dataPort);
-            setConfigurationValueToDbl("frequency", _frequency);
-            setConfigurationValueToDbl("attenuation", _attenuation);
-            setConfigurationValueToInt("rateIndex", _rateIndex);
-            setConfigurationValueToInt("txChannels", _txChannels);
-            setConfigurationValueToInt("mode", _mode);
-            setConfigurationValueToUInt("streamId", _streamId);
-            setConfigurationValue("filename", _snapFilename);
-            setConfigurationValueToUInt("startSample", _snapStartSample);
-            setConfigurationValueToUInt("samples", _snapSamples);
-            setConfigurationValueToBool("singlePlayback", _snapSinglePlayback);
-            setConfigurationValueToBool("pauseUntilEnabled", _snapPauseUntilEnabled);
+            if ( _config.hasKey("dataPort") )
+                setConfigurationValueToInt("dataPort", _dataPort);
+            if ( _config.hasKey("frequency") )
+                setConfigurationValueToDbl("frequency", _frequency);
+            if ( _config.hasKey("attenuation") )
+                setConfigurationValueToDbl("attenuation", _attenuation);
+            if ( _config.hasKey("rateIndex") )
+                setConfigurationValueToInt("rateIndex", _rateIndex);
+            if ( _config.hasKey("txChannels") )
+                setConfigurationValueToInt("txChannels", _txChannels);
+            if ( _config.hasKey("mode") )
+                setConfigurationValueToInt("mode", _mode);
+            if ( _config.hasKey("streamId") )
+                setConfigurationValueToUInt("streamId", _streamId);
+            if ( _config.hasKey("filename") )
+                setConfigurationValue("filename", _snapFilename);
+            if ( _config.hasKey("startSample") )
+                setConfigurationValueToUInt("startSample", _snapStartSample);
+            if ( _config.hasKey("samples") )
+                setConfigurationValueToUInt("samples", _snapSamples);
+            if ( _config.hasKey("singlePlayback") )
+                setConfigurationValueToBool("singlePlayback", _snapSinglePlayback);
+            if ( _config.hasKey("pauseUntilEnabled") )
+                setConfigurationValueToBool("pauseUntilEnabled", _snapPauseUntilEnabled);
             this->debug("[DucComponent::updateConfigurationDict] Returning\n");
 		}
 

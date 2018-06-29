@@ -36,6 +36,8 @@ namespace LibCyberRadio
 			Debuggable(debug, "RadioTransport"),
             _isJson(json),
             _tcpSocket(0),
+            _udpSocket(0),
+            _serial(NULL),
 			_httpsSession(NULL),
             _httpsConnTestUrl(""),
             _httpsApiCmdUrl(""),
@@ -53,25 +55,40 @@ namespace LibCyberRadio
             	 delete _httpsSession;
             	_httpsSession = NULL;
             }
+            if (_serial != NULL)
+            {
+                delete _serial;
+                _serial = NULL;
+            }
         	this->debug("DESTROYED\n");
         }
 
-        RadioTransport::RadioTransport(const RadioTransport &other)
+        RadioTransport::RadioTransport(const RadioTransport &other) :
+             Debuggable(other)
         {
             _isJson = other._isJson;
             _tcpSocket = other._tcpSocket;
+            _udpSocket = other._udpSocket;
+            _serial = other._serial;
             _httpsSession = other._httpsSession;
+            _httpsConnTestUrl = other._httpsConnTestUrl;
+            _httpsApiCmdUrl = other._httpsApiCmdUrl;
             _lastCmdErrInfo = other._lastCmdErrInfo;
         }
 
         RadioTransport &RadioTransport::operator=(const RadioTransport &other)
         {
+            Debuggable::operator=(other);
             // Protect against self-assignment
             if (this != &other)
             {
                 _isJson = other._isJson;
                 _tcpSocket = other._tcpSocket;
+                _udpSocket = other._udpSocket;
+                _serial = other._serial;
                 _httpsSession = other._httpsSession;
+                _httpsConnTestUrl = other._httpsConnTestUrl;
+                _httpsApiCmdUrl = other._httpsApiCmdUrl;
                 _lastCmdErrInfo = other._lastCmdErrInfo;
             }
             return *this;
@@ -89,9 +106,17 @@ namespace LibCyberRadio
             {
                 ret = connectHttps(host_or_dev, port_or_baudrate);
             }
+            else if (mode == "udp")
+            {
+                ret = connectUdp(host_or_dev, port_or_baudrate);
+            }
             else if (mode == "tcp")
             {
                 ret = connectTcp(host_or_dev, port_or_baudrate);
+            }
+            else if (mode == "tty")
+            {
+                ret = connectTty(host_or_dev, port_or_baudrate);
             }
             this->debug("[connect] Returning %s\n", this->debugBool(ret));
             return ret;
@@ -105,11 +130,23 @@ namespace LibCyberRadio
             	 delete _httpsSession;
             	_httpsSession = NULL;
             }
+            else if (_udpSocket > 0)
+            {
+                int ok = shutdown(_udpSocket, SHUT_RDWR);
+                if (ok != 0)
+                    translateErrno();
+            }
             else if (_tcpSocket > 0)
             {
                 int ok = shutdown(_tcpSocket, SHUT_RDWR);
                 if (ok != 0)
                     translateErrno();
+            }
+            else if (_serial != NULL)
+            {
+                _serial->close();
+                delete _serial;
+                _serial = NULL;
             }
             this->debug("[disconnect] Returning\n");
         }
@@ -117,8 +154,10 @@ namespace LibCyberRadio
         bool RadioTransport::isConnected() const
         {
             bool ret = (
-            		     ((_httpsSession != NULL)) ||
-            		     (_tcpSocket > 0)
+            		     (_httpsSession != NULL) ||
+            		     (_serial != NULL) ||
+            		     (_tcpSocket > 0) ||
+            		     (_udpSocket > 0)
 					   );
             return ret;
         }
@@ -128,11 +167,20 @@ namespace LibCyberRadio
                 bool clearRx
             )
         {
-            this->debug("[sendCommand] Called; cmd=\"%s\"\n", cmdString.c_str());
+            this->debug("[sendCommand] Called; cmd=\"%s\"\n",
+                        this->rawString(cmdString).c_str());
             bool ret = false;
             if (_httpsSession != NULL)
             {
                 ret = sendCommandHttps(cmdString, clearRx);
+            }
+            else if (_serial != NULL)
+            {
+                ret = sendCommandTty(cmdString, clearRx);
+            }
+            else if (_udpSocket > 0)
+            {
+                ret = sendCommandUdp(cmdString, clearRx);
             }
             else if (_tcpSocket > 0)
             {
@@ -149,7 +197,7 @@ namespace LibCyberRadio
             )
         {
             this->debug("[receive] Called\n");
-            std::deque<std::string> ret;
+            BasicStringList ret;
             if ( _isJson )
             {
                 ret = receiveJson(timeout);
@@ -203,6 +251,15 @@ namespace LibCyberRadio
             return ret;
         }
 
+        bool RadioTransport::connectUdp(
+                const std::string& host,
+                int port
+            )
+        {
+            bool ret = false;
+            return ret;
+        }
+
         bool RadioTransport::connectHttps(
                 const std::string &host,
                 int port
@@ -240,12 +297,61 @@ namespace LibCyberRadio
             return ret;
         }
 
+        bool RadioTransport::connectTty(
+                const std::string& dev,
+                int baudrate
+            )
+        {
+            this->debug("[connectTty] Called; dev=\"%s\", baudrate=%d\n",
+                        dev.c_str(), baudrate);
+            bool ret = false;
+            // Attempt to establish the TTY link
+            if ( _serial == NULL )
+                _serial = new ::LibCyberRadio::SerialPort(
+                            dev, baudrate, 'N', 8, 1,
+                            false, false, false
+                        );
+                ret = _serial->open();
+            if ( ret )
+            {
+                this->debug("[connectTty] Serial link established\n");
+                // Test connection by sending an empty command
+                this->debug("[connectTty] Testing connection\n");
+                if ( sendCommand("\r\n") &&
+                     (receive().size() > 0) )
+                {
+                }
+                else
+                {
+                    std::ostringstream oss;
+                    oss << "Connection test FAILED: ";
+                    oss << _serial->getLastError();
+                    _lastCmdErrInfo = oss.str();
+                    ret = false;
+                }
+            }
+            else
+            {
+                std::ostringstream oss;
+                oss << "Serial link FAILED: ";
+                if ( _serial != NULL )
+                    oss << _serial->getLastError();
+                else
+                    oss << "Failed to establish serial link";
+                _lastCmdErrInfo = oss.str();
+                ret = false;
+            }
+            this->debug("[connectTty] Returning %s\n", this->debugBool(ret));
+            return ret;
+        }
+
         bool RadioTransport::sendCommandTcp(
                 const std::string &cmdString,
                 bool clearRx
             )
         {
-            this->debug("[sendCommandTcp] Called; cmd=\"%s\"\n", cmdString.c_str());
+            this->debug("[sendCommandTcp] Called; cmd=\"%s\"\n",
+                        this->rawString(cmdString).c_str());
             bool ret = false;
             int bytes = send(_tcpSocket, cmdString.c_str(), cmdString.length(), 0);
             this->debug("[sendCommandTcp] -- Bytes sent: %d\n", bytes);
@@ -260,12 +366,20 @@ namespace LibCyberRadio
             return ret;
         }
 
+        bool RadioTransport::sendCommandUdp(
+                const std::string& cmdString,
+                bool clearRx
+            )
+        {
+        }
+
         bool RadioTransport::sendCommandHttps(
                 const std::string &cmdString,
                 bool clearRx
             )
         {
-            this->debug("[sendCommandHttps] Called; cmd=\"%s\"\n", cmdString.c_str());
+            this->debug("[sendCommandHttps] Called; cmd=\"%s\"\n",
+                        this->rawString(cmdString).c_str());
             bool ret = false;
             if ( _httpsSession != NULL )
             {
@@ -306,6 +420,26 @@ namespace LibCyberRadio
             return ret;
         }
 
+        bool RadioTransport::sendCommandTty(
+                const std::string& cmdString,
+                bool clearRx
+            )
+        {
+            this->debug("[sendCommandTty] Called; cmd=\"%s\"\n",
+                        this->rawString(cmdString).c_str());
+            bool ret = false;
+            if ( _serial->write(cmdString) )
+            {
+                this->debug("[sendCommandTty] -- Command sent\n");
+                ret = true;
+            }
+            else
+            {
+                _lastCmdErrInfo = _serial->getLastError();
+            }
+            return ret;
+        }
+
         BasicStringList RadioTransport::receiveJson(
                 double timeout
             )
@@ -341,8 +475,12 @@ namespace LibCyberRadio
             )
         {
             std::deque<std::string> ret;
-            if (_tcpSocket > 0)
+            if (_udpSocket > 0)
+                ret = receiveCliUdp(timeout);
+            else if (_tcpSocket > 0)
                 ret = receiveCliTcp(timeout);
+            else if (_serial != NULL)
+                ret = receiveCliTty(timeout);
             return ret;
         }
 
@@ -392,7 +530,8 @@ namespace LibCyberRadio
                     break;
                 }
             }
-            this->debug("[receiveCliTcp] Received: \"%s\"\n", oss.str().c_str());
+            this->debug("[receiveCliTcp] Received: \"%s\"\n",
+                        this->rawString(oss.str()).c_str());
             // Split the response into a list of non-empty strings
             // -- Remove carriage returns and prompt character
             std::string tmp = Pythonesque::Replace(Pythonesque::Replace(oss.str(), "\r", ""), ">", "");
@@ -406,6 +545,47 @@ namespace LibCyberRadio
                     ret.push_back(tmp);
             }
             this->debug("[receiveCliTcp] Returning %u elements\n", ret.size());
+            return ret;
+        }
+
+        BasicStringList RadioTransport::receiveCliUdp(
+                double timeout
+            )
+        {
+            BasicStringList ret;
+            return ret;
+        }
+
+        BasicStringList RadioTransport::receiveCliTty(
+                double timeout
+            )
+        {
+            this->debug("[receiveCliTty] Called; timeout=%0.1f\n", timeout);
+            BasicStringList ret;
+            std::ostringstream oss;
+            std::string rsp = "X";
+            while ( rsp != "" )
+            {
+                rsp = _serial->read();
+                oss << rsp;
+                if ( Pythonesque::Endswith(oss.str(), ">") )
+                    break;
+            }
+            this->debug("[receiveCliTty] Received: \"%s\"\n",
+                        this->rawString(oss.str()).c_str());
+            // Split the response into a list of non-empty strings
+            // -- Remove carriage returns and prompt character
+            std::string tmp = Pythonesque::Replace(Pythonesque::Replace(oss.str(), "\r", ""), ">", "");
+            // -- Split on newlines
+            BasicStringList tmpList = Pythonesque::Split(tmp, "\n");
+            // -- Compile the non-empty strings into a list
+            for (BasicStringList::iterator it = tmpList.begin(); it != tmpList.end(); it++)
+            {
+                tmp = Pythonesque::Rstrip(*it);
+                if ( !tmp.empty() )
+                    ret.push_back(tmp);
+            }
+            this->debug("[receiveCliTty] Returning %u elements\n", ret.size());
             return ret;
         }
 

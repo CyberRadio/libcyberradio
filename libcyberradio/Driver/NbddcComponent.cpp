@@ -105,21 +105,23 @@ namespace LibCyberRadio
 
         bool NbddcComponent::enable(bool enabled)
         {
-        	int adjRateIndex = _rateIndex;
-        	int adjUdpDest = _udpDestination;
-        	int adjVita = _vitaEnable;
-        	unsigned int adjStream = _streamId;
-            bool adjEnabled = enabled;
-            double adjFreq = _frequency;
-            int adjSource = _source;
-            bool ret = executeNbddcCommand(_index, adjRateIndex, adjUdpDest, adjEnabled,
-            		                       adjVita, adjStream, adjFreq, adjSource);
-            if ( ret )
+            bool ret = false;
+            if ( _config.hasKey("enable") )
             {
-                _enabled = adjEnabled;
-                updateConfigurationDict();
-                // If the hardware call succeeds, call the base class version
-                RadioComponent::enable(enabled);
+                int adjRateIndex = _rateIndex;
+                int adjUdpDest = _udpDestination;
+                int adjVita = _vitaEnable;
+                unsigned int adjStream = _streamId;
+                bool adjEnabled = enabled;
+                double adjFreq = _frequency;
+                int adjSource = _source;
+                ret = executeNbddcCommand(_index, adjRateIndex, adjUdpDest, adjEnabled,
+                                               adjVita, adjStream, adjFreq, adjSource);
+                if ( ret )
+                {
+                    _enabled = adjEnabled;
+                    updateConfigurationDict();
+                }
             }
             return ret;
         }
@@ -144,32 +146,32 @@ namespace LibCyberRadio
             bool freqCmdNeedsExecuting = false;
             bool srcCmdNeedsExecuting = false;
             bool dpCmdNeedsExecuting = false;
-            if ( cfg.find("enable") != cfg.end() )
+            if ( cfg.hasKey("enable") && _config.hasKey("enable") )
             {
             	adjEnabled = getConfigurationValueAsBool("enable");
             	ddcCmdNeedsExecuting = true;
             }
-            if ( cfg.find("rateIndex") != cfg.end() )
+            if ( cfg.hasKey("rateIndex") && _config.hasKey("rateIndex") )
             {
             	adjRateIndex = getConfigurationValueAsInt("rateIndex");
             	ddcCmdNeedsExecuting = true;
             }
-            if ( cfg.find("udpDestination") != cfg.end() )
+            if ( cfg.hasKey("udpDestination") && _config.hasKey("udpDestination") )
             {
             	adjUdpDest = getConfigurationValueAsInt("udpDestination");
             	ddcCmdNeedsExecuting = true;
             }
-            if ( cfg.find("vitaEnable") != cfg.end() )
+            if ( cfg.hasKey("vitaEnable") && _config.hasKey("vitaEnable") )
             {
             	adjVita = getConfigurationValueAsInt("vitaEnable");
             	ddcCmdNeedsExecuting = true;
             }
-            if ( cfg.find("streamId") != cfg.end() )
+            if ( cfg.hasKey("streamId") && _config.hasKey("streamId") )
             {
             	adjStream = getConfigurationValueAsUInt("streamId");
             	ddcCmdNeedsExecuting = true;
             }
-			if ( cfg.find("frequency") != cfg.end() )
+            if ( cfg.hasKey("frequency") && _config.hasKey("frequency") )
 			{
 				adjFreq = getConfigurationValueAsDbl("frequency");
 				if ( _nbddcCommandSetsFreq )
@@ -177,7 +179,7 @@ namespace LibCyberRadio
 				else
 					freqCmdNeedsExecuting = true;
 			}
-			if ( cfg.find("source") != cfg.end() )
+            if ( cfg.hasKey("source") && _config.hasKey("source") )
 			{
 				adjSource = getConfigurationValueAsInt("source");
 				if ( _nbddcCommandSetsSource )
@@ -185,7 +187,7 @@ namespace LibCyberRadio
 				else
 					srcCmdNeedsExecuting = true;
 			}
-			if ( cfg.find("dataPort") != cfg.end() )
+            if ( cfg.hasKey("dataPort") && _config.hasKey("dataPort") )
 			{
 				adjDataPort = getConfigurationValueAsInt("dataPort");
 	            if ( _selectableDataPort )
@@ -227,35 +229,31 @@ namespace LibCyberRadio
         void NbddcComponent::queryConfiguration()
         {
             this->debug("[queryConfiguration] Called\n");
-            executeNbddcQuery(_index, _rateIndex, _udpDestination, _enabled,
-            		          _vitaEnable, _streamId, _frequency, _source);
-            if ( !_nbddcCommandSetsFreq )
+            if ( _config.hasKey("enable") &&
+                 _config.hasKey("rateIndex") &&
+                 _config.hasKey("udpDestination") &&
+                 _config.hasKey("vitaEnable") &&
+                 _config.hasKey("streamId") &&
+                 (!_nbddcCommandSetsFreq || _config.hasKey("frequency")) &&
+                 (!_nbddcCommandSetsSource || _config.hasKey("source"))
+                 )
+            {
+                executeNbddcQuery(_index, _rateIndex, _udpDestination, _enabled,
+                                  _vitaEnable, _streamId, _frequency, _source);
+            }
+            if ( !_nbddcCommandSetsFreq && _config.hasKey("frequency") )
             {
             	executeFreqQuery(_index, _frequency);
             }
-            if ( !_nbddcCommandSetsSource )
+            if ( !_nbddcCommandSetsSource && _config.hasKey("source") )
             {
             	executeSourceQuery(_index, _source);
             }
-            if ( _selectableDataPort )
+            if ( _selectableDataPort && _config.hasKey("dataPort") )
             {
             	executeDataPortQuery(_index, _dataPort);
             }
             updateConfigurationDict();
-//            this->debug("[queryConfiguration] Config:\n");
-//            this->debug("[queryConfiguration] -- enabled=%s\n",
-//                                 debugBool(_enabled));
-//            this->debug("[queryConfiguration] -- rate=%d\n", _rateIndex);
-//            this->debug("[queryConfiguration] -- dest=%d\n", _udpDestination);
-//            this->debug("[queryConfiguration] -- vita=%d\n", _vitaEnable);
-//            this->debug("[queryConfiguration] -- sid=%u\n", _streamId);
-//			this->debug("[queryConfiguration] -- freq=%0.1f\n", _frequency);
-//            this->debug("[queryConfiguration] -- source=%d\n", _source);
-//            if ( _selectableDataPort )
-//            {
-//            	this->debug("[queryConfiguration] -- port=%d\n", _dataPort);
-//            }
-//            this->debug("[queryConfiguration] Returning\n");
         }
 
 		double NbddcComponent::getFrequency() const
@@ -266,27 +264,30 @@ namespace LibCyberRadio
 		bool NbddcComponent::setFrequency(double freq)
 		{
 			bool ret = false;
-            double adjFreq = freq;
-			if ( _nbddcCommandSetsFreq )
-			{
-	        	int adjRateIndex = _rateIndex;
-	        	int adjUdpDest = _udpDestination;
-	        	int adjVita = _vitaEnable;
-	        	unsigned int adjStream = _streamId;
-	            bool adjEnabled = _enabled;
-	            int adjSource = _source;
-				ret = executeNbddcCommand(_index, adjRateIndex, adjUdpDest, adjEnabled,
-										  adjVita, adjStream, adjFreq, adjSource);
-			}
-			else
-			{
-	            ret = executeFreqCommand(_index, adjFreq);
-			}
-			if ( ret )
-			{
-				_frequency = adjFreq;
-                updateConfigurationDict();
-			}
+            if ( _config.hasKey("frequency") )
+            {
+                double adjFreq = freq;
+                if ( _nbddcCommandSetsFreq )
+                {
+                    int adjRateIndex = _rateIndex;
+                    int adjUdpDest = _udpDestination;
+                    int adjVita = _vitaEnable;
+                    unsigned int adjStream = _streamId;
+                    bool adjEnabled = _enabled;
+                    int adjSource = _source;
+                    ret = executeNbddcCommand(_index, adjRateIndex, adjUdpDest, adjEnabled,
+                                              adjVita, adjStream, adjFreq, adjSource);
+                }
+                else
+                {
+                    ret = executeFreqCommand(_index, adjFreq);
+                }
+                if ( ret )
+                {
+                    _frequency = adjFreq;
+                    updateConfigurationDict();
+                }
+            }
 			return ret;
 		}
 
@@ -316,27 +317,30 @@ namespace LibCyberRadio
 		bool NbddcComponent::setSource(int source)
 		{
 			bool ret = false;
-            int adjSource = source;
-			if ( _nbddcCommandSetsSource )
-			{
-	        	int adjRateIndex = _rateIndex;
-	        	int adjUdpDest = _udpDestination;
-	        	int adjVita = _vitaEnable;
-	        	unsigned int adjStream = _streamId;
-	            bool adjEnabled = _enabled;
-	            double adjFreq = _frequency;
-				ret = executeNbddcCommand(_index, adjRateIndex, adjUdpDest, adjEnabled,
-										  adjVita, adjStream, adjFreq, adjSource);
-			}
-			else
-			{
-	            ret = executeSourceCommand(_index, adjSource);
-			}
-			if ( ret )
-			{
-				_source = adjSource;
-                updateConfigurationDict();
-			}
+            if ( _config.hasKey("source") )
+            {
+                int adjSource = source;
+                if ( _nbddcCommandSetsSource )
+                {
+                    int adjRateIndex = _rateIndex;
+                    int adjUdpDest = _udpDestination;
+                    int adjVita = _vitaEnable;
+                    unsigned int adjStream = _streamId;
+                    bool adjEnabled = _enabled;
+                    double adjFreq = _frequency;
+                    ret = executeNbddcCommand(_index, adjRateIndex, adjUdpDest, adjEnabled,
+                                              adjVita, adjStream, adjFreq, adjSource);
+                }
+                else
+                {
+                    ret = executeSourceCommand(_index, adjSource);
+                }
+                if ( ret )
+                {
+                    _source = adjSource;
+                    updateConfigurationDict();
+                }
+            }
 			return ret;
 		}
 
@@ -347,20 +351,24 @@ namespace LibCyberRadio
 
 		bool NbddcComponent::setRateIndex(int index)
 		{
-        	int adjRateIndex = index;
-        	int adjUdpDest = _udpDestination;
-        	int adjVita = _vitaEnable;
-        	unsigned int adjStream = _streamId;
-            bool adjEnabled = _enabled;
-            double adjFreq = _frequency;
-            int adjSource = _source;
-            bool ret = executeNbddcCommand(_index, adjRateIndex, adjUdpDest,
-            		                       adjEnabled, adjVita, adjStream,
-										   adjFreq, adjSource);
-            if ( ret )
+		    bool ret = false;
+            if ( _config.hasKey("rateIndex") )
             {
-                _rateIndex = adjRateIndex;
-                updateConfigurationDict();
+                int adjRateIndex = index;
+                int adjUdpDest = _udpDestination;
+                int adjVita = _vitaEnable;
+                unsigned int adjStream = _streamId;
+                bool adjEnabled = _enabled;
+                double adjFreq = _frequency;
+                int adjSource = _source;
+                ret = executeNbddcCommand(_index, adjRateIndex, adjUdpDest,
+                                               adjEnabled, adjVita, adjStream,
+                                               adjFreq, adjSource);
+                if ( ret )
+                {
+                    _rateIndex = adjRateIndex;
+                    updateConfigurationDict();
+                }
             }
             return ret;
 		}
@@ -372,20 +380,24 @@ namespace LibCyberRadio
 
 		bool NbddcComponent::setUdpDestination(int dest)
 		{
-        	int adjRateIndex = _rateIndex;
-        	int adjUdpDest = dest;
-        	int adjVita = _vitaEnable;
-        	unsigned int adjStream = _streamId;
-            bool adjEnabled = _enabled;
-            double adjFreq = _frequency;
-            int adjSource = _source;
-            bool ret = executeNbddcCommand(_index, adjRateIndex, adjUdpDest,
-            		                       adjEnabled, adjVita, adjStream,
-										   adjFreq, adjSource);
-            if ( ret )
+            bool ret = false;
+            if ( _config.hasKey("udpDestination") )
             {
-                _udpDestination = adjUdpDest;
-                updateConfigurationDict();
+                int adjRateIndex = _rateIndex;
+                int adjUdpDest = dest;
+                int adjVita = _vitaEnable;
+                unsigned int adjStream = _streamId;
+                bool adjEnabled = _enabled;
+                double adjFreq = _frequency;
+                int adjSource = _source;
+                ret = executeNbddcCommand(_index, adjRateIndex, adjUdpDest,
+                                               adjEnabled, adjVita, adjStream,
+                                               adjFreq, adjSource);
+                if ( ret )
+                {
+                    _udpDestination = adjUdpDest;
+                    updateConfigurationDict();
+                }
             }
             return ret;
 		}
@@ -397,20 +409,24 @@ namespace LibCyberRadio
 
 		bool NbddcComponent::setVitaEnable(int enable)
 		{
-        	int adjRateIndex = _rateIndex;
-        	int adjUdpDest = _udpDestination;
-        	int adjVita = enable;
-        	unsigned int adjStream = _streamId;
-            bool adjEnabled = _enabled;
-            double adjFreq = _frequency;
-            int adjSource = _source;
-            bool ret = executeNbddcCommand(_index, adjRateIndex, adjUdpDest,
-            		                       adjEnabled, adjVita, adjStream,
-										   adjFreq, adjSource);
-            if ( ret )
+            bool ret = false;
+            if ( _config.hasKey("vitaEnable") )
             {
-            	_vitaEnable = adjVita;
-                updateConfigurationDict();
+                int adjRateIndex = _rateIndex;
+                int adjUdpDest = _udpDestination;
+                int adjVita = enable;
+                unsigned int adjStream = _streamId;
+                bool adjEnabled = _enabled;
+                double adjFreq = _frequency;
+                int adjSource = _source;
+                ret = executeNbddcCommand(_index, adjRateIndex, adjUdpDest,
+                                               adjEnabled, adjVita, adjStream,
+                                               adjFreq, adjSource);
+                if ( ret )
+                {
+                    _vitaEnable = adjVita;
+                    updateConfigurationDict();
+                }
             }
             return ret;
 		}
@@ -422,20 +438,24 @@ namespace LibCyberRadio
 
 		bool NbddcComponent::setStreamId(unsigned int sid)
 		{
-        	int adjRateIndex = _rateIndex;
-        	int adjUdpDest = _udpDestination;
-        	int adjVita = _vitaEnable;
-        	unsigned int adjStream = sid;
-            bool adjEnabled = _enabled;
-            double adjFreq = _frequency;
-            int adjSource = _source;
-            bool ret = executeNbddcCommand(_index, adjRateIndex, adjUdpDest,
-            		                       adjEnabled, adjVita, adjStream,
-										   adjFreq, adjSource);
-            if ( ret )
+            bool ret = false;
+            if ( _config.hasKey("streamId") )
             {
-            	_streamId = adjStream;
-                updateConfigurationDict();
+                int adjRateIndex = _rateIndex;
+                int adjUdpDest = _udpDestination;
+                int adjVita = _vitaEnable;
+                unsigned int adjStream = sid;
+                bool adjEnabled = _enabled;
+                double adjFreq = _frequency;
+                int adjSource = _source;
+                ret = executeNbddcCommand(_index, adjRateIndex, adjUdpDest,
+                                               adjEnabled, adjVita, adjStream,
+                                               adjFreq, adjSource);
+                if ( ret )
+                {
+                    _streamId = adjStream;
+                    updateConfigurationDict();
+                }
             }
             return ret;
 		}
@@ -448,7 +468,7 @@ namespace LibCyberRadio
 		bool NbddcComponent::setDataPort(int port)
 		{
 			bool ret = false;
-			if ( _selectableDataPort )
+			if ( _selectableDataPort && _config.hasKey("dataPort") )
 			{
 				int adjDataPort = port;
 				ret = executeDataPortCommand(_index, adjDataPort);
@@ -484,6 +504,7 @@ namespace LibCyberRadio
 
 		void NbddcComponent::initConfigurationDict()
         {
+		    _config.clear();
             RadioComponent::initConfigurationDict();
             _config["rateIndex"] = "";
             _config["udpDestination"] = "";
@@ -501,18 +522,22 @@ namespace LibCyberRadio
         {
             this->debug("[NbddcComponent::updateConfigurationDict] Called\n");
             RadioComponent::updateConfigurationDict();
-            setConfigurationValueToInt("rateIndex", _rateIndex);
-            setConfigurationValueToInt("udpDestination", _udpDestination);
-            setConfigurationValueToInt("vitaEnable", _vitaEnable);
-            setConfigurationValueToUInt("streamId", _streamId);
-            setConfigurationValueToDbl("frequency", _frequency);
-            setConfigurationValueToInt("source", _source);
-            if ( _selectableDataPort )
+            if ( _config.hasKey("rateIndex") )
+                setConfigurationValueToInt("rateIndex", _rateIndex);
+            if ( _config.hasKey("udpDestination") )
+                setConfigurationValueToInt("udpDestination", _udpDestination);
+            if ( _config.hasKey("vitaEnable") )
+                setConfigurationValueToInt("vitaEnable", _vitaEnable);
+            if ( _config.hasKey("streamId") )
+                setConfigurationValueToUInt("streamId", _streamId);
+            if ( _config.hasKey("frequency") )
+                setConfigurationValueToDbl("frequency", _frequency);
+            if ( _config.hasKey("source") )
+                setConfigurationValueToInt("source", _source);
+            if ( _selectableDataPort && _config.hasKey("dataPort") )
             {
                 setConfigurationValueToInt("dataPort", _dataPort);
             }
-            //this->debug("[NbddcComponent::updateConfigurationDict] Current configuration\n");
-            //this->dumpConfiguration();
             this->debug("[NbddcComponent::updateConfigurationDict] Returning\n");
         }
 

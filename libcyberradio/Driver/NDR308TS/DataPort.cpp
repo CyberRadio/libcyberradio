@@ -34,6 +34,7 @@ namespace LibCyberRadio
 								                  /* int numDataPortDipEntries */ 64,
 								                  /* int dataPortDipEntryIndexBase */ 0)
 			{
+                initConfigurationDict();
 			}
 
 			DataPort::~DataPort()

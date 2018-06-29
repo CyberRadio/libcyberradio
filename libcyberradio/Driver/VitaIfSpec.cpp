@@ -24,12 +24,14 @@ namespace LibCyberRadio
 				               int payloadSizeWords,
 							   int tailSizeWords,
 							   const char* byteOrder,
-				               bool iqSwapped) :
+				               bool iqSwapped,
+				               bool usesV491) :
 			headerSizeWords(headerSizeWords),
 			payloadSizeWords(payloadSizeWords),
 			tailSizeWords(tailSizeWords),
 			byteOrder(byteOrder),
-			iqSwapped(iqSwapped)
+			iqSwapped(iqSwapped),
+			usesV491(usesV491)
 		{
 		}
 
@@ -42,7 +44,8 @@ namespace LibCyberRadio
 			payloadSizeWords(other.payloadSizeWords),
 			tailSizeWords(other.tailSizeWords),
 			byteOrder(other.byteOrder),
-			iqSwapped(other.iqSwapped)
+			iqSwapped(other.iqSwapped),
+			usesV491(other.usesV491)
 		{
 		}
 
@@ -55,6 +58,7 @@ namespace LibCyberRadio
 				tailSizeWords = other.tailSizeWords;
 				byteOrder = other.byteOrder;
 				iqSwapped = other.iqSwapped;
+	            usesV491 = other.usesV491;
 			}
 			return *this;
 		}

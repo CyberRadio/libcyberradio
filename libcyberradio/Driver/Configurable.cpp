@@ -10,6 +10,7 @@
  ***************************************************************************/
 
 #include "LibCyberRadio/Driver/Configurable.h"
+#include <sstream>
 #include <algorithm>
 #include <cstdio>
 #include <cstdarg>
@@ -20,6 +21,38 @@ namespace LibCyberRadio
 {
     namespace Driver
     {
+
+        ConfigurationDict::ConfigurationDict() :
+            BASIC_DICT_CONTAINER<std::string, ConfigString>()
+        {
+        }
+
+        ConfigurationDict::~ConfigurationDict()
+        {
+
+        }
+
+        std::string ConfigurationDict::toString() const
+        {
+            std::ostringstream oss;
+            oss << "Configuration(";
+            ConfigurationDict::const_iterator it;
+            for ( it = this->begin(); it != this->end(); it++)
+            {
+                if ( it != this->begin() )
+                    oss << ", ";
+                oss << it->first.c_str()
+                    << "="
+                    << it->second.c_str();
+            }
+            oss << ")";
+            return oss.str();
+        }
+
+        bool ConfigurationDict::hasKey(const std::string& key) const
+        {
+            return ( this->find(key) != this->end() );
+        }
 
         Configurable::Configurable(const std::string& name, bool debug) :
             Debuggable(debug, name),
@@ -233,4 +266,11 @@ namespace LibCyberRadio
     } // namespace Driver
 
 } // namespace LibCyberRadio
+
+
+std::ostream& operator<<(std::ostream& os, const LibCyberRadio::Driver::ConfigurationDict& obj)
+{
+    os << obj.toString();
+    return os;
+}
 

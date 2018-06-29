@@ -12,10 +12,15 @@
 #endif
 
 #include "LibCyberRadio/Common/Debuggable.h"
+#include "LibCyberRadio/Common/Pythonesque.h"
+#include <sstream>
+#include <iomanip>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
+
 
 namespace LibCyberRadio
 {
@@ -41,7 +46,32 @@ namespace LibCyberRadio
 		delete _debugTimestamp;
 	}
 
-	void Debuggable::setDebugName(
+	Debuggable::Debuggable(const Debuggable& other) :
+        _debug(other._debug),
+        _debugName(other._debugName),
+        _debugFp(other._debugFp),
+        _debugTimeFmt(other._debugTimeFmt),
+        _debugTimestamp(other._debugTimestamp),
+        _debugTimestampSize(other._debugTimestampSize)
+    {
+    }
+
+    Debuggable& Debuggable::operator=(const Debuggable& other)
+    {
+        // Protect against self-assignment
+        if (this != &other)
+        {
+            _debug = other._debug;
+            _debugName = other._debugName;
+            _debugFp = other._debugFp;
+            _debugTimeFmt = other._debugTimeFmt;
+            _debugTimestamp = other._debugTimestamp;
+            _debugTimestampSize = other._debugTimestampSize;
+        }
+        return *this;
+    }
+
+    void Debuggable::setDebugName(
 	        const std::string& debug_name
         )
 	{
@@ -109,6 +139,30 @@ namespace LibCyberRadio
     {
         return _debugName;
     }
+
+    std::string Debuggable::rawString(const std::string& data)
+    {
+        std::string ret;
+        std::ostringstream oss;
+        for (std::string::const_iterator it = data.begin(); it!= data.end(); it++)
+        {
+            if ( !isalnum(*it) && !ispunct(*it) && !isspace(*it) )
+            {
+                oss << "\\x" << std::hex << std::setw(2)
+                    << std::setfill('0') << (int)((unsigned char)(*it));
+            }
+            else
+                oss << (char)(*it);
+        }
+        ret = oss.str();
+        ret = Pythonesque::Replace(ret, "\r", "\\r");
+        ret = Pythonesque::Replace(ret, "\n", "\\n");
+        ret = Pythonesque::Replace(ret, "\t", "\\t");
+        ret = Pythonesque::Replace(ret, "\v", "\\v");
+        ret = Pythonesque::Replace(ret, "\f", "\\f");
+        return ret;
+    }
+
 
 } /* namespace LibCyberRadio */
 

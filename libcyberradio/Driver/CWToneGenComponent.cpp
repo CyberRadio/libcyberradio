@@ -199,42 +199,42 @@ namespace LibCyberRadio
         	bool adjEnabled = _enabled;
             bool toneCmdNeedsExecuting = false;
             bool sweepCmdNeedsExecuting = false;
-            if ( cfg.find("enable") != cfg.end() )
+            if ( cfg.hasKey("enable") && _config.hasKey("enable") )
             {
             	adjEnabled = getConfigurationValueAsBool("enable");
             	toneCmdNeedsExecuting = true;
             }
-            if ( cfg.find("cwFrequency") != cfg.end() )
+            if ( cfg.hasKey("cwFrequency") && _config.hasKey("cwFrequency") )
             {
             	adjFrequency = getConfigurationValueAsDbl("cwFrequency");
             	toneCmdNeedsExecuting = true;
             }
-            if ( cfg.find("cwAmplitude") != cfg.end() )
+            if ( cfg.hasKey("cwAmplitude") && _config.hasKey("cwAmplitude") )
             {
             	adjAmplitude = getConfigurationValueAsInt("cwAmplitude");
             	toneCmdNeedsExecuting = true;
             }
-            if ( cfg.find("cwPhase") != cfg.end() )
+            if ( cfg.hasKey("cwPhase") && _config.hasKey("cwPhase") )
             {
             	adjPhase = getConfigurationValueAsInt("cwPhase");
             	toneCmdNeedsExecuting = true;
             }
-            if ( cfg.find("cwSweepStart") != cfg.end() )
+            if ( cfg.hasKey("cwSweepStart") && _config.hasKey("cwSweepStart") )
             {
             	adjStart = getConfigurationValueAsDbl("cwSweepStart");
             	sweepCmdNeedsExecuting = true;
             }
-            if ( cfg.find("cwSweepStop") != cfg.end() )
+            if ( cfg.hasKey("cwSweepStop") && _config.hasKey("cwSweepStop") )
             {
             	adjStop = getConfigurationValueAsDbl("cwSweepStop");
             	sweepCmdNeedsExecuting = true;
             }
-            if ( cfg.find("cwSweepStep") != cfg.end() )
+            if ( cfg.hasKey("cwSweepStep") && _config.hasKey("cwSweepStep") )
             {
             	adjStep = getConfigurationValueAsDbl("cwSweepStep");
             	sweepCmdNeedsExecuting = true;
             }
-            if ( cfg.find("cwSweepDwell") != cfg.end() )
+            if ( cfg.hasKey("cwSweepDwell") && _config.hasKey("cwSweepDwell") )
             {
             	adjDwell = getConfigurationValueAsInt("cwSweepDwell");
             	sweepCmdNeedsExecuting = true;
@@ -268,9 +268,20 @@ namespace LibCyberRadio
 		void CWToneGenComponent::queryConfiguration()
 		{
             this->debug("[CWToneGenComponent::queryConfiguration] Called\n");
-			executeToneQuery(_index, _txIndex, _frequency, _amplitude, _phase);
-			executeSweepQuery(_index, _txIndex, _sweepStart, _sweepStop, _sweepStep,
-					          _dwellTime);
+            if ( _config.hasKey("cwFrequency") &&
+                 _config.hasKey("cwAmplitude") &&
+                 _config.hasKey("cwPhase") )
+            {
+                executeToneQuery(_index, _txIndex, _frequency, _amplitude, _phase);
+            }
+            if ( _config.hasKey("cwSweepStart") &&
+                 _config.hasKey("cwSweepStop") &&
+                 _config.hasKey("cwSweepStep") &&
+                 _config.hasKey("cwSweepDwell") )
+            {
+                executeSweepQuery(_index, _txIndex, _sweepStart, _sweepStop, _sweepStep,
+                                  _dwellTime);
+            }
 			_enabled = (_amplitude != 0);
 			updateConfigurationDict();
             this->debug("[CWToneGenComponent::queryConfiguration] Returning\n");
@@ -374,14 +385,18 @@ namespace LibCyberRadio
 
 		bool CWToneGenComponent::setFrequency(double freq)
 		{
-        	double adjFrequency = freq;
-        	double adjAmplitude = _amplitude;
-        	double adjPhase = _phase;
-            bool ret = executeToneCommand(_index, _txIndex, adjFrequency, adjAmplitude, adjPhase);
-            if ( ret )
+            bool ret = false;
+            if ( _config.hasKey("frequency") )
             {
-            	_frequency = adjFrequency;
-                updateConfigurationDict();
+                double adjFrequency = freq;
+                double adjAmplitude = _amplitude;
+                double adjPhase = _phase;
+                ret = executeToneCommand(_index, _txIndex, adjFrequency, adjAmplitude, adjPhase);
+                if ( ret )
+                {
+                    _frequency = adjFrequency;
+                    updateConfigurationDict();
+                }
             }
             return ret;
 		}
@@ -393,15 +408,19 @@ namespace LibCyberRadio
 
 		bool CWToneGenComponent::setAmplitude(double amp)
 		{
-        	double adjFrequency = _frequency;
-        	double adjAmplitude = amp;
-        	double adjPhase = _phase;
-            bool ret = executeToneCommand(_index, _txIndex, adjFrequency, adjAmplitude, adjPhase);
-            if ( ret )
+            bool ret = false;
+            if ( _config.hasKey("cwAmplitude") )
             {
-            	_amplitude = adjAmplitude;
-            	_enabled = (_amplitude != 0);
-                updateConfigurationDict();
+                double adjFrequency = _frequency;
+                double adjAmplitude = amp;
+                double adjPhase = _phase;
+                ret = executeToneCommand(_index, _txIndex, adjFrequency, adjAmplitude, adjPhase);
+                if ( ret )
+                {
+                    _amplitude = adjAmplitude;
+                    _enabled = (_amplitude != 0);
+                    updateConfigurationDict();
+                }
             }
             return ret;
 		}
@@ -413,14 +432,18 @@ namespace LibCyberRadio
 
 		bool CWToneGenComponent::setPhase(double phase)
 		{
-        	double adjFrequency = _frequency;
-        	double adjAmplitude = _amplitude;
-        	double adjPhase = phase;
-            bool ret = executeToneCommand(_index, _txIndex, adjFrequency, adjAmplitude, adjPhase);
-            if ( ret )
+            bool ret = false;
+            if ( _config.hasKey("cwPhase") )
             {
-            	_phase = adjPhase;
-                updateConfigurationDict();
+                double adjFrequency = _frequency;
+                double adjAmplitude = _amplitude;
+                double adjPhase = phase;
+                ret = executeToneCommand(_index, _txIndex, adjFrequency, adjAmplitude, adjPhase);
+                if ( ret )
+                {
+                    _phase = adjPhase;
+                    updateConfigurationDict();
+                }
             }
             return ret;
 		}
@@ -454,19 +477,26 @@ namespace LibCyberRadio
 		bool CWToneGenComponent::setFrequencySweep(double start, double stop,
 				                                   double step, double dwell)
 		{
-        	double adjStart = start;
-        	double adjStop = stop;
-        	double adjStep = step;
-        	double adjDwell = dwell;
-            bool ret = executeSweepCommand(_index, _txIndex, adjStart, adjStop, adjStep,
-            		                       adjDwell);
-            if ( ret )
+		    bool ret = false;
+            if ( _config.hasKey("cwSweepStart") &&
+                 _config.hasKey("cwSweepStop") &&
+                 _config.hasKey("cwSweepStep") &&
+                 _config.hasKey("cwSweepDwell") )
             {
-            	_sweepStart = adjStart;
-            	_sweepStop = adjStop;
-            	_sweepStep = adjStep;
-            	_dwellTime = adjDwell;
-                updateConfigurationDict();
+                double adjStart = start;
+                double adjStop = stop;
+                double adjStep = step;
+                double adjDwell = dwell;
+                ret = executeSweepCommand(_index, _txIndex, adjStart, adjStop, adjStep,
+                                               adjDwell);
+                if ( ret )
+                {
+                    _sweepStart = adjStart;
+                    _sweepStop = adjStop;
+                    _sweepStep = adjStep;
+                    _dwellTime = adjDwell;
+                    updateConfigurationDict();
+                }
             }
             return ret;
 		}
@@ -474,6 +504,7 @@ namespace LibCyberRadio
 		void CWToneGenComponent::initConfigurationDict()
 		{
             //this->debug("[CWToneGenComponent::initConfigurationDict] Called\n");
+		    _config.clear();
         	// Call the base-class version
             RadioComponent::initConfigurationDict();
             // Define tone generator-specific keys
@@ -491,13 +522,20 @@ namespace LibCyberRadio
 		{
             this->debug("[CWToneGenComponent::updateConfigurationDict] Called\n");
             RadioComponent::updateConfigurationDict();
-            setConfigurationValueToDbl("cwFrequency", _frequency);
-            setConfigurationValueToDbl("cwAmplitude", _amplitude);
-            setConfigurationValueToDbl("cwPhase", _phase);
-            setConfigurationValueToDbl("cwSweepStart", _sweepStart);
-            setConfigurationValueToDbl("cwSweepStop", _sweepStop);
-            setConfigurationValueToDbl("cwSweepStep", _sweepStep);
-            setConfigurationValueToDbl("cwSweepDwell", _dwellTime);
+            if ( _config.hasKey("cwFrequency") )
+                setConfigurationValueToDbl("cwFrequency", _frequency);
+            if ( _config.hasKey("cwAmplitude") )
+                setConfigurationValueToDbl("cwAmplitude", _amplitude);
+            if ( _config.hasKey("cwPhase") )
+                setConfigurationValueToDbl("cwPhase", _phase);
+            if ( _config.hasKey("cwSweepStart") )
+                setConfigurationValueToDbl("cwSweepStart", _sweepStart);
+            if ( _config.hasKey("cwSweepStop") )
+                setConfigurationValueToDbl("cwSweepStop", _sweepStop);
+            if ( _config.hasKey("cwSweepStep") )
+                setConfigurationValueToDbl("cwSweepStep", _sweepStep);
+            if ( _config.hasKey("cwSweepDwell") )
+                setConfigurationValueToDbl("cwSweepDwell", _dwellTime);
             this->debug("[CWToneGenComponent::updateConfigurationDict] Returning\n");
 		}
 

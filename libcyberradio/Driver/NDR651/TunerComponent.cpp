@@ -45,6 +45,7 @@ namespace LibCyberRadio
 							   /* double attenuation */ attenuation,
 							   /* int filter */ filter)
 			{
+                initConfigurationDict();
 			}
 
 			TunerComponent::~TunerComponent()

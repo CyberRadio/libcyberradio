@@ -58,6 +58,17 @@ namespace LibCyberRadio
 			 */
 			virtual ~Debuggable();
 			/*!
+             * \brief Copies a Debuggable object.
+             * \param other The Debuggable object to copy.
+			 */
+			Debuggable(const Debuggable& other);
+            /**
+             * \brief Assignment operator for Debuggable objects.
+             * \param other The Debuggable object to copy.
+             * \returns A reference to the assigned object.
+             */
+			Debuggable& operator=(const Debuggable& other);
+			/*!
 			 * \brief Sets the debug name for this object.
 			 *
 			 * Use this method to set unique debug names for objects of the same
@@ -119,6 +130,20 @@ namespace LibCyberRadio
              * \returns The debug name, as a string.
              */
             virtual std::string getDebugName() const;
+            /**
+             * \brief Gets a "raw" string representation of a given data
+             *     string.
+             *
+             * "Raw" string representations mimic Python string
+             * representations.  Whitespace characters are denoted by
+             * backslash representations ("\\r", "\\n", "\\t", "\\v",
+             * "\\f"), while other non-printable characters are
+             * represented with hex representation ("\\x00", etc.)
+             *
+             * \param data Data string
+             * \returns The data's "raw" representation.
+             */
+            virtual std::string rawString(const std::string& data);
 
 		protected:
 			bool _debug;

@@ -11,19 +11,20 @@
 #ifndef INCLUDED_LIBCYBERRADIO_DRIVER_RADIOHANDLER_H
 #define INCLUDED_LIBCYBERRADIO_DRIVER_RADIOHANDLER_H
 
-#include "LibCyberRadio/Driver/Configurable.h"
-#include "LibCyberRadio/Driver/DataPort.h"
-#include "LibCyberRadio/Driver/TunerComponent.h"
-#include "LibCyberRadio/Driver/WbddcComponent.h"
-#include "LibCyberRadio/Driver/NbddcComponent.h"
-#include "LibCyberRadio/Driver/TransmitterComponent.h"
-#include "LibCyberRadio/Driver/DucComponent.h"
-#include "LibCyberRadio/Driver/WbddcGroupComponent.h"
-#include "LibCyberRadio/Driver/NbddcGroupComponent.h"
-#include "LibCyberRadio/Driver/RadioTransport.h"
-#include "LibCyberRadio/Driver/VitaIfSpec.h"
 #include "LibCyberRadio/Common/BasicDict.h"
 #include "LibCyberRadio/Common/BasicList.h"
+#include "LibCyberRadio/Driver/Configurable.h"
+#include "LibCyberRadio/Driver/DataPort.h"
+#include "LibCyberRadio/Driver/DucComponent.h"
+#include "LibCyberRadio/Driver/NbddcComponent.h"
+#include "LibCyberRadio/Driver/NbddcGroupComponent.h"
+#include "LibCyberRadio/Driver/RadioTransport.h"
+#include "LibCyberRadio/Driver/SimpleIpSetup.h"
+#include "LibCyberRadio/Driver/TransmitterComponent.h"
+#include "LibCyberRadio/Driver/TunerComponent.h"
+#include "LibCyberRadio/Driver/VitaIfSpec.h"
+#include "LibCyberRadio/Driver/WbddcComponent.h"
+#include "LibCyberRadio/Driver/WbddcGroupComponent.h"
 #include <string>
 
 
@@ -77,6 +78,8 @@ namespace LibCyberRadio
         		 * \param numDataPorts Number of 10GigE data ports on the radio.
         		 * \param dataPortIndexBase Number that 10GigE data port indices
         		 *    start on.
+        		 * \param numSimpleIpSetups Number of simple IP setups for 1Gig data
+        		 *    channels.
         		 * \param adcRate ADC sample rate, in Hz.
         		 * \param ifSpec VITA 49 interface specification for this radio.
 				 * \param debug Whether the object supports debug output.
@@ -103,6 +106,7 @@ namespace LibCyberRadio
 		                int ddcGroupIndexBase = 1,
                         int numDataPorts = 0,
                         int dataPortIndexBase = 1,
+                        int numSimpleIpSetups = 0,
 						double adcRate = 102.4e6,
 						VitaIfSpec ifSpec = VitaIfSpec(),
 						bool debug = false
@@ -1632,6 +1636,16 @@ namespace LibCyberRadio
         		 * \returns The MAC address.
         		 */
                 virtual std::string getDataPortDestMACAddress(int index, int dipIndex) const;
+                /**
+                 * \brief Sets the MAC address for a given entry in the
+                 *    destination IP table on a given data port.
+                 * \param index Data port index number.
+                 * \param dipIndex Index number for the entry in the DIP table.
+                 * \param macAddr The new MAC address.
+                 * \returns True if successful, false otherwise.
+                 */
+                virtual bool setDataPortDestMACAddress(int index, int dipIndex,
+                                                       const std::string& macAddr);
         		/**
         		 * \brief Gets the IP address for a given entry in the
         		 *    destination IP table on a given data port.
@@ -1640,6 +1654,16 @@ namespace LibCyberRadio
         		 * \returns The IP address.
         		 */
                 virtual std::string getDataPortDestIPAddress(int index, int dipIndex) const;
+                /**
+                 * \brief Sets the IP address for a given entry in the
+                 *    destination IP table on a given data port.
+                 * \param index Data port index number.
+                 * \param dipIndex Index number for the entry in the DIP table.
+                 * \param ipAddr The new IP address.
+                 * \returns True if successful, false otherwise.
+                 */
+                virtual bool setDataPortDestIPAddress(int index, int dipIndex,
+                                                      const std::string& ipAddr);
         		/**
         		 * \brief Gets the source UDP port number for a given entry in the
         		 *    destination IP table on a given data port.
@@ -1648,6 +1672,16 @@ namespace LibCyberRadio
         		 * \returns The port number.
         		 */
                 virtual unsigned int getDataPortDestSourcePort(int index, int dipIndex) const;
+                /**
+                 * \brief Sets the UDP port number for a given entry in the
+                 *    destination IP table on a given data port.
+                 * \param index Data port index number.
+                 * \param dipIndex Index number for the entry in the DIP table.
+                 * \param sourcePort The source UDP port number.
+                 * \returns True if successful, false otherwise.
+                 */
+                virtual bool setDataPortDestSourcePort(int index, int dipIndex,
+                                                       unsigned int sourcePort);
         		/**
         		 * \brief Gets the destination UDP port number for a given entry in the
         		 *    destination IP table on a given data port.
@@ -1656,6 +1690,16 @@ namespace LibCyberRadio
         		 * \returns The stream ID.
         		 */
                 virtual unsigned int getDataPortDestDestPort(int index, int dipIndex) const;
+                /**
+                 * \brief Sets the VITA stream ID for a given entry in the
+                 *    destination IP table on a given data port.
+                 * \param index Data port index number.
+                 * \param dipIndex Index number for the entry in the DIP table.
+                 * \param destPort The destination UDP port number.
+                 * \returns True if successful, false otherwise.
+                 */
+                virtual bool setDataPortDestDestPort(int index, int dipIndex,
+                                                     unsigned int destPort);
                 /**
                  * \brief Sets the destination table information for a given entry
                  *    in the DIP table on a given data port.
@@ -1673,46 +1717,64 @@ namespace LibCyberRadio
                 		                         const std::string& macAddr,
 												 unsigned int sourcePort,
 												 unsigned int destPort);
-        		/**
-        		 * \brief Sets the MAC address for a given entry in the
-        		 *    destination IP table on a given data port.
-        		 * \param index Data port index number.
-        		 * \param dipIndex Index number for the entry in the DIP table.
-        		 * \param macAddr The new MAC address.
-        		 * \returns True if successful, false otherwise.
-        		 */
-                virtual bool setDataPortDestMACAddress(int index, int dipIndex,
-                		                               const std::string& macAddr);
-        		/**
-        		 * \brief Sets the IP address for a given entry in the
-        		 *    destination IP table on a given data port.
-        		 * \param index Data port index number.
-        		 * \param dipIndex Index number for the entry in the DIP table.
-        		 * \param ipAddr The new IP address.
-        		 * \returns True if successful, false otherwise.
-        		 */
-                virtual bool setDataPortDestIPAddress(int index, int dipIndex,
-                		                              const std::string& ipAddr);
-        		/**
-        		 * \brief Sets the UDP port number for a given entry in the
-        		 *    destination IP table on a given data port.
-        		 * \param index Data port index number.
-        		 * \param dipIndex Index number for the entry in the DIP table.
-                 * \param sourcePort The source UDP port number.
-        		 * \returns True if successful, false otherwise.
-        		 */
-                virtual bool setDataPortDestSourcePort(int index, int dipIndex,
-                		                               unsigned int sourcePort);
-        		/**
-        		 * \brief Sets the VITA stream ID for a given entry in the
-        		 *    destination IP table on a given data port.
-        		 * \param index Data port index number.
-        		 * \param dipIndex Index number for the entry in the DIP table.
-                 * \param destPort The destination UDP port number.
-        		 * \returns True if successful, false otherwise.
-        		 */
-                virtual bool setDataPortDestDestPort(int index, int dipIndex,
-                		                             unsigned int destPort);
+                /**
+                 * \brief Gets the "simple" IP configuration dictionary for
+                 *     radios without 10Gig data ports.
+                 * \returns The configuration dictionary.
+                 */
+                virtual ConfigurationDict getSimpleIPConfiguration() const;
+                /**
+                 * \brief Sets the "simple" IP configuration dictionary for
+                 *     radios without 10Gig data ports.
+                 * \param cfg The configuration dictionary.
+                 * \returns True if successful, false otherwise.
+                 */
+                virtual bool setSimpleIPConfiguration(ConfigurationDict& cfg);
+                /**
+                 * \brief Gets the source MAC address for radios without
+                 *     10Gig data ports.
+                 * \returns The source MAC address [string]
+                 */
+                virtual std::string getSimpleSourceMACAddress() const;
+                /**
+                 * \brief Gets the source IP address for radios without
+                 *     10Gig data ports.
+                 * \returns The source IP address [string]
+                 */
+                virtual std::string getSimpleSourceIPAddress() const;
+                /**
+                 * \brief Sets the source IP address for radios without
+                 *     10Gig data ports.
+                 * \param ipAddr The IP address [string]
+                 * \returns True if successful, false otherwise.
+                 */
+                virtual bool setSimpleSourceIPAddress(const std::string& ipAddr);
+                /**
+                 * \brief Gets the destination MAC address for radios without
+                 *     10Gig data ports.
+                 * \returns The destination MAC address [string]
+                 */
+                virtual std::string getSimpleDestMACAddress() const;
+                /**
+                 * \brief Sets the destination MAC address for radios without
+                 *     10Gig data ports.
+                 * \param macAddr The MAC address [string]
+                 * \returns True if successful, false otherwise.
+                 */
+                virtual bool setSimpleDestMACAddress(const std::string& macAddr);
+                /**
+                 * \brief Gets the destination IP address for radios without
+                 *     10Gig data ports.
+                 * \returns The destination IP address [string]
+                 */
+                virtual std::string getSimpleDestIPAddress() const;
+                /**
+                 * \brief Sets the destination IP address for radios without
+                 *     10Gig data ports.
+                 * \param ipAddr The IP address [string]
+                 * \returns True if successful, false otherwise.
+                 */
+                virtual bool setSimpleDestIPAddress(const std::string& ipAddr);
                 /**
                  * \brief Gets the default device information.
                  *
@@ -1904,6 +1966,7 @@ namespace LibCyberRadio
                 int _ddcGroupIndexBase;
                 int _numDataPorts;
                 int _dataPortIndexBase;
+                int _numSimpleIpSetups;
                 double _adcRate;
                 VitaIfSpec _ifSpec;
                 // Radio configuration items
@@ -1925,6 +1988,7 @@ namespace LibCyberRadio
                 NbddcGroupComponentDict _nbddcGroups;
                 // Other configurables
                 DataPortDict _dataPorts;
+                SimpleIpSetupDict _simpleIpSetups;
                 // Status
                 std::string _lastCmdErrorInfo;
                 BasicStringStringDict _versionInfo;

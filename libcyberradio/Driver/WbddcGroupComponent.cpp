@@ -59,13 +59,15 @@ namespace LibCyberRadio
         bool WbddcGroupComponent::enable(bool enabled)
         {
             bool adjEnabled = enabled;
-            bool ret = executeWbddcGroupEnableCommand(_index, adjEnabled);
-            if ( ret )
+            bool ret = false;
+            if ( _config.hasKey("enable") )
             {
-                _enabled = adjEnabled;
-                updateConfigurationDict();
-                // If the hardware call succeeds, call the base class version
-                RadioComponent::enable(enabled);
+                ret = executeWbddcGroupEnableCommand(_index, adjEnabled);
+                if ( ret )
+                {
+                    _enabled = adjEnabled;
+                    updateConfigurationDict();
+                }
             }
             return ret;
         }
@@ -81,12 +83,12 @@ namespace LibCyberRadio
             BasicIntList adjMembers = _groupMembers;
             bool enableCmdNeedsExecuting = false;
             bool memberCmdNeedsExecuting = false;
-            if ( cfg.find("enable") != cfg.end() )
+            if ( cfg.hasKey("enable") && _config.hasKey("enable") )
             {
                 adjEnabled = getConfigurationValueAsBool("enable");
                 enableCmdNeedsExecuting = true;
             }
-            if ( cfg.find("members") != cfg.end() )
+            if ( cfg.hasKey("members") && _config.hasKey("members") )
             {
                 BasicStringList vec = Pythonesque::Split(getConfigurationValue("members"), ",");
                 adjMembers.clear();
@@ -117,8 +119,14 @@ namespace LibCyberRadio
         void WbddcGroupComponent::queryConfiguration()
         {
             this->debug("[WbddcGroupComponent::queryConfiguration] Called\n");
-            executeWbddcGroupEnableQuery(_index, _enabled);
-            executeWbddcGroupQuery(_index, _groupMembers);
+            if ( _config.hasKey("enable") )
+            {
+                executeWbddcGroupEnableQuery(_index, _enabled);
+            }
+            if ( _config.hasKey("members") )
+            {
+                executeWbddcGroupQuery(_index, _groupMembers);
+            }
             updateConfigurationDict();
             this->debug("[WbddcGroupComponent::queryConfiguration] Returning\n");
         }
@@ -131,11 +139,16 @@ namespace LibCyberRadio
         bool WbddcGroupComponent::setMembers(const BasicIntList& groupMembers)
         {
             this->debug("[WbddcGroupComponent::setMembers] Called\n");
-            BasicIntList adjMembers = groupMembers;
-            bool ret = this->executeWbddcGroupCommand(_index, adjMembers);
-            if (ret)
+            bool ret = false;
+            if ( _config.hasKey("members") )
             {
-                _groupMembers = groupMembers;
+                BasicIntList adjMembers = groupMembers;
+                ret = this->executeWbddcGroupCommand(_index, adjMembers);
+                if (ret)
+                {
+                    _groupMembers = groupMembers;
+                    updateConfigurationDict();
+                }
             }
             this->debug("[WbddcGroupComponent::setMembers] Returning %s\n",
                         this->debugBool(ret));
@@ -146,15 +159,18 @@ namespace LibCyberRadio
         {
             this->debug("[WbddcGroupComponent::addMember] Called\n");
             bool ret = false;
-            bool isMember = true;
-            ret = this->executeWbddcGroupMemberCommand(_index, member, isMember);
-            if (ret)
+            if ( _config.hasKey("members") )
             {
-                if ( std::count(_groupMembers.begin(), _groupMembers.end(), member) == 0 )
+                bool isMember = true;
+                ret = this->executeWbddcGroupMemberCommand(_index, member, isMember);
+                if (ret)
                 {
-                    _groupMembers.push_back(member);
-                    std::sort(_groupMembers.begin(), _groupMembers.end());
-                    updateConfigurationDict();
+                    if ( std::count(_groupMembers.begin(), _groupMembers.end(), member) == 0 )
+                    {
+                        _groupMembers.push_back(member);
+                        std::sort(_groupMembers.begin(), _groupMembers.end());
+                        updateConfigurationDict();
+                    }
                 }
             }
             this->debug("[WbddcGroupComponent::addMember] Returning %s\n",
@@ -166,16 +182,19 @@ namespace LibCyberRadio
         {
             this->debug("[WbddcGroupComponent::removeMember] Called\n");
             bool ret = false;
-            bool isMember = false;
-            ret = this->executeWbddcGroupMemberCommand(_index, member, isMember);
-            if (ret)
+            if ( _config.hasKey("members") )
             {
-                BasicIntList::iterator it = std::find(_groupMembers.begin(), _groupMembers.end(),
-                                                            member);
-                if ( it != _groupMembers.end() )
+                bool isMember = false;
+                ret = this->executeWbddcGroupMemberCommand(_index, member, isMember);
+                if (ret)
                 {
-                    _groupMembers.erase(it);
-                    updateConfigurationDict();
+                    BasicIntList::iterator it = std::find(_groupMembers.begin(), _groupMembers.end(),
+                                                                member);
+                    if ( it != _groupMembers.end() )
+                    {
+                        _groupMembers.erase(it);
+                        updateConfigurationDict();
+                    }
                 }
             }
             this->debug("[WbddcGroupComponent::removeMember] Returning %s\n",
@@ -185,21 +204,19 @@ namespace LibCyberRadio
 
         void WbddcGroupComponent::initConfigurationDict()
         {
+            _config.clear();
             // Call the base-class version
             RadioComponent::initConfigurationDict();
             // Define component-specific keys
             _config["members"] = "";
-            //this->debug("[WbddcGroupComponent::initConfigurationDict] Current configuration\n");
-            //this->dumpConfiguration();
         }
 
         void WbddcGroupComponent::updateConfigurationDict()
         {
             this->debug("[WbddcGroupComponent::updateConfigurationDict] Called\n");
             RadioComponent::updateConfigurationDict();
-            setConfigurationValue("members", getMembersString());
-            //this->debug("[WbddcGroupComponent::updateConfigurationDict] Current configuration\n");
-            //this->dumpConfiguration();
+            if ( _config.hasKey("members") )
+                setConfigurationValue("members", getMembersString());
             this->debug("[WbddcGroupComponent::updateConfigurationDict] Returning\n");
         }
 

@@ -9,6 +9,7 @@ LIST(APPEND libcyberradio_headers_Driver_NDR308
     NbddcComponent.h
     NbddcGroupComponent.h
     TunerComponent.h
+    VitaIfSpec.h
     WbddcComponent.h
     WbddcGroupComponent.h
 )

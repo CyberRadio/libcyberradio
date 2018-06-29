@@ -16,6 +16,7 @@
 #include "LibCyberRadio/Common/Debuggable.h"
 #include "LibCyberRadio/Driver/ConfigString.h"
 #include <string>
+#include <ostream>
 
 
 /**
@@ -46,8 +47,31 @@ namespace LibCyberRadio
          * Each configurable object defines its own configuration dictionary,
          * so see its documentation for further details.
          */
-        //typedef BasicStringStringDict ConfigurationDict;
-        typedef BASIC_DICT_CONTAINER<std::string, ConfigString> ConfigurationDict;
+        //typedef BASIC_DICT_CONTAINER<std::string, ConfigString> ConfigurationDict;
+        class ConfigurationDict : public BASIC_DICT_CONTAINER<std::string, ConfigString>
+        {
+            public:
+                /**
+                 * \brief Constructs a ConfigurationDict object.
+                 */
+                ConfigurationDict();
+                /**
+                 * \brief Destroys a ConfigurationDict object.
+                 */
+                virtual ~ConfigurationDict();
+                /**
+                 * \brief Construct a string representation of this object.
+                 * \returns A string representing this object's configuration.
+                 */
+                virtual std::string toString() const;
+                /**
+                 * \brief Determines if the dictionary has the given key.
+                 * \param key Key string
+                 * \returns True if the key is in the dictionary, false otherwise.
+                 */
+                virtual bool hasKey(const std::string& key) const;
+
+        };
 
         /**
          * \brief Base configurable object class.
@@ -254,6 +278,18 @@ namespace LibCyberRadio
     } // namespace Driver
 
 } // namespace LibCyberRadio
+
+/**
+ * \brief Stream insertion operator for ConfigurationDict objects.
+ *
+ * This puts the string representation of the ConfigurationDict out on
+ * the stream.
+ *
+ * \param os The output stream.
+ * \param obj The ConfigurationDict object.
+ * \returns A reference to the output stream.
+ */
+std::ostream& operator<<(std::ostream& os, const LibCyberRadio::Driver::ConfigurationDict& obj);
 
 
 #endif // INCLUDED_LIBCYBERRADIO_DRIVER_CONFIGURABLE_H

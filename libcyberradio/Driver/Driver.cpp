@@ -11,7 +11,9 @@
 #include "LibCyberRadio/Driver/Driver.h"
 #include "LibCyberRadio/Driver/NDR308/RadioHandler.h"
 #include "LibCyberRadio/Driver/NDR308TS/RadioHandler.h"
+#include "LibCyberRadio/Driver/NDR472/RadioHandler.h"
 #include "LibCyberRadio/Driver/NDR651/RadioHandler.h"
+#include "LibCyberRadio/Driver/NDR810/RadioHandler.h"
 #include "LibCyberRadio/Common/Pythonesque.h"
 #include "LibCyberRadio/Common/BasicList.h"
 #include "LibCyberRadio/Common/Debuggable.h"
@@ -82,6 +84,24 @@ namespace LibCyberRadio
                         (RadioHandler*)new NDR651::RadioHandler(debug)
                        );
             }
+            else if ( adjNameString == "ndr810" )
+            {
+                dbg.debug("-- FOUND ndr810\n");
+                sptr = std::shared_ptr<RadioHandler>(
+                        (RadioHandler*)new NDR810::RadioHandler(debug)
+                       );
+            }
+            else if ( adjNameString == "ndr472" )
+            {
+                dbg.debug("-- FOUND ndr472\n");
+                sptr = std::shared_ptr<RadioHandler>(
+                        (RadioHandler*)new NDR472::RadioHandler(debug)
+                       );
+            }
+            else
+            {
+                dbg.debug("-- CANNOT FIND %s\n", adjNameString.c_str());
+            }
             // Support radio auto-connection
             if ( (sptr != NULL) && (device != "") )
             {
@@ -98,7 +118,7 @@ namespace LibCyberRadio
                 }
             }
             // Return the pointer to the radio handler (or NULL)
-            dbg.debug("Returning %08p\n", sptr.get());
+            //dbg.debug("Returning %08p\n", sptr.get());
             return sptr;
         }
 

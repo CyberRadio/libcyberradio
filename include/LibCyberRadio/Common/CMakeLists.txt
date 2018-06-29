@@ -8,6 +8,7 @@ INSTALL(FILES
     Debuggable.h
     HttpsSession.h
     Pythonesque.h
+    SerialPort.h
     Thread.h
     Throttle.hpp
     VitaIqSource.h

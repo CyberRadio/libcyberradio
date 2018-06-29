@@ -99,11 +99,15 @@ namespace LibCyberRadio
         bool TunerComponent::enable(bool enabled)
         {
             bool adjEnabled = enabled;
-            bool ret = executeEnableCommand(_index, adjEnabled);
-            if ( ret )
+            bool ret = false;
+            if ( _config.hasKey("enable") )
             {
-                // If the hardware call succeeds, call the base class version
-                RadioComponent::enable(adjEnabled);
+                ret = executeEnableCommand(_index, adjEnabled);
+                if ( ret )
+                {
+                    // If the hardware call succeeds, call the base class version
+                    RadioComponent::enable(adjEnabled);
+                }
             }
             return ret;
         }
@@ -124,22 +128,22 @@ namespace LibCyberRadio
             bool attCmdNeedsExecuting = false;
             bool filCmdNeedsExecuting = false;
             bool adjCmdNeedsExecuting = false;
-			if ( cfg.find("frequency") != cfg.end() )
+			if ( cfg.hasKey("frequency") && _config.hasKey("frequency") )
 			{
 				adjFrequency = getConfigurationValueAsDbl("frequency");
 				freqCmdNeedsExecuting = true;
 			}
-			if ( cfg.find("attenuation") != cfg.end() )
+			if ( cfg.hasKey("attenuation") && _config.hasKey("attenuation") )
 			{
 				adjAttenuation = getConfigurationValueAsDbl("attenuation");
 				attCmdNeedsExecuting = true;
 			}
-			if ( cfg.find("filter") != cfg.end() )
+			if ( cfg.hasKey("filter") && _config.hasKey("filter") )
 			{
 				adjFilter = getConfigurationValueAsInt("filter");
 				filCmdNeedsExecuting = true;
 			}
-            if ( cfg.find("timingAdj") != cfg.end() )
+            if ( cfg.hasKey("timingAdj") && _config.hasKey("timingAdj") )
             {
                 adjAdj = getConfigurationValueAsInt("timingAdj");
                 adjCmdNeedsExecuting = true;
@@ -167,11 +171,26 @@ namespace LibCyberRadio
         void TunerComponent::queryConfiguration()
         {
             this->debug("[TunerComponent::queryConfiguration] Called\n");
-            executeEnableQuery(_index, _enabled);
-            executeFreqQuery(_index, _frequency);
-            executeAttenQuery(_index, _attenuation);
-            executeFilterQuery(_index, _filter);
-            executeTimingAdjustmentQuery(_index, _timingAdj);
+            if ( _config.hasKey("enable") )
+            {
+                executeEnableQuery(_index, _enabled);
+            }
+            if ( _config.hasKey("frequency") )
+            {
+                executeFreqQuery(_index, _frequency);
+            }
+            if ( _config.hasKey("attenuation") )
+            {
+                executeAttenQuery(_index, _attenuation);
+            }
+            if ( _config.hasKey("filter") )
+            {
+                executeFilterQuery(_index, _filter);
+            }
+            if ( _config.hasKey("timingAdj") )
+            {
+                executeTimingAdjustmentQuery(_index, _timingAdj);
+            }
             updateConfigurationDict();
             this->debug("[TunerComponent::queryConfiguration] Returning\n");
         }
@@ -184,11 +203,15 @@ namespace LibCyberRadio
         bool TunerComponent::setFrequency(double freq)
         {
             double adjFreq = freq;
-            bool ret = executeFreqCommand(_index, adjFreq);
-            if ( ret )
+            bool ret = false;
+            if ( _config.hasKey("frequency") )
             {
-                _frequency = adjFreq;
-                updateConfigurationDict();
+                ret = executeFreqCommand(_index, adjFreq);
+                if ( ret )
+                {
+                    _frequency = adjFreq;
+                    updateConfigurationDict();
+                }
             }
             return ret;
         }
@@ -201,11 +224,15 @@ namespace LibCyberRadio
         bool TunerComponent::setAttenuation(double atten)
         {
             double adjAtten = atten;
-            bool ret = executeAttenCommand(_index, adjAtten);
-            if ( ret )
+            bool ret = false;
+            if ( _config.hasKey("attenuation") )
             {
-                _attenuation = adjAtten;
-                updateConfigurationDict();
+                ret = executeAttenCommand(_index, adjAtten);
+                if ( ret )
+                {
+                    _attenuation = adjAtten;
+                    updateConfigurationDict();
+                }
             }
             return ret;
         }
@@ -218,11 +245,15 @@ namespace LibCyberRadio
         bool TunerComponent::setFilter(int filter)
         {
             int adjFilter = filter;
-            bool ret = executeFilterCommand(_index, adjFilter);
-            if ( ret )
+            bool ret = false;
+            if ( _config.hasKey("filter") )
             {
-                _filter = adjFilter;
-                updateConfigurationDict();
+                ret = executeFilterCommand(_index, adjFilter);
+                if ( ret )
+                {
+                    _filter = adjFilter;
+                    updateConfigurationDict();
+                }
             }
             return ret;
         }
@@ -235,11 +266,15 @@ namespace LibCyberRadio
         bool TunerComponent::setTimingAdjustment(int timingAdj)
         {
             int adjAdj = timingAdj;
-            bool ret = executeTimingAdjustmentCommand(_index, adjAdj);
-            if ( ret )
+            bool ret = false;
+            if ( _config.hasKey("timingAdj") )
             {
-                _timingAdj = adjAdj;
-                updateConfigurationDict();
+                ret = executeTimingAdjustmentCommand(_index, adjAdj);
+                if ( ret )
+                {
+                    _timingAdj = adjAdj;
+                    updateConfigurationDict();
+                }
             }
             return ret;
         }
@@ -289,9 +324,8 @@ namespace LibCyberRadio
         void TunerComponent::initConfigurationDict()
         {
             //this->debug("[TunerComponent::initConfigurationDict] Called\n");
-        	// Call the base-class version
-            RadioComponent::initConfigurationDict();
-            // Define tuner-specific keys
+            _config.clear();
+            _config["enable"] = "";
             _config["frequency"] = "";
             _config["attenuation"] = "";
             _config["filter"] = "";
@@ -304,10 +338,22 @@ namespace LibCyberRadio
             this->debug("[TunerComponent::updateConfigurationDict] Called\n");
             RadioComponent::updateConfigurationDict();
             bool res;
-            res = setConfigurationValueToDbl("frequency", _frequency);
-            res = setConfigurationValueToDbl("attenuation", _attenuation);
-            res = setConfigurationValueToInt("filter", _filter);
-            res = setConfigurationValueToInt("timingAdj", _timingAdj);
+            if ( _config.hasKey("frequency") )
+            {
+                res = setConfigurationValueToDbl("frequency", _frequency);
+            }
+            if ( _config.hasKey("attenuation") )
+            {
+                res = setConfigurationValueToDbl("attenuation", _attenuation);
+            }
+            if ( _config.hasKey("filter") )
+            {
+                res = setConfigurationValueToInt("filter", _filter);
+            }
+            if ( _config.hasKey("timingAdj") )
+            {
+                res = setConfigurationValueToInt("timingAdj", _timingAdj);
+            }
             //this->debug("[TunerComponent::updateConfigurationDict] Current configuration\n");
             //this->dumpConfiguration();
             this->debug("[TunerComponent::updateConfigurationDict] Returning\n");

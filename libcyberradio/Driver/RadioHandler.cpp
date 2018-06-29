@@ -47,6 +47,7 @@ namespace LibCyberRadio
 			                       int ddcGroupIndexBase,
                                    int numDataPorts,
                                    int dataPortIndexBase,
+                                   int numSimpleIpSetups,
 								   double adcRate,
 								   VitaIfSpec ifSpec,
 								   bool debug) :
@@ -71,6 +72,7 @@ namespace LibCyberRadio
             _ddcGroupIndexBase(ddcGroupIndexBase),
             _numDataPorts(numDataPorts),
             _dataPortIndexBase(dataPortIndexBase),
+            _numSimpleIpSetups(numSimpleIpSetups),
 			_adcRate(adcRate),
 			_ifSpec(ifSpec),
             _configMode(0),
@@ -93,7 +95,7 @@ namespace LibCyberRadio
             _versionInfo["firmwareDate"] = "N/A";
             _versionInfo["referenceVersion"] = "N/A";
             _versionInfo["hardwareVersion"] = "N/A";
-            initConfigurationDict();
+            this->initConfigurationDict();
         }
 
         RadioHandler::~RadioHandler()
@@ -142,6 +144,11 @@ namespace LibCyberRadio
             {
                 delete it->second;
             }
+            for ( SimpleIpSetupDict::iterator it = _simpleIpSetups.begin();
+                  it != _simpleIpSetups.end(); it++)
+            {
+                delete it->second;
+            }
         }
 
         RadioHandler::RadioHandler(const RadioHandler &other) :
@@ -168,6 +175,7 @@ namespace LibCyberRadio
             _ddcGroupIndexBase = other._ddcGroupIndexBase;
             _numDataPorts = other._numDataPorts;
             _dataPortIndexBase = other._dataPortIndexBase;
+            _numSimpleIpSetups = other._numSimpleIpSetups;
             _adcRate = other._adcRate;
             _ifSpec = other._ifSpec;
             _configMode = other._configMode;
@@ -213,6 +221,7 @@ namespace LibCyberRadio
                 _ddcGroupIndexBase = other._ddcGroupIndexBase;
                 _numDataPorts = other._numDataPorts;
                 _dataPortIndexBase = other._dataPortIndexBase;
+                _numSimpleIpSetups = other._numSimpleIpSetups;
                 _adcRate = other._adcRate;
                 _ifSpec = other._ifSpec;
                 _configMode = other._configMode;
@@ -257,6 +266,7 @@ namespace LibCyberRadio
             if ( isConnectionModeSupported(mode) )
             {
                 ret = _transport.connect(mode, host_or_dev, port_or_baudrate);
+                this->debug("[RadioHandler::connect] Connect result: %s\n", debugBool(ret));
                 if (ret)
                 {
                 	_connectionInfo["mode"] = mode;
@@ -270,7 +280,8 @@ namespace LibCyberRadio
                         _connectionInfo["device"] = host_or_dev;
                         _connectionInfo["baudrate"] = ( boost::format("%d") % port_or_baudrate ).str();
                     }
-                    queryConfiguration();
+                    this->debug("[RadioHandler::connect] Querying configuration\n");
+                    this->queryConfiguration();
                 }
                 else
                     _lastCmdErrorInfo = _transport.getLastCommandErrorInfo();
@@ -318,6 +329,9 @@ namespace LibCyberRadio
                 	break;
                 }
             }
+            // If the first line of the response just echoed the command, remove it
+            if ( (ret.size() > 0) && (ret.front() == Pythonesque::Strip(cmdString)) )
+                ret.erase(ret.begin());
             // Debug print
             this->debug("[RadioHandler::sendCommand] Returning %lu elements\n", ret.size());
             for (it = ret.begin(); it != ret.end(); it++)
@@ -327,9 +341,9 @@ namespace LibCyberRadio
 
         void RadioHandler::queryConfiguration()
         {
-            queryVersionInfo();
-            if ( queryRadioConfiguration() )
-                updateConfigurationDict();
+            this->queryVersionInfo();
+            if ( this->queryRadioConfiguration() )
+                this->updateConfigurationDict();
             for ( TunerComponentDict::iterator it = _tuners.begin();
                   it != _tuners.end(); it++)
             {
@@ -367,6 +381,11 @@ namespace LibCyberRadio
             }
             for ( NbddcGroupComponentDict::iterator it = _nbddcGroups.begin();
                   it != _nbddcGroups.end(); it++)
+            {
+                it->second->queryConfiguration();
+            }
+            for ( SimpleIpSetupDict::iterator it = _simpleIpSetups.begin();
+                  it != _simpleIpSetups.end(); it++)
             {
                 it->second->queryConfiguration();
             }
@@ -448,17 +467,17 @@ namespace LibCyberRadio
 
         bool RadioHandler::sendReset(int resetType)
         {
-        	return executeResetCommand(resetType);
+        	return this->executeResetCommand(resetType);
         }
 
         bool RadioHandler::getPps()
         {
-        	return executePpsQuery();
+        	return this->executePpsQuery();
         }
 
         bool RadioHandler::setTimeNextPps(bool checkTime, bool useGpsTime)
         {
-        	bool ret = getPps();
+        	bool ret = this->getPps();
         	if ( ret )
         	{
         		// Determine target time -- either the next whole second
@@ -469,19 +488,19 @@ namespace LibCyberRadio
         		{
             		// Set target time based on GPS time
         			adjTime = "G";
-            		ret = executeTimeCommand(adjTime);
+            		ret = this->executeTimeCommand(adjTime);
         		}
         		else
         		{
             		// Set target time based on system time
         			adjTime = boost::lexical_cast<std::string>(targetTime);
-            		ret = executeTimeCommand(adjTime);
+            		ret = this->executeTimeCommand(adjTime);
         		}
         		if ( ret )
         		{
         			if ( checkTime )
         			{
-        				time_t radioUtc = getTimeNextPps();
+        				time_t radioUtc = this->getTimeNextPps();
 			            ret = (radioUtc == targetTime);
         			}
         		}
@@ -498,7 +517,7 @@ namespace LibCyberRadio
         	time_t ret = 0;
         	std::string adjTime;
         	this->debug("[RadioHandler::getTimeNow] Executing time query\n");
-        	if ( executeTimeQuery(adjTime) )
+        	if ( this->executeTimeQuery(adjTime) )
         	{
             	this->debug("[RadioHandler::getTimeNow] -- query result: %s\n", adjTime.c_str());
         		ret = (time_t)boost::lexical_cast<unsigned int>(adjTime);
@@ -510,10 +529,10 @@ namespace LibCyberRadio
         time_t RadioHandler::getTimeNextPps()
         {
             time_t ret = 0;
-            bool ok = getPps();
+            bool ok = this->getPps();
             if ( ok )
             {
-                ret = getTimeNow();
+                ret = this->getTimeNow();
             }
             return ret;
         }
@@ -647,9 +666,14 @@ namespace LibCyberRadio
 
         bool RadioHandler::setCalibrationFrequency(double freq)
         {
-            ConfigurationDict cfg;
-            cfg["calibFrequency"] = freq;
-            return this->setConfiguration(cfg);
+            bool ret = false;
+            if ( _config.find("calibFrequency") != _config.end() )
+            {
+                ConfigurationDict cfg;
+                cfg["calibFrequency"] = freq;
+                ret = this->setConfiguration(cfg);
+            }
+            return ret;
         }
 
         BasicIntList RadioHandler::getDataPortIndexRange() const
@@ -2369,6 +2393,16 @@ namespace LibCyberRadio
         	return ret;
         }
 
+        bool RadioHandler::setDataPortDestMACAddress(int index, int dipIndex,
+                                                     const std::string& macAddr)
+        {
+            bool ret = false;
+            DataPortDict::const_iterator it = _dataPorts.find(index);
+            if ( it != _dataPorts.end() )
+                ret = it->second->setDestMACAddress(dipIndex, macAddr);
+            return ret;
+        }
+
         std::string RadioHandler::getDataPortDestIPAddress(int index, int dipIndex) const
         {
         	std::string ret = "";
@@ -2376,6 +2410,16 @@ namespace LibCyberRadio
             if ( it != _dataPorts.end() )
                 ret = it->second->getDestIPAddress(dipIndex);
         	return ret;
+        }
+
+        bool RadioHandler::setDataPortDestIPAddress(int index, int dipIndex,
+                                                    const std::string& ipAddr)
+        {
+            bool ret = false;
+            DataPortDict::const_iterator it = _dataPorts.find(index);
+            if ( it != _dataPorts.end() )
+                ret = it->second->setDestIPAddress(dipIndex, ipAddr);
+            return ret;
         }
 
         unsigned int RadioHandler::getDataPortDestSourcePort(int index, int dipIndex) const
@@ -2387,6 +2431,16 @@ namespace LibCyberRadio
         	return ret;
         }
 
+        bool RadioHandler::setDataPortDestSourcePort(int index, int dipIndex,
+                                                     unsigned int sourcePort)
+        {
+            bool ret = false;
+            DataPortDict::const_iterator it = _dataPorts.find(index);
+            if ( it != _dataPorts.end() )
+                ret = it->second->setDestSourcePort(dipIndex, sourcePort);
+            return ret;
+        }
+
         unsigned int RadioHandler::getDataPortDestDestPort(int index, int dipIndex) const
         {
         	unsigned int ret = 0;
@@ -2394,6 +2448,16 @@ namespace LibCyberRadio
             if ( it != _dataPorts.end() )
                 ret = it->second->getDestDestPort(dipIndex);
         	return ret;
+        }
+
+        bool RadioHandler::setDataPortDestDestPort(int index, int dipIndex,
+                                                   unsigned int destPort)
+        {
+            bool ret = false;
+            DataPortDict::const_iterator it = _dataPorts.find(index);
+            if ( it != _dataPorts.end() )
+                ret = it->second->setDestDestPort(dipIndex, destPort);
+            return ret;
         }
 
         bool RadioHandler::setDataPortDestInfo(int index,
@@ -2411,44 +2475,52 @@ namespace LibCyberRadio
         	return ret;
         }
 
-        bool RadioHandler::setDataPortDestMACAddress(int index, int dipIndex,
-        		                                     const std::string& macAddr)
+        ConfigurationDict RadioHandler::getSimpleIPConfiguration() const
         {
-        	bool ret = false;
-        	DataPortDict::const_iterator it = _dataPorts.find(index);
-            if ( it != _dataPorts.end() )
-                ret = it->second->setDestMACAddress(dipIndex, macAddr);
-        	return ret;
+            ConfigurationDict ret;
+            if ( _numSimpleIpSetups > 0 )
+            {
+                ret = _simpleIpSetups.at(0)->getConfiguration();
+            }
+            return ret;
         }
 
-        bool RadioHandler::setDataPortDestIPAddress(int index, int dipIndex,
-        		                                    const std::string& ipAddr)
+        bool RadioHandler::setSimpleIPConfiguration(ConfigurationDict& cfg)
         {
-        	bool ret = false;
-        	DataPortDict::const_iterator it = _dataPorts.find(index);
-            if ( it != _dataPorts.end() )
-                ret = it->second->setDestIPAddress(dipIndex, ipAddr);
-        	return ret;
+            bool ret = false;
+            if ( _numSimpleIpSetups > 0 )
+            {
+                ret = _simpleIpSetups.at(0)->setConfiguration(cfg);
+            }
+            return ret;
         }
 
-        bool RadioHandler::setDataPortDestSourcePort(int index, int dipIndex,
-        		                                     unsigned int sourcePort)
+        std::string RadioHandler::getSimpleSourceMACAddress() const
         {
-        	bool ret = false;
-        	DataPortDict::const_iterator it = _dataPorts.find(index);
-            if ( it != _dataPorts.end() )
-                ret = it->second->setDestSourcePort(dipIndex, sourcePort);
-        	return ret;
         }
 
-        bool RadioHandler::setDataPortDestDestPort(int index, int dipIndex,
-        		                                   unsigned int destPort)
+        std::string RadioHandler::getSimpleSourceIPAddress() const
         {
-        	bool ret = false;
-        	DataPortDict::const_iterator it = _dataPorts.find(index);
-            if ( it != _dataPorts.end() )
-                ret = it->second->setDestDestPort(dipIndex, destPort);
-        	return ret;
+        }
+
+        bool RadioHandler::setSimpleSourceIPAddress(const std::string& ipAddr)
+        {
+        }
+
+        std::string RadioHandler::getSimpleDestMACAddress() const
+        {
+        }
+
+        bool RadioHandler::setSimpleDestMACAddress(const std::string& macAddr)
+        {
+        }
+
+        std::string RadioHandler::getSimpleDestIPAddress() const
+        {
+        }
+
+        bool RadioHandler::setSimpleDestIPAddress(const std::string& ipAddr)
+        {
         }
 
         int RadioHandler::getDefaultDeviceInfo() const
@@ -2460,7 +2532,9 @@ namespace LibCyberRadio
         void RadioHandler::initConfigurationDict()
         {
             //this->debug("[RadioHandler::initConfigurationDict] Called\n");
+            _config.clear();
             _config["calibFrequency"] = _calibFrequency;
+            _config["coherentMode"] = _coherentMode;
             _config["configMode"] = _configMode;
             _config["referenceMode"] = _referenceMode;
             _config["bypassMode"] = _referenceBypass;
@@ -2473,14 +2547,41 @@ namespace LibCyberRadio
         void RadioHandler::updateConfigurationDict()
         {
             //this->debug("[RadioHandler::updateConfigurationDict] Called\n");
-            _config["configMode"] = _configMode;
-            _config["referenceMode"] = _referenceMode;
-            _config["bypassMode"] = _referenceBypass;
-            _config["freqNormalization"] = _freqNormalization;
-            _config["gpsEnable"] = _gpsEnabled;
-            _config["referenceTuningVoltage"] = _referenceTuningVoltage;
+            if ( _config.hasKey("configMode") )
+            {
+                _config["configMode"] = _configMode;
+            }
+            if ( _config.hasKey("coherentMode") )
+            {
+                _config["coherentMode"] = _coherentMode;
+            }
+            if ( _config.hasKey("freqNormalization") )
+            {
+                _config["freqNormalization"] = _freqNormalization;
+            }
+            if ( _config.hasKey("gpsEnable") )
+            {
+                _config["gpsEnable"] = _gpsEnabled;
+            }
+            if ( _config.hasKey("referenceMode") )
+            {
+                _config["referenceMode"] = _referenceMode;
+            }
+            if ( _config.hasKey("bypassMode") )
+            {
+                _config["bypassMode"] = _referenceBypass;
+            }
+            if ( _config.hasKey("referenceTuningVoltage") )
+            {
+                _config["referenceTuningVoltage"] = _referenceTuningVoltage;
+            }
+            if ( _config.hasKey("calibFrequency") )
+            {
+                _config["calibFrequency"] = _calibFrequency;
+            }
             //this->debug("[RadioHandler::updateConfigurationDict] Returning\n");
         }
+
         bool RadioHandler::queryVersionInfo()
         {
             this->debug("[RadioHandler::queryVersionInfo] Called\n");
@@ -2510,14 +2611,38 @@ namespace LibCyberRadio
         bool RadioHandler::queryRadioConfiguration()
         {
             bool ret = true;
-            ret &= this->executeConfigModeQuery(_configMode);
-            ret &= this->executeCoherentModeQuery(_coherentMode);
-            ret &= this->executeFreqNormalizationQuery(_freqNormalization);
-            ret &= this->executeGpsEnabledQuery(_gpsEnabled);
-            ret &= this->executeReferenceModeQuery(_referenceMode);
-            ret &= this->executeReferenceBypassQuery(_referenceBypass);
-            ret &= this->executeReferenceVoltageQuery(_referenceTuningVoltage);
-            ret &= this->executeCalibFrequencyQuery(_calibFrequency);
+            if ( _config.hasKey("configMode") )
+            {
+                ret &= this->executeConfigModeQuery(_configMode);
+            }
+            if ( _config.hasKey("coherentMode") )
+            {
+                ret &= this->executeCoherentModeQuery(_coherentMode);
+            }
+            if ( _config.hasKey("freqNormalization") )
+            {
+                ret &= this->executeFreqNormalizationQuery(_freqNormalization);
+            }
+            if ( _config.hasKey("gpsEnable") )
+            {
+                ret &= this->executeGpsEnabledQuery(_gpsEnabled);
+            }
+            if ( _config.hasKey("referenceMode") )
+            {
+                ret &= this->executeReferenceModeQuery(_referenceMode);
+            }
+            if ( _config.hasKey("bypassMode") )
+            {
+                ret &= this->executeReferenceBypassQuery(_referenceBypass);
+            }
+            if ( _config.hasKey("referenceTuningVoltage") )
+            {
+                ret &= this->executeReferenceVoltageQuery(_referenceTuningVoltage);
+            }
+            if ( _config.hasKey("calibFrequency") )
+            {
+                ret &= this->executeCalibFrequencyQuery(_calibFrequency);
+            }
             return ret;
         }
 
@@ -2538,6 +2663,8 @@ namespace LibCyberRadio
                 {
                     if ( it->find(" Receiver") != std::string::npos )
                         model = Pythonesque::Replace(*it, " Receiver", "");
+                    else if ( it->find("NDR") != std::string::npos )
+                        model = *it;
                     if ( it->find("S/N ") != std::string::npos )
                         serialNumber = Pythonesque::Replace(*it, "S/N ", "");
                 }
@@ -2608,7 +2735,12 @@ namespace LibCyberRadio
                 for (it = rsp.begin(); it != rsp.end(); it++)
                 {
                     if ( *it != "OK" )
-                        oss << *it << "\n";
+                    {
+                        if ( oss.str() != "" )
+                            oss << "\n";
+                        //oss << Pythonesque::Strip(*it);
+                        oss << *it;
+                    }
                 }
                 hardwareInfo = oss.str();
                 ret = true;
@@ -2705,12 +2837,12 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "CFG ", ""),
-                                             ", ");
-                   // vec[0] = Config mode indicator
-                   configMode = boost::lexical_cast<int>(vec[0]);
-                   ret = true;
+                     BasicStringList vec = Pythonesque::Split(
+                                              Pythonesque::Replace(rsp.front(), "CFG ", ""),
+                                              ", ");
+                     // vec[0] = Config mode indicator
+                     configMode = boost::lexical_cast<int>(vec[0]);
+                     ret = true;
                 }
             }
             this->debug("[RadioHandler::executeConfigModeQuery] Returning %s\n",

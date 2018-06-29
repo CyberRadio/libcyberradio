@@ -33,6 +33,7 @@ namespace LibCyberRadio
                                /* int numGroupMembers */ 8,
                                /* int groupMemberIndexBase */ 1)
             {
+                initConfigurationDict();
             }
 
             WbddcGroupComponent::~WbddcGroupComponent()

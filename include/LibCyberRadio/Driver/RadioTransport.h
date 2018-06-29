@@ -14,6 +14,7 @@
 #include "LibCyberRadio/Common/BasicList.h"
 #include "LibCyberRadio/Common/Debuggable.h"
 #include "LibCyberRadio/Common/HttpsSession.h"
+#include "LibCyberRadio/Common/SerialPort.h"
 #include <string>
 
 
@@ -124,11 +125,35 @@ namespace LibCyberRadio
                         const std::string& host,
                         int port
                     );
-                // connectTty()
-                // connectUdp()
+                /**
+                 * \brief Connects to the radio using UDP.
+                 * \param host The host name or IP address.
+                 * \param port The port number.
+                 * \returns True if the connection succeeds, false otherwise.
+                 */
+                virtual bool connectUdp(
+                        const std::string& host,
+                        int port
+                    );
+                /**
+                 * \brief Connects to the radio using HTTPS.
+                 * \param host The host name or IP address.
+                 * \param port The port number.
+                 * \returns True if the connection succeeds, false otherwise.
+                 */
                 virtual bool connectHttps(
                         const std::string& host,
                         int port
+                    );
+                /**
+                 * \brief Connects to the radio using a serial link.
+                 * \param dev The device name for the serial port.
+                 * \param baudrate The serial baud rate.
+                 * \returns True if the connection succeeds, false otherwise.
+                 */
+                virtual bool connectTty(
+                        const std::string& dev,
+                        int baudrate
                     );
         		/**
         		 * \brief Sends a command to the radio over TCP.
@@ -141,8 +166,17 @@ namespace LibCyberRadio
                         const std::string& cmdString,
                         bool clearRx = true
                     );
-                // sendCommandTty
-                // sendCommandUdp
+                /**
+                 * \brief Sends a command to the radio over UDP.
+                 * \param cmdString The command to send.
+                 * \param clearRx Whether or not to clear the receive buffer before
+                 *    sending the command.
+                 * \returns True if the command was sent successfully, false otherwise.
+                 */
+                virtual bool sendCommandUdp(
+                        const std::string& cmdString,
+                        bool clearRx = true
+                    );
         		/**
         		 * \brief Sends a command to the radio over HTTPS.
         		 * \param cmdString The command to send.
@@ -151,6 +185,17 @@ namespace LibCyberRadio
         		 * \returns True if the command was sent successfully, false otherwise.
         		 */
                 virtual bool sendCommandHttps(
+                        const std::string& cmdString,
+                        bool clearRx = true
+                    );
+                /**
+                 * \brief Sends a command to the radio over TTY.
+                 * \param cmdString The command to send.
+                 * \param clearRx Whether or not to clear the receive buffer before
+                 *    sending the command.
+                 * \returns True if the command was sent successfully, false otherwise.
+                 */
+                virtual bool sendCommandTty(
                         const std::string& cmdString,
                         bool clearRx = true
                     );
@@ -195,8 +240,24 @@ namespace LibCyberRadio
                 virtual BasicStringList receiveCliTcp(
                         double timeout = -1
                     );
-                // receiveCliTty()
-                // receiveCliUdp()
+                /**
+                 * \brief Receives a client (AT-command-style) command response over UDP.
+                 * \param timeout The timeout value to use for receiving data.  If -1,
+                 *    use the default timeout value for the transport.
+                 * \returns A list of received data strings.
+                 */
+                virtual BasicStringList receiveCliUdp(
+                        double timeout = -1
+                    );
+                /**
+                 * \brief Receives a client (AT-command-style) command response over TTY.
+                 * \param timeout The timeout value to use for receiving data.  If -1,
+                 *    use the default timeout value for the transport.
+                 * \returns A list of received data strings.
+                 */
+                virtual BasicStringList receiveCliTty(
+                        double timeout = -1
+                    );
         		/**
         		 * \brief Translates an errno value into an error message.
         		 */
@@ -205,10 +266,12 @@ namespace LibCyberRadio
             protected:
                 // Is this transport using JSON?
                 bool _isJson;
-                // _udpSocket;
                 // TCP socket descriptor
                 int _tcpSocket;
-                // _ttySocket;
+                // UDP socket descriptor
+                int _udpSocket;
+                // TTY (serial) link object
+                ::LibCyberRadio::SerialPort* _serial;
                 // HTTPS session variables
                 HttpsSession* _httpsSession;
                 // -- Connection test and API command URLs
@@ -216,7 +279,6 @@ namespace LibCyberRadio
                 std::string _httpsApiCmdUrl;
                 // Error message from the last command executed
                 std::string _lastCmdErrInfo;
-
 
         };
 

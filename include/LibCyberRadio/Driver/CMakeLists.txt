@@ -15,6 +15,7 @@ LIST(APPEND libcyberradio_headers_Driver
     RadioComponent.h
     RadioHandler.h
     RadioTransport.h
+    SimpleIpSetup.h
     TransmitterComponent.h
     TunerComponent.h
     VitaIfSpec.h
@@ -34,4 +35,7 @@ INSTALL(FILES
 ########################################################################
 ADD_SUBDIRECTORY(NDR308)
 ADD_SUBDIRECTORY(NDR308TS)
+ADD_SUBDIRECTORY(NDR472)
 ADD_SUBDIRECTORY(NDR651)
+ADD_SUBDIRECTORY(NDR810)
+

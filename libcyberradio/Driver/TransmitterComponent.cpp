@@ -101,11 +101,15 @@ namespace LibCyberRadio
         bool TransmitterComponent::enable(bool enabled)
         {
             bool adjEnabled = enabled;
-            bool ret = executeEnableCommand(_index, adjEnabled);
-            if ( ret )
+            bool ret = false;
+            if ( _config.hasKey("enable") )
             {
-                // If the hardware call succeeds, call the base class version
-                RadioComponent::enable(adjEnabled);
+                ret = executeEnableCommand(_index, adjEnabled);
+                if ( ret )
+                {
+                    // If the hardware call succeeds, call the base class version
+                    RadioComponent::enable(adjEnabled);
+                }
             }
             return ret;
         }
@@ -118,7 +122,7 @@ namespace LibCyberRadio
             bool ret = RadioComponent::setConfiguration(cfg);
         	// Use the keys provided in the *incoming* dictionary to determine
         	// what needs to be changed via hardware calls.
-            if ( cfg.find("frequency") != cfg.end() )
+            if ( cfg.hasKey("frequency") && _config.hasKey("frequency") )
             {
             	try
             	{
@@ -134,7 +138,7 @@ namespace LibCyberRadio
             {
                 //this->debug("[setConfiguration] -- CAN'T set freq = not in incoming\n");
             }
-            if ( cfg.find("attenuation") != cfg.end() )
+            if ( cfg.hasKey("attenuation") && _config.hasKey("attenuation") )
             {
             	try
             	{
@@ -157,15 +161,18 @@ namespace LibCyberRadio
         void TransmitterComponent::queryConfiguration()
         {
             this->debug("[TransmitterComponent::queryConfiguration] Called\n");
-            executeEnableQuery(_index, _enabled);
-            //this->debug("[queryConfiguration] -- query enabled = %s\n",
-            //		             debugBool(_enabled));
-            executeFreqQuery(_index, _frequency);
-            //this->debug("[queryConfiguration] -- query freq = %0.1f\n",
-            //		             _frequency);
-            executeAttenQuery(_index, _attenuation);
-            //this->debug("[queryConfiguration] -- query atten = %0.1f\n",
-            //		             _attenuation);
+            if ( _config.hasKey("enable") )
+            {
+                executeEnableQuery(_index, _enabled);
+            }
+            if ( _config.hasKey("frequency") )
+            {
+                executeFreqQuery(_index, _frequency);
+            }
+            if ( _config.hasKey("attenuation") )
+            {
+                executeAttenQuery(_index, _attenuation);
+            }
             updateConfigurationDict();
             // Query configuration of CW tone generators
             for ( CWToneGenComponentDict::iterator it = _cwToneGens.begin();
@@ -184,11 +191,15 @@ namespace LibCyberRadio
         bool TransmitterComponent::setFrequency(double freq)
         {
             double adjFreq = freq;
-            bool ret = executeFreqCommand(_index, adjFreq);
-            if ( ret )
+            bool ret = false;
+            if ( _config.hasKey("frequency") )
             {
-                _frequency = adjFreq;
-                updateConfigurationDict();
+                ret = executeFreqCommand(_index, adjFreq);
+                if ( ret )
+                {
+                    _frequency = adjFreq;
+                    updateConfigurationDict();
+                }
             }
             return ret;
         }
@@ -201,11 +212,15 @@ namespace LibCyberRadio
         bool TransmitterComponent::setAttenuation(double atten)
         {
             double adjAtten = atten;
-            bool ret = executeAttenCommand(_index, adjAtten);
-            if ( ret )
+            bool ret = false;
+            if ( _config.hasKey("attenuation") )
             {
-                _attenuation = adjAtten;
-                updateConfigurationDict();
+                ret = executeAttenCommand(_index, adjAtten);
+                if ( ret )
+                {
+                    _attenuation = adjAtten;
+                    updateConfigurationDict();
+                }
             }
             return ret;
         }
@@ -540,6 +555,7 @@ namespace LibCyberRadio
         void TransmitterComponent::initConfigurationDict()
         {
             //this->debug("[TransmitterComponent::initConfigurationDict] Called\n");
+            _config.clear();
         	// Call the base-class version
             RadioComponent::initConfigurationDict();
             // Define tuner-specific keys
@@ -552,10 +568,14 @@ namespace LibCyberRadio
         {
             this->debug("[TransmitterComponent::updateConfigurationDict] Called\n");
             RadioComponent::updateConfigurationDict();
-            setConfigurationValueToDbl("frequency", _frequency);
-            setConfigurationValueToDbl("attenuation", _attenuation);
-            //this->debug("[TransmitterComponent::updateConfigurationDict] Current configuration\n");
-            //this->dumpConfiguration();
+            if ( _config.hasKey("frequency") )
+            {
+                setConfigurationValueToDbl("frequency", _frequency);
+            }
+            if ( _config.hasKey("attenuation") )
+            {
+                setConfigurationValueToDbl("attenuation", _attenuation);
+            }
             this->debug("[TransmitterComponent::updateConfigurationDict] Returning\n");
         }
 

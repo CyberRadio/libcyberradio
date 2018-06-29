@@ -110,7 +110,11 @@ namespace LibCyberRadio
 	{
 		std::string buf = str.substr(start, end);
 		std::string::size_type pos = buf.find(prefix);
-
+		// Handle edge cases
+		if ( str.size() == 0 )
+		    return false;
+		else if ( prefix.size() == 0 )
+            return false;
 		return ( pos == 0 );
 	}
 
@@ -118,7 +122,11 @@ namespace LibCyberRadio
 	{
 		std::string buf = str.substr(start, end);
 		std::string::size_type pos = buf.rfind(suffix);
-
+        // Handle edge cases
+        if ( str.size() == 0 )
+            return false;
+        else if ( suffix.size() == 0 )
+            return false;
 		return ( pos == (buf.length() - suffix.length()) );
 	}
 

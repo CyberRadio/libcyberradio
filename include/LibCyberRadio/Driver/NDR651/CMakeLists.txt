@@ -12,6 +12,7 @@ LIST(APPEND libcyberradio_headers_Driver_NDR651
     RadioHandler.h
     TransmitterComponent.h
     TunerComponent.h
+    VitaIfSpec.h
     WbddcComponent.h
     WbddcGroupComponent.h
 )

@@ -44,6 +44,7 @@ namespace LibCyberRadio
 						/* double frequency */ frequency,
 						/* double attenuation */ attenuation )
 			{
+                initConfigurationDict();
 				// Allocate CW tone generators
 				for (int toneGen = _toneGenIndexBase; toneGen < _toneGenIndexBase + _numToneGen;
 					 toneGen++)
