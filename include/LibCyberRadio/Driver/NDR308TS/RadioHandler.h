@@ -25,11 +25,11 @@ namespace LibCyberRadio
     namespace Driver
     {
 
-		/**
-		 * \brief Provides programming elements for driving NDR308-TS radios.
-		 */
-    	namespace NDR308TS
-		{
+        /**
+         * \brief Provides programming elements for driving NDR308-TS radios.
+         */
+        namespace NDR308TS
+        {
 
             /**
              * \brief Radio handler class for the NDR308-TS.
@@ -171,34 +171,34 @@ namespace LibCyberRadio
              * </table>
              *
              */
-			class RadioHandler : public ::LibCyberRadio::Driver::RadioHandler
-			{
-				public:
-					RadioHandler(bool debug = false);
-					virtual ~RadioHandler();
-					RadioHandler(const RadioHandler& other);
-					virtual RadioHandler& operator=(const RadioHandler& other);
-					// OVERRIDE
-					virtual void queryConfiguration();
+            class RadioHandler : public ::LibCyberRadio::Driver::RadioHandler
+            {
+                public:
+                    RadioHandler(bool debug = false);
+                    virtual ~RadioHandler();
+                    RadioHandler(const RadioHandler& other);
+                    virtual RadioHandler& operator=(const RadioHandler& other);
+                    // OVERRIDE
+                    virtual void queryConfiguration();
 
-				protected:
-					// OVERRIDE
-					virtual bool queryVersionInfo();
-					// OVERRIDE
-					virtual bool executeQueryIDN(std::string& model,
-												 std::string& serialNumber);
-					// OVERRIDE
-					virtual bool executeQueryVER(std::string& softwareVersion,
-												 std::string& firmwareVersion,
-												 std::string& referenceVersion,
-												 std::string& firmwareDate);
-					// OVERRIDE
-					virtual bool executeQueryHREV(std::string& hardwareInfo);
+                protected:
+                    // OVERRIDE
+                    virtual bool queryVersionInfo();
+                    // OVERRIDE
+                    virtual bool executeQueryIDN(std::string& model,
+                            std::string& serialNumber);
+                    // OVERRIDE
+                    virtual bool executeQueryVER(std::string& softwareVersion,
+                            std::string& firmwareVersion,
+                            std::string& referenceVersion,
+                            std::string& firmwareDate);
+                    // OVERRIDE
+                    virtual bool executeQueryHREV(std::string& hardwareInfo);
 
 
-			}; /* class RadioHandler */
+            }; /* class RadioHandler */
 
-		} /* namespace NDR308TS */
+        } /* namespace NDR308TS */
 
     } /* namespace Driver */
 

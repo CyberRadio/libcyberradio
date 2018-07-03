@@ -21,21 +21,22 @@ namespace LibCyberRadio
     namespace Driver
     {
 
-        TransmitterComponent::TransmitterComponent(const std::string& name,
-                                       int index,
-                                       RadioHandler* parent,
-									   bool debug,
-                                       double freqRangeMin,
-                                       double freqRangeMax,
-                                       double freqRes,
-                                       double freqUnits,
-                                       double attRangeMin,
-                                       double attRangeMax,
-                                       double attRes,
-									   int numToneGen,
-									   int toneGenIndexBase,
-									   double frequency,
-									   double attenuation) :
+        TransmitterComponent::TransmitterComponent(
+                const std::string& name,
+                int index,
+                RadioHandler* parent,
+                bool debug,
+                double freqRangeMin,
+                double freqRangeMax,
+                double freqRes,
+                double freqUnits,
+                double attRangeMin,
+                double attRangeMax,
+                double attRes,
+                int numToneGen,
+                int toneGenIndexBase,
+                double frequency,
+                double attenuation) :
             RadioComponent(name, index, parent, debug),
             _freqRangeMin(freqRangeMin),
             _freqRangeMax(freqRangeMax),
@@ -49,14 +50,14 @@ namespace LibCyberRadio
             _frequency(frequency),
             _attenuation(attenuation)
         {
-        	// Call init function
-        	initConfigurationDict();
+            // Call init function
+            initConfigurationDict();
         }
 
         TransmitterComponent::~TransmitterComponent()
         {
             for ( CWToneGenComponentDict::iterator it = _cwToneGens.begin();
-                  it != _cwToneGens.end(); it++)
+                    it != _cwToneGens.end(); it++)
             {
                 delete it->second;
             }
@@ -117,22 +118,22 @@ namespace LibCyberRadio
         bool TransmitterComponent::setConfiguration(ConfigurationDict& cfg)
         {
             this->debug("[TransmitterComponent::setConfiguration] Called\n");
-        	// Call the base-class version to modify the configuration dictionary
-        	// (this including any enabling/disabling)
+            // Call the base-class version to modify the configuration dictionary
+            // (this including any enabling/disabling)
             bool ret = RadioComponent::setConfiguration(cfg);
-        	// Use the keys provided in the *incoming* dictionary to determine
-        	// what needs to be changed via hardware calls.
+            // Use the keys provided in the *incoming* dictionary to determine
+            // what needs to be changed via hardware calls.
             if ( cfg.hasKey("frequency") && _config.hasKey("frequency") )
             {
-            	try
-            	{
-                	double inFreq = boost::lexical_cast<double>( cfg["frequency"] );
+                try
+                {
+                    double inFreq = boost::lexical_cast<double>( cfg["frequency"] );
                     //this->debug("[setConfiguration] -- set freq = %0.1f\n", inFreq);
                     ret &= setFrequency( inFreq );
-            	}
-            	catch(std::exception& ex)
-            	{
-            	}
+                }
+                catch(std::exception& ex)
+                {
+                }
             }
             else
             {
@@ -140,15 +141,15 @@ namespace LibCyberRadio
             }
             if ( cfg.hasKey("attenuation") && _config.hasKey("attenuation") )
             {
-            	try
-            	{
-                	double inAtten = boost::lexical_cast<double>( cfg["attenuation"] );
+                try
+                {
+                    double inAtten = boost::lexical_cast<double>( cfg["attenuation"] );
                     //this->debug("[setConfiguration] -- set atten = %0.1f\n", inAtten);
                     ret &= setAttenuation( inAtten );
-            	}
-            	catch(std::exception& ex)
-            	{
-            	}
+                }
+                catch(std::exception& ex)
+                {
+                }
             }
             else
             {
@@ -176,7 +177,7 @@ namespace LibCyberRadio
             updateConfigurationDict();
             // Query configuration of CW tone generators
             for ( CWToneGenComponentDict::iterator it = _cwToneGens.begin();
-                  it != _cwToneGens.end(); it++)
+                    it != _cwToneGens.end(); it++)
             {
                 it->second->queryConfiguration();
             }
@@ -258,297 +259,297 @@ namespace LibCyberRadio
 
         bool TransmitterComponent::supportsCW() const
         {
-        	return ( _numToneGen > 0 );
+            return ( _numToneGen > 0 );
         }
 
         int TransmitterComponent::getCWNum() const
         {
-        	return _numToneGen;
+            return _numToneGen;
         }
 
         BasicIntList TransmitterComponent::getCWIndexRange() const
         {
-        	BasicIntList ret;
+            BasicIntList ret;
             for (int num = _toneGenIndexBase; num < _toneGenIndexBase + _numToneGen;
-            		num++)
+                    num++)
                 ret.push_back(num);
-        	return ret;
+            return ret;
         }
 
         BasicDoubleList TransmitterComponent::getCWFrequencyRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getFrequencyRange();
+                ret = it->second->getFrequencyRange();
             return ret;
         }
 
         double TransmitterComponent::getCWFrequencyRes() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getFrequencyRes();
+                ret = it->second->getFrequencyRes();
             return ret;
         }
 
         BasicDoubleList TransmitterComponent::getCWAmplitudeRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getAmplitudeRange();
+                ret = it->second->getAmplitudeRange();
             return ret;
         }
 
         double TransmitterComponent::getCWAmplitudeRes() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getAmplitudeRes();
+                ret = it->second->getAmplitudeRes();
             return ret;
         }
 
         BasicDoubleList TransmitterComponent::getCWPhaseRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getPhaseRange();
+                ret = it->second->getPhaseRange();
             return ret;
         }
 
         double TransmitterComponent::getCWPhaseRes() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getPhaseRes();
+                ret = it->second->getPhaseRes();
             return ret;
         }
 
         bool TransmitterComponent::supportsCWSweep() const
         {
-        	bool ret = false;
+            bool ret = false;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->supportsSweep();
-        	return ret;
+                ret = it->second->supportsSweep();
+            return ret;
         }
 
         BasicDoubleList TransmitterComponent::getCWSweepStartRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getSweepStartRange();
+                ret = it->second->getSweepStartRange();
             return ret;
         }
 
         double TransmitterComponent::getCWSweepStartRes() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getSweepStartRes();
+                ret = it->second->getSweepStartRes();
             return ret;
         }
 
         BasicDoubleList TransmitterComponent::getCWSweepStopRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getSweepStopRange();
+                ret = it->second->getSweepStopRange();
             return ret;
         }
 
         double TransmitterComponent::getCWSweepStopRes() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getSweepStopRes();
+                ret = it->second->getSweepStopRes();
             return ret;
         }
 
         BasicDoubleList TransmitterComponent::getCWSweepStepRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getSweepStepRange();
+                ret = it->second->getSweepStepRange();
             return ret;
         }
 
         double TransmitterComponent::getCWSweepStepRes() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getSweepStepRes();
+                ret = it->second->getSweepStepRes();
             return ret;
         }
 
         BasicDoubleList TransmitterComponent::getCWSweepDwellRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getDwellTimeRange();
+                ret = it->second->getDwellTimeRange();
             return ret;
         }
 
         double TransmitterComponent::getCWSweepDwellRes() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getDwellTimeRes();
+                ret = it->second->getDwellTimeRes();
             return ret;
         }
 
         bool TransmitterComponent::enableCW(int index, bool enabled)
         {
-        	bool ret = false;
+            bool ret = false;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->enable(enabled);
+                ret = it->second->enable(enabled);
             return ret;
         }
 
         bool TransmitterComponent::disableCW(int index)
         {
-        	return enableCW(index, false);
+            return enableCW(index, false);
         }
 
         ConfigurationDict TransmitterComponent::getCWConfiguration(int index) const
         {
-        	ConfigurationDict ret;
+            ConfigurationDict ret;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getConfiguration();
+                ret = it->second->getConfiguration();
             return ret;
         }
 
         bool TransmitterComponent::setCWConfiguration(int index, ConfigurationDict& cfg)
         {
-        	bool ret = false;
+            bool ret = false;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->setConfiguration(cfg);
+                ret = it->second->setConfiguration(cfg);
             return ret;
         }
 
         double TransmitterComponent::getCWFrequency(int index) const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getFrequency();
+                ret = it->second->getFrequency();
             return ret;
         }
 
         bool TransmitterComponent::setCWFrequency(int index, double freq)
         {
-        	bool ret = false;
+            bool ret = false;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->setFrequency(freq);
+                ret = it->second->setFrequency(freq);
             return ret;
         }
 
         double TransmitterComponent::getCWAmplitude(int index) const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getAmplitude();
+                ret = it->second->getAmplitude();
             return ret;
         }
 
         bool TransmitterComponent::setCWAmplitude(int index, double amp)
         {
-        	bool ret = false;
+            bool ret = false;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->setAmplitude(amp);
+                ret = it->second->setAmplitude(amp);
             return ret;
         }
 
         double TransmitterComponent::getCWPhase(int index) const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getPhase();
+                ret = it->second->getPhase();
             return ret;
         }
 
         bool TransmitterComponent::setCWPhase(int index, double phase)
         {
-        	bool ret = false;
+            bool ret = false;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->setPhase(phase);
+                ret = it->second->setPhase(phase);
             return ret;
         }
 
         bool TransmitterComponent::supportsCWSweep(int index) const
         {
-        	bool ret = false;
+            bool ret = false;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->supportsSweep();
+                ret = it->second->supportsSweep();
             return ret;
         }
 
         double TransmitterComponent::getCWSweepStartFrequency(int index) const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getSweepStartFrequency();
+                ret = it->second->getSweepStartFrequency();
             return ret;
         }
 
         double TransmitterComponent::getCWSweepStopFrequency(int index) const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getSweepStopFrequency();
+                ret = it->second->getSweepStopFrequency();
             return ret;
         }
 
         double TransmitterComponent::getCWSweepFrequencyStep(int index) const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getSweepFrequencyStep();
+                ret = it->second->getSweepFrequencyStep();
             return ret;
         }
 
         double TransmitterComponent::getCWSweepDwellTime(int index) const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->getSweepDwellTime();
+                ret = it->second->getSweepDwellTime();
             return ret;
         }
 
         bool TransmitterComponent::setCWFrequencySweep(int index, double start,
-        		                                       double stop, double step,
-													   double dwell)
+                double stop, double step,
+                double dwell)
         {
-        	bool ret = false;
+            bool ret = false;
             CWToneGenComponentDict::const_iterator it = _cwToneGens.begin();
             if ( it != _cwToneGens.end() )
-            	ret = it->second->setFrequencySweep(start, stop, step, dwell);
+                ret = it->second->setFrequencySweep(start, stop, step, dwell);
             return ret;
         }
 
@@ -556,7 +557,7 @@ namespace LibCyberRadio
         {
             //this->debug("[TransmitterComponent::initConfigurationDict] Called\n");
             _config.clear();
-        	// Call the base-class version
+            // Call the base-class version
             RadioComponent::initConfigurationDict();
             // Define tuner-specific keys
             _config["frequency"] = "";
@@ -590,13 +591,13 @@ namespace LibCyberRadio
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "TXP ", ""),
-                                             ", ");
-                   // vec[0] = Index
-                   // vec[1] = Powered state (0=off, 1=on)
-                   enabled = (boost::lexical_cast<int>(vec[1]) == 1);
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "TXP ", ""),
+                            ", ");
+                    // vec[0] = Index
+                    // vec[1] = Powered state (0=off, 1=on)
+                    enabled = (boost::lexical_cast<int>(vec[1]) == 1);
+                    ret = true;
                 }
             }
             return ret;
@@ -614,13 +615,13 @@ namespace LibCyberRadio
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "TXF ", ""),
-                                             ", ");
-                   // vec[0] = Index
-                   // vec[1] = Frequency (MHz) [FLOATING POINT]
-                   freq = boost::lexical_cast<double>(vec[1]) * _freqUnits;
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "TXF ", ""),
+                            ", ");
+                    // vec[0] = Index
+                    // vec[1] = Frequency (MHz) [FLOATING POINT]
+                    freq = boost::lexical_cast<double>(vec[1]) * _freqUnits;
+                    ret = true;
                 }
             }
             return ret;
@@ -637,13 +638,13 @@ namespace LibCyberRadio
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "TXA ", ""),
-                                             ", ");
-                   // vec[0] = Index
-                   // vec[1] = Atten (dB)
-                   atten = boost::lexical_cast<double>(vec[1]);
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "TXA ", ""),
+                            ", ");
+                    // vec[0] = Index
+                    // vec[1] = Atten (dB)
+                    atten = boost::lexical_cast<double>(vec[1]);
+                    ret = true;
                 }
             }
             return ret;
@@ -657,12 +658,12 @@ namespace LibCyberRadio
             {
                 std::ostringstream oss;
                 oss << "TXP " << index
-                    << ", " << (enabled ? 1 : 0)
-                    << "\n";
+                        << ", " << (enabled ? 1 : 0)
+                        << "\n";
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             return ret;
@@ -676,13 +677,13 @@ namespace LibCyberRadio
             {
                 std::ostringstream oss;
                 oss << "TXF " << index
-                    << ", " << std::setprecision(6) << std::fixed << (freq / _freqUnits)
-                    << "\n";
+                        << ", " << std::setprecision(6) << std::fixed << (freq / _freqUnits)
+                        << "\n";
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   freq = (freq / _freqUnits);
-                   ret = true;
+                    freq = (freq / _freqUnits);
+                    ret = true;
                 }
             }
             return ret;
@@ -696,12 +697,12 @@ namespace LibCyberRadio
             {
                 std::ostringstream oss;
                 oss << "TXA " << index
-                    << ", " << std::setprecision(1) << std::fixed << atten
-                    << "\n";
+                        << ", " << std::setprecision(1) << std::fixed << atten
+                        << "\n";
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             return ret;

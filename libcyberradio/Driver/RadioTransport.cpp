@@ -33,17 +33,17 @@ namespace LibCyberRadio
                 bool json,
                 bool debug
             ) :
-			Debuggable(debug, "RadioTransport"),
+            Debuggable(debug, "RadioTransport"),
             _isJson(json),
             _tcpSocket(0),
             _udpSocket(0),
             _serial(NULL),
-			_httpsSession(NULL),
+            _httpsSession(NULL),
             _httpsConnTestUrl(""),
             _httpsApiCmdUrl(""),
             _lastCmdErrInfo("")
         {
-        	this->debug("CONSTRUCTED\n");
+            this->debug("CONSTRUCTED\n");
         }
 
         RadioTransport::~RadioTransport()
@@ -52,15 +52,15 @@ namespace LibCyberRadio
                 disconnect();
             if (_httpsSession != NULL)
             {
-            	 delete _httpsSession;
-            	_httpsSession = NULL;
+                delete _httpsSession;
+                _httpsSession = NULL;
             }
             if (_serial != NULL)
             {
                 delete _serial;
                 _serial = NULL;
             }
-        	this->debug("DESTROYED\n");
+            this->debug("DESTROYED\n");
         }
 
         RadioTransport::RadioTransport(const RadioTransport &other) :
@@ -127,8 +127,8 @@ namespace LibCyberRadio
             this->debug("[disconnect] Called\n");
             if (_httpsSession != NULL)
             {
-            	 delete _httpsSession;
-            	_httpsSession = NULL;
+                delete _httpsSession;
+                _httpsSession = NULL;
             }
             else if (_udpSocket > 0)
             {
@@ -154,11 +154,11 @@ namespace LibCyberRadio
         bool RadioTransport::isConnected() const
         {
             bool ret = (
-            		     (_httpsSession != NULL) ||
-            		     (_serial != NULL) ||
-            		     (_tcpSocket > 0) ||
-            		     (_udpSocket > 0)
-					   );
+                    (_httpsSession != NULL) ||
+                    (_serial != NULL) ||
+                    (_tcpSocket > 0) ||
+                    (_udpSocket > 0)
+            );
             return ret;
         }
 
@@ -168,7 +168,7 @@ namespace LibCyberRadio
             )
         {
             this->debug("[sendCommand] Called; cmd=\"%s\"\n",
-                        this->rawString(cmdString).c_str());
+                    this->rawString(cmdString).c_str());
             bool ret = false;
             if (_httpsSession != NULL)
             {
@@ -187,7 +187,7 @@ namespace LibCyberRadio
                 ret = sendCommandTcp(cmdString, clearRx);
             }
             else
-            	_lastCmdErrInfo = "Transport is not connected";
+                _lastCmdErrInfo = "Transport is not connected";
             this->debug("[sendCommand] Returning %s\n", this->debugBool(ret));
             return ret;
         }
@@ -207,7 +207,7 @@ namespace LibCyberRadio
                 ret = receiveCli(timeout);
             }
             this->debug("[receive] Returning %u element%s\n", ret.size(),
-            		    ret.size() == 1 ? "" : "s");
+                    ret.size() == 1 ? "" : "s");
             return ret;
         }
 
@@ -269,7 +269,7 @@ namespace LibCyberRadio
             bool ret = false;
             // Attempt to establish the HTTPS session
             if ( _httpsSession == NULL )
-            	_httpsSession = new HttpsSession( /*d_debug */ false);
+                _httpsSession = new HttpsSession( /*d_debug */ false);
             if ( _httpsSession != NULL )
             {
                 this->debug("[connectHttps] Session initialized\n");
@@ -281,7 +281,7 @@ namespace LibCyberRadio
                 _httpsApiCmdUrl = oss.str();
                 // Test the connection
                 this->debug("[connectHttps] Testing connection; URL=%s\n",
-                		    _httpsConnTestUrl.c_str());
+                        _httpsConnTestUrl.c_str());
                 ret = _httpsSession->get(_httpsConnTestUrl, false);
                 // Destroy the session object if the connection test fails
                 if (!ret)
@@ -292,7 +292,7 @@ namespace LibCyberRadio
                 }
             }
             else
-            	_lastCmdErrInfo = "Failed to establish HTTPS session";
+                _lastCmdErrInfo = "Failed to establish HTTPS session";
             this->debug("[connectHttps] Returning %s\n", this->debugBool(ret));
             return ret;
         }
@@ -303,22 +303,22 @@ namespace LibCyberRadio
             )
         {
             this->debug("[connectTty] Called; dev=\"%s\", baudrate=%d\n",
-                        dev.c_str(), baudrate);
+                    dev.c_str(), baudrate);
             bool ret = false;
             // Attempt to establish the TTY link
             if ( _serial == NULL )
                 _serial = new ::LibCyberRadio::SerialPort(
-                            dev, baudrate, 'N', 8, 1,
-                            false, false, false
-                        );
-                ret = _serial->open();
+                        dev, baudrate, 'N', 8, 1,
+                        false, false, false
+                );
+            ret = _serial->open();
             if ( ret )
             {
                 this->debug("[connectTty] Serial link established\n");
                 // Test connection by sending an empty command
                 this->debug("[connectTty] Testing connection\n");
                 if ( sendCommand("\r\n") &&
-                     (receive().size() > 0) )
+                        (receive().size() > 0) )
                 {
                 }
                 else
@@ -351,7 +351,7 @@ namespace LibCyberRadio
             )
         {
             this->debug("[sendCommandTcp] Called; cmd=\"%s\"\n",
-                        this->rawString(cmdString).c_str());
+                    this->rawString(cmdString).c_str());
             bool ret = false;
             int bytes = send(_tcpSocket, cmdString.c_str(), cmdString.length(), 0);
             this->debug("[sendCommandTcp] -- Bytes sent: %d\n", bytes);
@@ -379,17 +379,17 @@ namespace LibCyberRadio
             )
         {
             this->debug("[sendCommandHttps] Called; cmd=\"%s\"\n",
-                        this->rawString(cmdString).c_str());
+                    this->rawString(cmdString).c_str());
             bool ret = false;
             if ( _httpsSession != NULL )
             {
-            	ret = _httpsSession->post(_httpsApiCmdUrl,
-            			                  (void*)cmdString.c_str(),
-										  cmdString.length(),
-										  "application/json",
-									      false);
+                ret = _httpsSession->post(_httpsApiCmdUrl,
+                        (void*)cmdString.c_str(),
+                        cmdString.length(),
+                        "application/json",
+                        false);
                 this->debug("[sendCommandHttps] HTTPS response code = %d\n",
-                		    _httpsSession->getResponseCode());
+                        _httpsSession->getResponseCode());
                 // If the request failed, get the reason why.
                 if ( !ret )
                 {
@@ -399,23 +399,23 @@ namespace LibCyberRadio
                     // we actually want to proceed as if the request succeeded.
                     // This allows extended error info to be passed up to the
                     // radio handler level.
-                	Json::Reader reader;
-                	Json::Value jsonResponse;
-                	if ( reader.parse(_httpsSession->getResponseBody(),
-                	                  jsonResponse, false) )
-                	{
-                	    ret = true;
-                	}
-                	// If the radio did not return a JSON response, then
-                	// indicate why the transport action failed.
-                	else
-                	{
-                	    _lastCmdErrInfo = _httpsSession->getLastRequestErrorInfo();
-                	}
+                    Json::Reader reader;
+                    Json::Value jsonResponse;
+                    if ( reader.parse(_httpsSession->getResponseBody(),
+                            jsonResponse, false) )
+                    {
+                        ret = true;
+                    }
+                    // If the radio did not return a JSON response, then
+                    // indicate why the transport action failed.
+                    else
+                    {
+                        _lastCmdErrInfo = _httpsSession->getLastRequestErrorInfo();
+                    }
                 }
             }
             else
-            	_lastCmdErrInfo = "Transport is not connected";
+                _lastCmdErrInfo = "Transport is not connected";
             this->debug("[sendCommandHttps] Returning %s\n", this->debugBool(ret));
             return ret;
         }
@@ -426,7 +426,7 @@ namespace LibCyberRadio
             )
         {
             this->debug("[sendCommandTty] Called; cmd=\"%s\"\n",
-                        this->rawString(cmdString).c_str());
+                    this->rawString(cmdString).c_str());
             bool ret = false;
             if ( _serial->write(cmdString) )
             {
@@ -462,11 +462,11 @@ namespace LibCyberRadio
             if ( _httpsSession != NULL )
             {
                 this->debug("[receiveJsonHttps] HTTPS response body = \"%s\"\n",
-                		    _httpsSession->getResponseBody().c_str());
+                        _httpsSession->getResponseBody().c_str());
                 ret = Pythonesque::Split(_httpsSession->getResponseBody(), "\n");
             }
             else
-            	_lastCmdErrInfo = "Transport is not connected";
+                _lastCmdErrInfo = "Transport is not connected";
             return ret;
         }
 
@@ -531,7 +531,7 @@ namespace LibCyberRadio
                 }
             }
             this->debug("[receiveCliTcp] Received: \"%s\"\n",
-                        this->rawString(oss.str()).c_str());
+                    this->rawString(oss.str()).c_str());
             // Split the response into a list of non-empty strings
             // -- Remove carriage returns and prompt character
             std::string tmp = Pythonesque::Replace(Pythonesque::Replace(oss.str(), "\r", ""), ">", "");
@@ -572,7 +572,7 @@ namespace LibCyberRadio
                     break;
             }
             this->debug("[receiveCliTty] Received: \"%s\"\n",
-                        this->rawString(oss.str()).c_str());
+                    this->rawString(oss.str()).c_str());
             // Split the response into a list of non-empty strings
             // -- Remove carriage returns and prompt character
             std::string tmp = Pythonesque::Replace(Pythonesque::Replace(oss.str(), "\r", ""), ">", "");

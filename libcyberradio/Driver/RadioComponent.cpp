@@ -18,9 +18,9 @@ namespace LibCyberRadio
     {
 
         RadioComponent::RadioComponent(const std::string& name,
-                                       int index,
-                                       RadioHandler* parent,
-									   bool debug) :
+                int index,
+                RadioHandler* parent,
+                bool debug) :
             Configurable(name, debug),
             _index(index),
             _parent(parent),
@@ -34,7 +34,7 @@ namespace LibCyberRadio
         }
 
         RadioComponent::RadioComponent(const RadioComponent& other) :
-        	Configurable(other),
+            Configurable(other),
             _index(other._index),
             _parent(other._parent),
             _enabled(other._enabled)
@@ -43,7 +43,7 @@ namespace LibCyberRadio
 
         RadioComponent&RadioComponent::operator=(const RadioComponent& other)
         {
-        	Configurable::operator=(other);
+            Configurable::operator=(other);
             if ( this != &other )
             {
                 _index = other._index;
@@ -92,36 +92,36 @@ namespace LibCyberRadio
 
         bool RadioComponent::setConfiguration(ConfigurationDict& cfg)
         {
-        	//this->debug("[RadioComponent::setConfiguration] Called\n");
-        	// Call the base-class version to modify the configuration dictionary
-        	bool ret = Configurable::setConfiguration(cfg);
-        	// Use the keys provided in the *incoming* dictionary to determine
-        	// what needs to be changed.
-        	if ( cfg.hasKey("enable") && _config.hasKey("enable") )
+            //this->debug("[RadioComponent::setConfiguration] Called\n");
+            // Call the base-class version to modify the configuration dictionary
+            bool ret = Configurable::setConfiguration(cfg);
+            // Use the keys provided in the *incoming* dictionary to determine
+            // what needs to be changed.
+            if ( cfg.hasKey("enable") && _config.hasKey("enable") )
             {
-            	ret = enable( _config["enable"].asBool() );
+                ret = enable( _config["enable"].asBool() );
             }
-        	//this->debug("[RadioComponent::setConfiguration] Returning\n");
+            //this->debug("[RadioComponent::setConfiguration] Returning\n");
             return ret;
         }
-        
+
         void RadioComponent::queryConfiguration()
         {
-        	//this->debug("[RadioComponent::queryConfiguration] Called\n");
+            //this->debug("[RadioComponent::queryConfiguration] Called\n");
             // Replace this with hardware queries to determine values
             //this->debug("[RadioComponent::queryConfiguration] Returning\n");
         }
 
         void RadioComponent::initConfigurationDict()
         {
-        	//this->debug("[RadioComponent::initConfigurationDict] Called\n");
+            //this->debug("[RadioComponent::initConfigurationDict] Called\n");
             _config["enable"] = _enabled;
             //this->debug("[RadioComponent::initConfigurationDict] Returning\n");
         }
 
         void RadioComponent::updateConfigurationDict()
         {
-        	//this->debug("[RadioComponent::updateConfigurationDict] Called\n");
+            //this->debug("[RadioComponent::updateConfigurationDict] Called\n");
             if ( _config.hasKey("enable") )
                 this->setConfigurationValueToBool("enable", _enabled);
             //this->debug("[RadioComponent::updateConfigurationDict] Returning\n");

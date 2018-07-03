@@ -21,21 +21,22 @@ namespace LibCyberRadio
     namespace Driver
     {
 
-        TunerComponent::TunerComponent(const std::string& name,
-                                       int index,
-                                       RadioHandler* parent,
-									   bool debug,
-                                       double freqRangeMin,
-                                       double freqRangeMax,
-                                       double freqRes,
-                                       double freqUnits,
-                                       double attRangeMin,
-                                       double attRangeMax,
-                                       double attRes,
-                                       bool agc,
-                                       double frequency,
-                                       double attenuation,
-                                       int filter) :
+        TunerComponent::TunerComponent(
+                const std::string& name,
+                int index,
+                RadioHandler* parent,
+                bool debug,
+                double freqRangeMin,
+                double freqRangeMax,
+                double freqRes,
+                double freqUnits,
+                double attRangeMin,
+                double attRangeMax,
+                double attRes,
+                bool agc,
+                double frequency,
+                double attenuation,
+                int filter) :
             RadioComponent(name, index, parent, debug),
             _freqRangeMin(freqRangeMin),
             _freqRangeMax(freqRangeMax),
@@ -50,8 +51,8 @@ namespace LibCyberRadio
             _filter(filter),
             _timingAdj(0)
         {
-        	// Call init function
-        	initConfigurationDict();
+            // Call init function
+            initConfigurationDict();
         }
 
         TunerComponent::~TunerComponent()
@@ -115,34 +116,34 @@ namespace LibCyberRadio
         bool TunerComponent::setConfiguration(ConfigurationDict& cfg)
         {
             this->debug("[TunerComponent::setConfiguration] Called\n");
-        	// Call the base-class version to modify the configuration dictionary
-        	// (this including any enabling/disabling)
+            // Call the base-class version to modify the configuration dictionary
+            // (this including any enabling/disabling)
             bool ret = RadioComponent::setConfiguration(cfg);
-        	// Use the keys provided in the *incoming* dictionary to determine
-        	// what needs to be changed via hardware calls.
-			double adjFrequency = _frequency;
-			double adjAttenuation = _attenuation;
-			int adjFilter = _filter;
-			int adjAdj = _timingAdj;
+            // Use the keys provided in the *incoming* dictionary to determine
+            // what needs to be changed via hardware calls.
+            double adjFrequency = _frequency;
+            double adjAttenuation = _attenuation;
+            int adjFilter = _filter;
+            int adjAdj = _timingAdj;
             bool freqCmdNeedsExecuting = false;
             bool attCmdNeedsExecuting = false;
             bool filCmdNeedsExecuting = false;
             bool adjCmdNeedsExecuting = false;
-			if ( cfg.hasKey("frequency") && _config.hasKey("frequency") )
-			{
-				adjFrequency = getConfigurationValueAsDbl("frequency");
-				freqCmdNeedsExecuting = true;
-			}
-			if ( cfg.hasKey("attenuation") && _config.hasKey("attenuation") )
-			{
-				adjAttenuation = getConfigurationValueAsDbl("attenuation");
-				attCmdNeedsExecuting = true;
-			}
-			if ( cfg.hasKey("filter") && _config.hasKey("filter") )
-			{
-				adjFilter = getConfigurationValueAsInt("filter");
-				filCmdNeedsExecuting = true;
-			}
+            if ( cfg.hasKey("frequency") && _config.hasKey("frequency") )
+            {
+                adjFrequency = getConfigurationValueAsDbl("frequency");
+                freqCmdNeedsExecuting = true;
+            }
+            if ( cfg.hasKey("attenuation") && _config.hasKey("attenuation") )
+            {
+                adjAttenuation = getConfigurationValueAsDbl("attenuation");
+                attCmdNeedsExecuting = true;
+            }
+            if ( cfg.hasKey("filter") && _config.hasKey("filter") )
+            {
+                adjFilter = getConfigurationValueAsInt("filter");
+                filCmdNeedsExecuting = true;
+            }
             if ( cfg.hasKey("timingAdj") && _config.hasKey("timingAdj") )
             {
                 adjAdj = getConfigurationValueAsInt("timingAdj");
@@ -150,15 +151,15 @@ namespace LibCyberRadio
             }
             if ( freqCmdNeedsExecuting )
             {
-				ret &= executeFreqCommand(_index, adjFrequency);
+                ret &= executeFreqCommand(_index, adjFrequency);
             }
             if ( attCmdNeedsExecuting )
             {
-				ret &= executeAttenCommand(_index, adjAttenuation);
+                ret &= executeAttenCommand(_index, adjAttenuation);
             }
             if ( filCmdNeedsExecuting )
             {
-				ret &= executeFilterCommand(_index, adjFilter);
+                ret &= executeFilterCommand(_index, adjFilter);
             }
             if ( adjCmdNeedsExecuting )
             {
@@ -317,8 +318,8 @@ namespace LibCyberRadio
 
         bool TunerComponent::setFrequencyRangeMax(double freq)
         {
-        	_freqRangeMax = freq;
-        	return true;
+            _freqRangeMax = freq;
+            return true;
         }
 
         void TunerComponent::initConfigurationDict()
@@ -369,13 +370,13 @@ namespace LibCyberRadio
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "TPWR ", ""),
-                                             ", ");
-                   // vec[0] = Index
-                   // vec[1] = Powered state (0=off, 1=on)
-                   enabled = (boost::lexical_cast<int>(vec[1]) == 1);
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "TPWR ", ""),
+                            ", ");
+                    // vec[0] = Index
+                    // vec[1] = Powered state (0=off, 1=on)
+                    enabled = (boost::lexical_cast<int>(vec[1]) == 1);
+                    ret = true;
                 }
             }
             return ret;
@@ -393,13 +394,13 @@ namespace LibCyberRadio
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "FRQ ", ""),
-                                             ", ");
-                   // vec[0] = Index
-                   // vec[1] = Frequency (MHz)
-                   freq = boost::lexical_cast<int>(vec[1]) * _freqUnits;
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "FRQ ", ""),
+                            ", ");
+                    // vec[0] = Index
+                    // vec[1] = Frequency (MHz)
+                    freq = boost::lexical_cast<int>(vec[1]) * _freqUnits;
+                    ret = true;
                 }
             }
             return ret;
@@ -416,13 +417,13 @@ namespace LibCyberRadio
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "ATT ", ""),
-                                             ", ");
-                   // vec[0] = Index
-                   // vec[1] = Atten (dB)
-                   atten = boost::lexical_cast<double>(vec[1]);
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "ATT ", ""),
+                            ", ");
+                    // vec[0] = Index
+                    // vec[1] = Atten (dB)
+                    atten = boost::lexical_cast<double>(vec[1]);
+                    ret = true;
                 }
             }
             return ret;
@@ -439,13 +440,13 @@ namespace LibCyberRadio
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "FIF ", ""),
-                                             ", ");
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "FIF ", ""),
+                            ", ");
                     // vec[0] = Index
-                   // vec[1] = Filter index
-                   filter = boost::lexical_cast<int>(vec[1]);
-                   ret = true;
+                    // vec[1] = Filter index
+                    filter = boost::lexical_cast<int>(vec[1]);
+                    ret = true;
                 }
             }
             return ret;
@@ -461,13 +462,13 @@ namespace LibCyberRadio
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "TADJ ", ""),
-                                             ", ");
-                   // vec[0] = Index
-                   // vec[1] = Timing adjustment
-                   timingAdj = boost::lexical_cast<int>(vec[1]);
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "TADJ ", ""),
+                            ", ");
+                    // vec[0] = Index
+                    // vec[1] = Timing adjustment
+                    timingAdj = boost::lexical_cast<int>(vec[1]);
+                    ret = true;
                 }
             }
             return ret;
@@ -480,12 +481,12 @@ namespace LibCyberRadio
             {
                 std::ostringstream oss;
                 oss << "TPWR " << index
-                    << ", " << (enabled ? 1 : 0)
-                    << "\n";
+                        << ", " << (enabled ? 1 : 0)
+                        << "\n";
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             return ret;
@@ -499,13 +500,13 @@ namespace LibCyberRadio
             {
                 std::ostringstream oss;
                 oss << "FRQ " << index
-                    << ", " << boost::lexical_cast<int>(freq / _freqUnits)
-                    << "\n";
+                        << ", " << boost::lexical_cast<int>(freq / _freqUnits)
+                        << "\n";
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   freq = (int)(freq / _freqUnits) * _freqUnits;
-                   ret = true;
+                    freq = (int)(freq / _freqUnits) * _freqUnits;
+                    ret = true;
                 }
             }
             return ret;
@@ -519,13 +520,13 @@ namespace LibCyberRadio
             {
                 std::ostringstream oss;
                 oss << "ATT " << index
-                    << ", " << atten
-                    << "\n";
+                        << ", " << atten
+                        << "\n";
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   atten = (double)((int)atten);
-                   ret = true;
+                    atten = (double)((int)atten);
+                    ret = true;
                 }
             }
             return ret;
@@ -539,12 +540,12 @@ namespace LibCyberRadio
             {
                 std::ostringstream oss;
                 oss << "FIF " << index
-                    << ", " << filter
-                    << "\n";
+                        << ", " << filter
+                        << "\n";
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             return ret;
@@ -557,12 +558,12 @@ namespace LibCyberRadio
             {
                 std::ostringstream oss;
                 oss << "TADJ " << index
-                    << ", " << timingAdj
-                    << "\n";
+                        << ", " << timingAdj
+                        << "\n";
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             return ret;

@@ -26,31 +26,32 @@ namespace LibCyberRadio
 
     namespace Driver
     {
-        RadioHandler::RadioHandler(const std::string& name,
-                                   int numTuner,
-                                   int tunerIndexBase,
-                                   int numWbddc,
-                                   int wbddcIndexBase,
-                                   int numNbddc,
-                                   int nbddcIndexBase,
-                                   int numTunerBoards,
-                                   int maxTunerBw,
-								   int numTransmitter,
-								   int transmitterIndexBase,
-								   int numDuc,
-								   int ducIndexBase,
-			                       int numWbddcGroups,
-			                       int wbddcGroupIndexBase,
-			                       int numNbddcGroups,
-			                       int nbddcGroupIndexBase,
-			                       int numDdcGroups,
-			                       int ddcGroupIndexBase,
-                                   int numDataPorts,
-                                   int dataPortIndexBase,
-                                   int numSimpleIpSetups,
-								   double adcRate,
-								   VitaIfSpec ifSpec,
-								   bool debug) :
+        RadioHandler::RadioHandler(
+                const std::string& name,
+                int numTuner,
+                int tunerIndexBase,
+                int numWbddc,
+                int wbddcIndexBase,
+                int numNbddc,
+                int nbddcIndexBase,
+                int numTunerBoards,
+                int maxTunerBw,
+                int numTransmitter,
+                int transmitterIndexBase,
+                int numDuc,
+                int ducIndexBase,
+                int numWbddcGroups,
+                int wbddcGroupIndexBase,
+                int numNbddcGroups,
+                int nbddcGroupIndexBase,
+                int numDdcGroups,
+                int ddcGroupIndexBase,
+                int numDataPorts,
+                int dataPortIndexBase,
+                int numSimpleIpSetups,
+                double adcRate,
+                VitaIfSpec ifSpec,
+                bool debug) :
             Configurable(name, debug),
             _numTuner(numTuner),
             _tunerIndexBase(tunerIndexBase),
@@ -60,8 +61,8 @@ namespace LibCyberRadio
             _nbddcIndexBase(nbddcIndexBase),
             _numTunerBoards(numTunerBoards),
             _maxTunerBw(maxTunerBw),
-			_numTransmitter(numTransmitter),
-			_transmitterIndexBase(transmitterIndexBase),
+            _numTransmitter(numTransmitter),
+            _transmitterIndexBase(transmitterIndexBase),
             _numDuc(numDuc),
             _ducIndexBase(ducIndexBase),
             _numWbddcGroups(numWbddcGroups),
@@ -73,8 +74,8 @@ namespace LibCyberRadio
             _numDataPorts(numDataPorts),
             _dataPortIndexBase(dataPortIndexBase),
             _numSimpleIpSetups(numSimpleIpSetups),
-			_adcRate(adcRate),
-			_ifSpec(ifSpec),
+            _adcRate(adcRate),
+            _ifSpec(ifSpec),
             _configMode(0),
             _coherentMode(0),
             _freqNormalization(0),
@@ -105,54 +106,54 @@ namespace LibCyberRadio
                 disconnect();
             }
             for ( TunerComponentDict::iterator it = _tuners.begin();
-                  it != _tuners.end(); it++)
+                    it != _tuners.end(); it++)
             {
                 delete it->second;
             }
             for ( WbddcComponentDict::iterator it = _wbddcs.begin();
-                  it != _wbddcs.end(); it++)
+                    it != _wbddcs.end(); it++)
             {
                 delete it->second;
             }
             for ( NbddcComponentDict::iterator it = _nbddcs.begin();
-                  it != _nbddcs.end(); it++)
+                    it != _nbddcs.end(); it++)
             {
                 delete it->second;
             }
             for ( TransmitterComponentDict::iterator it = _txs.begin();
-                  it != _txs.end(); it++)
+                    it != _txs.end(); it++)
             {
                 delete it->second;
             }
             for ( DataPortDict::iterator it = _dataPorts.begin();
-                  it != _dataPorts.end(); it++)
+                    it != _dataPorts.end(); it++)
             {
                 delete it->second;
             }
             for ( DucComponentDict::iterator it = _ducs.begin();
-                  it != _ducs.end(); it++)
+                    it != _ducs.end(); it++)
             {
                 delete it->second;
             }
             for ( WbddcGroupComponentDict::iterator it = _wbddcGroups.begin();
-                  it != _wbddcGroups.end(); it++)
+                    it != _wbddcGroups.end(); it++)
             {
                 delete it->second;
             }
             for ( NbddcGroupComponentDict::iterator it = _nbddcGroups.begin();
-                  it != _nbddcGroups.end(); it++)
+                    it != _nbddcGroups.end(); it++)
             {
                 delete it->second;
             }
             for ( SimpleIpSetupDict::iterator it = _simpleIpSetups.begin();
-                  it != _simpleIpSetups.end(); it++)
+                    it != _simpleIpSetups.end(); it++)
             {
                 delete it->second;
             }
         }
 
         RadioHandler::RadioHandler(const RadioHandler &other) :
-        	Configurable(other)
+            Configurable(other)
         {
             _connModesSupported = other._connModesSupported;
             _numTuner = other._numTuner;
@@ -163,8 +164,8 @@ namespace LibCyberRadio
             _nbddcIndexBase = other._nbddcIndexBase;
             _numTunerBoards = other._numTunerBoards;
             _maxTunerBw = other._maxTunerBw;
-			_numTransmitter = other._numTransmitter;
-			_transmitterIndexBase = other._transmitterIndexBase;
+            _numTransmitter = other._numTransmitter;
+            _transmitterIndexBase = other._transmitterIndexBase;
             _numDuc = other._numDuc;
             _ducIndexBase = other._ducIndexBase;
             _numWbddcGroups = other._numWbddcGroups;
@@ -196,7 +197,7 @@ namespace LibCyberRadio
 
         RadioHandler& RadioHandler::operator=(const RadioHandler& other)
         {
-        	Configurable::operator=(other);
+            Configurable::operator=(other);
             // Block self-assignment
             if (this != &other)
             {
@@ -209,8 +210,8 @@ namespace LibCyberRadio
                 _nbddcIndexBase = other._nbddcIndexBase;
                 _numTunerBoards = other._numTunerBoards;
                 _maxTunerBw = other._maxTunerBw;
-    			_numTransmitter = other._numTransmitter;
-    			_transmitterIndexBase = other._transmitterIndexBase;
+                _numTransmitter = other._numTransmitter;
+                _transmitterIndexBase = other._transmitterIndexBase;
                 _numDuc = other._numDuc;
                 _ducIndexBase = other._ducIndexBase;
                 _numWbddcGroups = other._numWbddcGroups;
@@ -238,7 +239,7 @@ namespace LibCyberRadio
                 _connectionInfo = other._connectionInfo;
                 _defaultTimeout = other._defaultTimeout;
                 _defaultDeviceInfo = other._defaultDeviceInfo;
-           }
+            }
             return *this;
         }
 
@@ -269,7 +270,7 @@ namespace LibCyberRadio
                 this->debug("[RadioHandler::connect] Connect result: %s\n", debugBool(ret));
                 if (ret)
                 {
-                	_connectionInfo["mode"] = mode;
+                    _connectionInfo["mode"] = mode;
                     if ( (mode == "tcp") or (mode == "udp") )
                     {
                         _connectionInfo["hostname"] = host_or_dev;
@@ -307,7 +308,7 @@ namespace LibCyberRadio
         BasicStringList RadioHandler::sendCommand(const std::string &cmdString, double timeout)
         {
             this->debug("[RadioHandler::sendCommand] Called; cmd=\"%s\"\n",
-            		             Pythonesque::Strip(cmdString).c_str());
+                    Pythonesque::Strip(cmdString).c_str());
             BasicStringList ret;
             _lastCmdErrorInfo = "";
             if ( _transport.sendCommand(cmdString) )
@@ -325,8 +326,8 @@ namespace LibCyberRadio
             {
                 if ( it->find("ERROR") != std::string::npos )
                 {
-                	_lastCmdErrorInfo = Pythonesque::Replace(*it, "ERROR: ", "");
-                	break;
+                    _lastCmdErrorInfo = Pythonesque::Replace(*it, "ERROR: ", "");
+                    break;
                 }
             }
             // If the first line of the response just echoed the command, remove it
@@ -345,47 +346,47 @@ namespace LibCyberRadio
             if ( this->queryRadioConfiguration() )
                 this->updateConfigurationDict();
             for ( TunerComponentDict::iterator it = _tuners.begin();
-                  it != _tuners.end(); it++)
+                    it != _tuners.end(); it++)
             {
                 it->second->queryConfiguration();
             }
             for ( WbddcComponentDict::iterator it = _wbddcs.begin();
-                  it != _wbddcs.end(); it++)
+                    it != _wbddcs.end(); it++)
             {
                 it->second->queryConfiguration();
             }
             for ( NbddcComponentDict::iterator it = _nbddcs.begin();
-                  it != _nbddcs.end(); it++)
+                    it != _nbddcs.end(); it++)
             {
                 it->second->queryConfiguration();
             }
             for ( TransmitterComponentDict::iterator it = _txs.begin();
-                  it != _txs.end(); it++)
+                    it != _txs.end(); it++)
             {
                 it->second->queryConfiguration();
             }
             for ( DataPortDict::iterator it = _dataPorts.begin();
-                  it != _dataPorts.end(); it++)
+                    it != _dataPorts.end(); it++)
             {
                 it->second->queryConfiguration();
             }
             for ( DucComponentDict::iterator it = _ducs.begin();
-                  it != _ducs.end(); it++)
+                    it != _ducs.end(); it++)
             {
                 it->second->queryConfiguration();
             }
             for ( WbddcGroupComponentDict::iterator it = _wbddcGroups.begin();
-                  it != _wbddcGroups.end(); it++)
+                    it != _wbddcGroups.end(); it++)
             {
                 it->second->queryConfiguration();
             }
             for ( NbddcGroupComponentDict::iterator it = _nbddcGroups.begin();
-                  it != _nbddcGroups.end(); it++)
+                    it != _nbddcGroups.end(); it++)
             {
                 it->second->queryConfiguration();
             }
             for ( SimpleIpSetupDict::iterator it = _simpleIpSetups.begin();
-                  it != _simpleIpSetups.end(); it++)
+                    it != _simpleIpSetups.end(); it++)
             {
                 it->second->queryConfiguration();
             }
@@ -467,63 +468,63 @@ namespace LibCyberRadio
 
         bool RadioHandler::sendReset(int resetType)
         {
-        	return this->executeResetCommand(resetType);
+            return this->executeResetCommand(resetType);
         }
 
         bool RadioHandler::getPps()
         {
-        	return this->executePpsQuery();
+            return this->executePpsQuery();
         }
 
         bool RadioHandler::setTimeNextPps(bool checkTime, bool useGpsTime)
         {
-        	bool ret = this->getPps();
-        	if ( ret )
-        	{
-        		// Determine target time -- either the next whole second
-        		// after current system time, or GPS time, as requested.
-        		time_t targetTime = time(NULL) + 1;
-    			std::string adjTime;
-        		if ( useGpsTime )
-        		{
-            		// Set target time based on GPS time
-        			adjTime = "G";
-            		ret = this->executeTimeCommand(adjTime);
-        		}
-        		else
-        		{
-            		// Set target time based on system time
-        			adjTime = boost::lexical_cast<std::string>(targetTime);
-            		ret = this->executeTimeCommand(adjTime);
-        		}
-        		if ( ret )
-        		{
-        			if ( checkTime )
-        			{
-        				time_t radioUtc = this->getTimeNextPps();
-			            ret = (radioUtc == targetTime);
-        			}
-        		}
-        	}
-        	else
-        	{
-				ret = false;
-        	}
-        	return ret;
+            bool ret = this->getPps();
+            if ( ret )
+            {
+                // Determine target time -- either the next whole second
+                // after current system time, or GPS time, as requested.
+                time_t targetTime = time(NULL) + 1;
+                std::string adjTime;
+                if ( useGpsTime )
+                {
+                    // Set target time based on GPS time
+                    adjTime = "G";
+                    ret = this->executeTimeCommand(adjTime);
+                }
+                else
+                {
+                    // Set target time based on system time
+                    adjTime = boost::lexical_cast<std::string>(targetTime);
+                    ret = this->executeTimeCommand(adjTime);
+                }
+                if ( ret )
+                {
+                    if ( checkTime )
+                    {
+                        time_t radioUtc = this->getTimeNextPps();
+                        ret = (radioUtc == targetTime);
+                    }
+                }
+            }
+            else
+            {
+                ret = false;
+            }
+            return ret;
         }
 
         time_t RadioHandler::getTimeNow()
         {
-        	time_t ret = 0;
-        	std::string adjTime;
-        	this->debug("[RadioHandler::getTimeNow] Executing time query\n");
-        	if ( this->executeTimeQuery(adjTime) )
-        	{
-            	this->debug("[RadioHandler::getTimeNow] -- query result: %s\n", adjTime.c_str());
-        		ret = (time_t)boost::lexical_cast<unsigned int>(adjTime);
-            	//this->debug("[RadioHandler::getTimeNow] -- converted: %lu\n", ret);
-        	}
-        	return ret;
+            time_t ret = 0;
+            std::string adjTime;
+            this->debug("[RadioHandler::getTimeNow] Executing time query\n");
+            if ( this->executeTimeQuery(adjTime) )
+            {
+                this->debug("[RadioHandler::getTimeNow] -- query result: %s\n", adjTime.c_str());
+                ret = (time_t)boost::lexical_cast<unsigned int>(adjTime);
+                //this->debug("[RadioHandler::getTimeNow] -- converted: %lu\n", ret);
+            }
+            return ret;
         }
 
         time_t RadioHandler::getTimeNextPps()
@@ -647,7 +648,7 @@ namespace LibCyberRadio
         }
 
         bool RadioHandler::setGpioOutputByIndex(int index, int value,
-                                                int duration, int loop, int go)
+                int duration, int loop, int go)
         {
             bool ret = false;
             int adjValue = value;
@@ -719,42 +720,42 @@ namespace LibCyberRadio
 
         double RadioHandler::getAdcRate() const
         {
-        	return _adcRate;
+            return _adcRate;
         }
 
         int RadioHandler::getVitaHeaderSize() const
         {
-        	return _ifSpec.headerSizeWords * 4;
+            return _ifSpec.headerSizeWords * 4;
         }
 
         int RadioHandler::getVitaPayloadSize() const
         {
-        	return _ifSpec.payloadSizeWords * 4;
+            return _ifSpec.payloadSizeWords * 4;
         }
 
         int RadioHandler::getVitaTailSize() const
         {
-        	return _ifSpec.tailSizeWords * 4;
+            return _ifSpec.tailSizeWords * 4;
         }
 
         bool RadioHandler::isByteswapped() const
         {
-        	// Get our byte order
-        	const char *ourByteOrder = "little";
-        	if ( htonl(0xDEAD) == 0xDEAD )
-        		ourByteOrder = "big";
-        	// Compare it to the IF spec
-        	return ( strcmp(ourByteOrder, _ifSpec.byteOrder) != 0 );
+            // Get our byte order
+            const char *ourByteOrder = "little";
+            if ( htonl(0xDEAD) == 0xDEAD )
+                ourByteOrder = "big";
+            // Compare it to the IF spec
+            return ( strcmp(ourByteOrder, _ifSpec.byteOrder) != 0 );
         }
 
         bool RadioHandler::isIqSwapped() const
         {
-        	return _ifSpec.iqSwapped;
+            return _ifSpec.iqSwapped;
         }
 
         const char* RadioHandler::getByteOrder() const
         {
-        	return _ifSpec.byteOrder;
+            return _ifSpec.byteOrder;
         }
 
         int RadioHandler::getNumTuner() const
@@ -777,47 +778,47 @@ namespace LibCyberRadio
 
         BasicDoubleList RadioHandler::getTunerFrequencyRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             TunerComponentDict::const_iterator it = _tuners.begin();
             if ( it != _tuners.end() )
                 ret = it->second->getFrequencyRange();
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getTunerFrequencyRes() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             TunerComponentDict::const_iterator it = _tuners.begin();
             if ( it != _tuners.end() )
                 ret = it->second->getFrequencyRes();
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getTunerFrequencyUnit() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             TunerComponentDict::const_iterator it = _tuners.begin();
             if ( it != _tuners.end() )
                 ret = it->second->getFrequencyUnit();
-        	return ret;
+            return ret;
         }
 
         BasicDoubleList RadioHandler::getTunerAttenuationRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             TunerComponentDict::const_iterator it = _tuners.begin();
             if ( it != _tuners.end() )
                 ret = it->second->getAttenuationRange();
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getTunerAttenuationRes() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             TunerComponentDict::const_iterator it = _tuners.begin();
             if ( it != _tuners.end() )
                 ret = it->second->getAttenuationRes();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::isTunerEnabled(int index) const
@@ -899,20 +900,20 @@ namespace LibCyberRadio
 
         ConfigurationDict RadioHandler::getTunerConfiguration(int index) const
         {
-        	ConfigurationDict ret;
+            ConfigurationDict ret;
             TunerComponentDict::const_iterator it = _tuners.find(index);
             if ( it != _tuners.end() )
                 ret = it->second->getConfiguration();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setTunerConfiguration(int index, ConfigurationDict& cfg)
         {
-        	bool ret = false;
+            bool ret = false;
             TunerComponentDict::const_iterator it = _tuners.find(index);
             if ( it != _tuners.end() )
                 ret = it->second->setConfiguration(cfg);
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getNumWbddc() const
@@ -930,241 +931,241 @@ namespace LibCyberRadio
 
         bool RadioHandler::isWbddcTunable() const
         {
-        	bool ret = false;
-        	WbddcComponentDict::const_iterator it = _wbddcs.begin();
+            bool ret = false;
+            WbddcComponentDict::const_iterator it = _wbddcs.begin();
             if ( it != _wbddcs.end() )
                 ret = it->second->isTunable();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::isWbddcSelectableSource() const
         {
-        	bool ret = false;
-        	WbddcComponentDict::const_iterator it = _wbddcs.begin();
+            bool ret = false;
+            WbddcComponentDict::const_iterator it = _wbddcs.begin();
             if ( it != _wbddcs.end() )
                 ret = it->second->isSourceSelectable();
-        	return ret;
+            return ret;
         }
 
         BasicDoubleList RadioHandler::getWbddcFrequencyRange() const
         {
-        	BasicDoubleList ret;
-        	WbddcComponentDict::const_iterator it = _wbddcs.begin();
+            BasicDoubleList ret;
+            WbddcComponentDict::const_iterator it = _wbddcs.begin();
             if ( it != _wbddcs.end() )
                 ret = it->second->getFrequencyRange();
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getWbddcFrequencyRes() const
         {
-        	double ret = 0.0;
-        	WbddcComponentDict::const_iterator it = _wbddcs.begin();
+            double ret = 0.0;
+            WbddcComponentDict::const_iterator it = _wbddcs.begin();
             if ( it != _wbddcs.end() )
                 ret = it->second->getFrequencyRes();
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getWbddcFrequencyUnit() const
         {
-        	double ret = 0.0;
-        	WbddcComponentDict::const_iterator it = _wbddcs.begin();
+            double ret = 0.0;
+            WbddcComponentDict::const_iterator it = _wbddcs.begin();
             if ( it != _wbddcs.end() )
                 ret = it->second->getFrequencyUnit();
-        	return ret;
+            return ret;
         }
 
         WbddcRateSet RadioHandler::getWbddcRateSet() const
         {
-        	WbddcRateSet ret;
-        	WbddcComponentDict::const_iterator it = _wbddcs.begin();
+            WbddcRateSet ret;
+            WbddcComponentDict::const_iterator it = _wbddcs.begin();
             if ( it != _wbddcs.end() )
                 ret = it->second->getRateSet();
-        	return ret;
+            return ret;
         }
 
         BasicDoubleList RadioHandler::getWbddcRateList() const
         {
-        	BasicDoubleList ret;
-        	WbddcComponentDict::const_iterator it = _wbddcs.begin();
+            BasicDoubleList ret;
+            WbddcComponentDict::const_iterator it = _wbddcs.begin();
             if ( it != _wbddcs.end() )
                 ret = it->second->getRateList();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::isWbddcEnabled(int index) const
         {
-        	bool ret = false;
-        	WbddcComponentDict::const_iterator it = _wbddcs.find(index);
+            bool ret = false;
+            WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->isEnabled();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::enableWbddc(int index, bool enabled)
         {
-        	bool ret = false;
-        	WbddcComponentDict::const_iterator it = _wbddcs.find(index);
+            bool ret = false;
+            WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->enable(enabled);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::disableWbddc(int index)
         {
-        	return enableWbddc(index, false);
+            return enableWbddc(index, false);
         }
 
         double RadioHandler::getWbddcFrequency(int index) const
         {
-        	double ret = 0.0;
-        	WbddcComponentDict::const_iterator it = _wbddcs.find(index);
+            double ret = 0.0;
+            WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->getFrequency();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setWbddcFrequency(int index, double freq)
         {
-        	bool ret = false;
-        	WbddcComponentDict::const_iterator it = _wbddcs.find(index);
+            bool ret = false;
+            WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->setFrequency(freq);
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getWbddcSource(int index) const
         {
-        	int ret = 0;
-        	WbddcComponentDict::const_iterator it = _wbddcs.find(index);
+            int ret = 0;
+            WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->getSource();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setWbddcSource(int index, int source)
         {
-        	bool ret = false;
-        	WbddcComponentDict::const_iterator it = _wbddcs.find(index);
+            bool ret = false;
+            WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->setSource(source);
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getWbddcRateIndex(int index) const
         {
-        	int ret = 0;
-        	WbddcComponentDict::const_iterator it = _wbddcs.find(index);
+            int ret = 0;
+            WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->getRateIndex();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setWbddcRateIndex(int index, int rateIndex)
         {
-        	bool ret = false;
-        	WbddcComponentDict::const_iterator it = _wbddcs.find(index);
+            bool ret = false;
+            WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->setRateIndex(rateIndex);
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getWbddcUdpDestination(int index) const
         {
-        	int ret = 0;
-        	WbddcComponentDict::const_iterator it = _wbddcs.find(index);
+            int ret = 0;
+            WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->getUdpDestination();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setWbddcUdpDestination(int index, int dest)
         {
-        	bool ret = false;
-        	WbddcComponentDict::const_iterator it = _wbddcs.find(index);
+            bool ret = false;
+            WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->setUdpDestination(dest);
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getWbddcVitaEnable(int index) const
         {
-        	int ret = 0;
-        	WbddcComponentDict::const_iterator it = _wbddcs.find(index);
+            int ret = 0;
+            WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->getVitaEnable();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setWbddcVitaEnable(int index, int enable)
         {
-        	bool ret = false;
-        	WbddcComponentDict::const_iterator it = _wbddcs.find(index);
+            bool ret = false;
+            WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->setVitaEnable(enable);
-        	return ret;
+            return ret;
         }
 
         unsigned int RadioHandler::getWbddcStreamId(int index) const
         {
-        	unsigned int ret = 0;
-        	WbddcComponentDict::const_iterator it = _wbddcs.find(index);
+            unsigned int ret = 0;
+            WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->getStreamId();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setWbddcStreamId(int index, unsigned int sid)
         {
-        	bool ret = false;
-        	WbddcComponentDict::const_iterator it = _wbddcs.find(index);
+            bool ret = false;
+            WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->setStreamId(sid);
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getWbddcDataPort(int index) const
         {
-        	int ret = 0;
-        	WbddcComponentDict::const_iterator it = _wbddcs.find(index);
+            int ret = 0;
+            WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->getDataPort();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setWbddcDataPort(int index, int port)
         {
-        	bool ret = false;
-        	WbddcComponentDict::const_iterator it = _wbddcs.find(index);
+            bool ret = false;
+            WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->setDataPort(port);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setWbddcRateSet(int index, const WbddcRateSet& set)
         {
-        	bool ret = false;
-        	WbddcComponentDict::const_iterator it = _wbddcs.find(index);
+            bool ret = false;
+            WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->setRateSet(set);
-        	return ret;
+            return ret;
         }
 
         ConfigurationDict RadioHandler::getWbddcConfiguration(int index) const
         {
-        	ConfigurationDict ret;
+            ConfigurationDict ret;
             WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->getConfiguration();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setWbddcConfiguration(int index, ConfigurationDict& cfg)
         {
-        	bool ret = false;
+            bool ret = false;
             WbddcComponentDict::const_iterator it = _wbddcs.find(index);
             if ( it != _wbddcs.end() )
                 ret = it->second->setConfiguration(cfg);
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getNumNbddc() const
@@ -1182,281 +1183,281 @@ namespace LibCyberRadio
 
         BasicDoubleList RadioHandler::getNbddcFrequencyRange() const
         {
-        	BasicDoubleList ret;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            BasicDoubleList ret;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->getFrequencyRange();
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getNbddcFrequencyRes() const
         {
             double ret = 0.0;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->getFrequencyRes();
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getNbddcFrequencyUnit() const
         {
             double ret = 0.0;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->getFrequencyUnit();
-        	return ret;
+            return ret;
         }
 
         NbddcRateSet RadioHandler::getNbddcRateSet() const
         {
-        	NbddcRateSet ret;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            NbddcRateSet ret;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->getRateSet();
-        	return ret;
+            return ret;
         }
 
         BasicDoubleList RadioHandler::getNbddcRateList() const
         {
-        	BasicDoubleList ret;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            BasicDoubleList ret;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->getRateList();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::isNbddcEnabled(int index) const
         {
-        	bool ret = false;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            bool ret = false;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->isEnabled();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::enableNbddc(int index, bool enabled)
         {
-        	bool ret = false;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            bool ret = false;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->enable(enabled);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::disableNbddc(int index)
         {
-        	return enableNbddc(index, false);
+            return enableNbddc(index, false);
         }
 
         ConfigurationDict RadioHandler::getNbddcConfiguration(int index) const
         {
-        	ConfigurationDict ret;
-        	NbddcComponentDict::const_iterator it = _nbddcs.find(index);
+            ConfigurationDict ret;
+            NbddcComponentDict::const_iterator it = _nbddcs.find(index);
             if ( it != _nbddcs.end() )
                 ret = it->second->getConfiguration();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setNbddcConfiguration(int index, ConfigurationDict& cfg)
         {
-        	bool ret = false;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            bool ret = false;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->setConfiguration(cfg);
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getNbddcFrequency(int index) const
         {
-        	double ret = 0.0;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            double ret = 0.0;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->getFrequency();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setNbddcFrequency(int index, double freq)
         {
-        	bool ret = false;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            bool ret = false;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->setFrequency(freq);
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getNbddcSource(int index) const
         {
-        	int ret = 0;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            int ret = 0;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->getSource();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setNbddcSource(int index, int source)
         {
-        	bool ret = false;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            bool ret = false;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->setSource(source);
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getNbddcRateIndex(int index) const
         {
-        	int ret = 0;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            int ret = 0;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->getRateIndex();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setNbddcRateIndex(int index, int rateIndex)
         {
-        	bool ret = false;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            bool ret = false;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->setRateIndex(rateIndex);
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getNbddcUdpDestination(int index) const
         {
-        	int ret = 0;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            int ret = 0;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->getUdpDestination();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setNbddcUdpDestination(int index, int dest)
         {
-        	bool ret = false;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            bool ret = false;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->setUdpDestination(dest);
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getNbddcVitaEnable(int index) const
         {
-        	int ret = 0;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            int ret = 0;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->getVitaEnable();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setNbddcVitaEnable(int index, int enable)
         {
-        	bool ret = false;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            bool ret = false;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->setVitaEnable(enable);
-        	return ret;
+            return ret;
         }
 
         unsigned int RadioHandler::getNbddcStreamId(int index) const
         {
-        	int ret = 0;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            int ret = 0;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->getStreamId();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setNbddcStreamId(int index, unsigned int sid)
         {
-        	bool ret = false;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            bool ret = false;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->setStreamId(sid);
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getNbddcDataPort(int index) const
         {
-        	int ret = 0;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            int ret = 0;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->getDataPort();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setNbddcDataPort(int index, int port)
         {
-        	bool ret = false;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            bool ret = false;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->setDataPort(port);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setNbddcRateSet(int index, const NbddcRateSet& set)
         {
-        	bool ret = false;
-        	NbddcComponentDict::const_iterator it = _nbddcs.begin();
+            bool ret = false;
+            NbddcComponentDict::const_iterator it = _nbddcs.begin();
             if ( it != _nbddcs.end() )
                 ret = it->second->setRateSet(set);
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getNumTransmitters() const
         {
-        	return _numTransmitter;
+            return _numTransmitter;
         }
 
         BasicIntList RadioHandler::getTransmitterIndexRange() const
         {
-        	BasicIntList ret;
+            BasicIntList ret;
             for (int num = _transmitterIndexBase; num < _transmitterIndexBase + _numTransmitter;
-            		num++)
+                    num++)
                 ret.push_back(num);
-        	return ret;
+            return ret;
         }
 
         BasicDoubleList RadioHandler::getTransmitterFrequencyRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
-            	ret = it->second->getFrequencyRange();
+                ret = it->second->getFrequencyRange();
             return ret;
         }
 
         double RadioHandler::getTransmitterFrequencyRes() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
-            	ret = it->second->getFrequencyRes();
+                ret = it->second->getFrequencyRes();
             return ret;
         }
 
         double RadioHandler::getTransmitterFrequencyUnit() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
-            	ret = it->second->getFrequencyUnit();
+                ret = it->second->getFrequencyUnit();
             return ret;
         }
 
         BasicDoubleList RadioHandler::getTransmitterAttenuationRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
-            	ret = it->second->getAttenuationRange();
+                ret = it->second->getAttenuationRange();
             return ret;
         }
 
         double RadioHandler::getTransmitterAttenuationRes() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
-            	ret = it->second->getAttenuationRes();
+                ret = it->second->getAttenuationRes();
             return ret;
         }
 
@@ -1521,20 +1522,20 @@ namespace LibCyberRadio
 
         ConfigurationDict RadioHandler::getTransmitterConfiguration(int index) const
         {
-        	ConfigurationDict ret;
-        	TransmitterComponentDict::const_iterator it = _txs.find(index);
+            ConfigurationDict ret;
+            TransmitterComponentDict::const_iterator it = _txs.find(index);
             if ( it != _txs.end() )
                 ret = it->second->getConfiguration();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setTransmitterConfiguration(int index, ConfigurationDict& cfg)
         {
-        	bool ret = false;
-        	TransmitterComponentDict::const_iterator it = _txs.find(index);
+            bool ret = false;
+            TransmitterComponentDict::const_iterator it = _txs.find(index);
             if ( it != _txs.end() )
                 ret = it->second->setConfiguration(cfg);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::transmitterSupportsCW() const
@@ -1548,7 +1549,7 @@ namespace LibCyberRadio
 
         int RadioHandler::getTransmitterCWNum() const
         {
-        	int ret = 0;
+            int ret = 0;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
                 ret = it->second->getCWNum();
@@ -1557,7 +1558,7 @@ namespace LibCyberRadio
 
         BasicIntList RadioHandler::getTransmitterCWIndexRange() const
         {
-        	BasicIntList ret;
+            BasicIntList ret;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
                 ret = it->second->getCWIndexRange();
@@ -1566,7 +1567,7 @@ namespace LibCyberRadio
 
         BasicDoubleList RadioHandler::getTransmitterCWFrequencyRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
                 ret = it->second->getCWFrequencyRange();
@@ -1575,7 +1576,7 @@ namespace LibCyberRadio
 
         double RadioHandler::getTransmitterCWFrequencyRes() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
                 ret = it->second->getCWFrequencyRes();
@@ -1584,7 +1585,7 @@ namespace LibCyberRadio
 
         BasicDoubleList RadioHandler::getTransmitterCWAmplitudeRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
                 ret = it->second->getCWAmplitudeRange();
@@ -1593,7 +1594,7 @@ namespace LibCyberRadio
 
         double RadioHandler::getTransmitterCWAmplitudeRes() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
                 ret = it->second->getCWAmplitudeRes();
@@ -1602,7 +1603,7 @@ namespace LibCyberRadio
 
         BasicDoubleList RadioHandler::getTransmitterCWPhaseRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
                 ret = it->second->getCWPhaseRange();
@@ -1611,7 +1612,7 @@ namespace LibCyberRadio
 
         int RadioHandler::getTransmitterCWPhaseRes() const
         {
-        	int ret = 0;
+            int ret = 0;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
                 ret = it->second->getCWPhaseRes();
@@ -1629,7 +1630,7 @@ namespace LibCyberRadio
 
         BasicDoubleList RadioHandler::getTransmitterCWSweepStartRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
                 ret = it->second->getCWSweepStartRange();
@@ -1638,7 +1639,7 @@ namespace LibCyberRadio
 
         double RadioHandler::getTransmitterCWSweepStartRes() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
                 ret = it->second->getCWSweepStartRes();
@@ -1647,7 +1648,7 @@ namespace LibCyberRadio
 
         BasicDoubleList RadioHandler::getTransmitterCWSweepStopRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
                 ret = it->second->getCWSweepStopRange();
@@ -1656,7 +1657,7 @@ namespace LibCyberRadio
 
         double RadioHandler::getTransmitterCWSweepStopRes() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
                 ret = it->second->getCWSweepStopRes();
@@ -1665,7 +1666,7 @@ namespace LibCyberRadio
 
         BasicDoubleList RadioHandler::getTransmitterCWSweepStepRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
                 ret = it->second->getCWSweepStepRange();
@@ -1674,7 +1675,7 @@ namespace LibCyberRadio
 
         double RadioHandler::getTransmitterCWSweepStepRes() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
                 ret = it->second->getCWSweepStepRes();
@@ -1683,7 +1684,7 @@ namespace LibCyberRadio
 
         BasicDoubleList RadioHandler::getTransmitterCWSweepDwellRange() const
         {
-        	BasicDoubleList ret;
+            BasicDoubleList ret;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
                 ret = it->second->getCWSweepDwellRange();
@@ -1692,7 +1693,7 @@ namespace LibCyberRadio
 
         double RadioHandler::getTransmitterCWSweepDwellRes() const
         {
-        	double ret = 0.0;
+            double ret = 0.0;
             TransmitterComponentDict::const_iterator it = _txs.begin();
             if ( it != _txs.end() )
                 ret = it->second->getCWSweepDwellRes();
@@ -1701,150 +1702,150 @@ namespace LibCyberRadio
 
         bool RadioHandler::enableTransmitterCW(int index, int cwIndex, bool enabled)
         {
-        	bool ret = false;
-        	TransmitterComponentDict::const_iterator it = _txs.find(index);
+            bool ret = false;
+            TransmitterComponentDict::const_iterator it = _txs.find(index);
             if ( it != _txs.end() )
                 ret = it->second->enableCW(cwIndex);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::disableTransmitterCW(int index, int cwIndex)
         {
-        	return enableTransmitterCW(index, cwIndex, false);
+            return enableTransmitterCW(index, cwIndex, false);
         }
 
         ConfigurationDict RadioHandler::getTransmitterCWConfiguration(int index,
-        		                                                      int cwIndex) const
+                int cwIndex) const
         {
-        	ConfigurationDict ret;
-        	TransmitterComponentDict::const_iterator it = _txs.find(index);
+            ConfigurationDict ret;
+            TransmitterComponentDict::const_iterator it = _txs.find(index);
             if ( it != _txs.end() )
                 ret = it->second->getCWConfiguration(cwIndex);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setTransmitterCWConfiguration(int index, int cwIndex,
-        		                                         ConfigurationDict& cfg)
+                ConfigurationDict& cfg)
         {
-        	bool ret = false;
-        	TransmitterComponentDict::const_iterator it = _txs.find(index);
+            bool ret = false;
+            TransmitterComponentDict::const_iterator it = _txs.find(index);
             if ( it != _txs.end() )
                 ret = it->second->setCWConfiguration(cwIndex, cfg);
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getTransmitterCWFrequency(int index, int cwIndex) const
         {
-        	double ret = 0.0;
-        	TransmitterComponentDict::const_iterator it = _txs.find(index);
+            double ret = 0.0;
+            TransmitterComponentDict::const_iterator it = _txs.find(index);
             if ( it != _txs.end() )
                 ret = it->second->getCWFrequency(cwIndex);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setTransmitterCWFrequency(int index, int cwIndex, double freq)
         {
-        	bool ret = false;
-        	TransmitterComponentDict::const_iterator it = _txs.find(index);
+            bool ret = false;
+            TransmitterComponentDict::const_iterator it = _txs.find(index);
             if ( it != _txs.end() )
                 ret = it->second->setCWFrequency(cwIndex, freq);
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getTransmitterCWAmplitude(int index, int cwIndex) const
         {
-        	double ret = 0.0;
-        	TransmitterComponentDict::const_iterator it = _txs.find(index);
+            double ret = 0.0;
+            TransmitterComponentDict::const_iterator it = _txs.find(index);
             if ( it != _txs.end() )
                 ret = it->second->getCWAmplitude(cwIndex);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setTransmitterCWAmplitude(int index, int cwIndex, double amp)
         {
-        	bool ret = false;
-        	TransmitterComponentDict::const_iterator it = _txs.find(index);
+            bool ret = false;
+            TransmitterComponentDict::const_iterator it = _txs.find(index);
             if ( it != _txs.end() )
                 ret = it->second->setCWAmplitude(cwIndex, amp);
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getTransmitterCWPhase(int index, int cwIndex) const
         {
-        	double ret = 0.0;
-        	TransmitterComponentDict::const_iterator it = _txs.find(index);
+            double ret = 0.0;
+            TransmitterComponentDict::const_iterator it = _txs.find(index);
             if ( it != _txs.end() )
                 ret = it->second->getCWPhase(cwIndex);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setTransmitterCWPhase(int index, int cwIndex, double phase)
         {
-        	bool ret = false;
-        	TransmitterComponentDict::const_iterator it = _txs.find(index);
+            bool ret = false;
+            TransmitterComponentDict::const_iterator it = _txs.find(index);
             if ( it != _txs.end() )
                 ret = it->second->setCWPhase(cwIndex, phase);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::transmitterSupportsCWSweep(int index, int cwIndex) const
         {
-        	bool ret = false;
-        	TransmitterComponentDict::const_iterator it = _txs.find(index);
+            bool ret = false;
+            TransmitterComponentDict::const_iterator it = _txs.find(index);
             if ( it != _txs.end() )
                 ret = it->second->supportsCWSweep(cwIndex);
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getTransmitterCWSweepStartFrequency(int index, int cwIndex) const
         {
-        	double ret = 0.0;
-        	TransmitterComponentDict::const_iterator it = _txs.find(index);
+            double ret = 0.0;
+            TransmitterComponentDict::const_iterator it = _txs.find(index);
             if ( it != _txs.end() )
                 ret = it->second->getCWSweepStartFrequency(cwIndex);
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getTransmitterCWSweepStopFrequency(int index, int cwIndex) const
         {
-        	double ret = 0.0;
-        	TransmitterComponentDict::const_iterator it = _txs.find(index);
+            double ret = 0.0;
+            TransmitterComponentDict::const_iterator it = _txs.find(index);
             if ( it != _txs.end() )
                 ret = it->second->getCWSweepStopFrequency(cwIndex);
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getTransmitterCWSweepFrequencyStep(int index, int cwIndex) const
         {
-        	double ret = 0.0;
-        	TransmitterComponentDict::const_iterator it = _txs.find(index);
+            double ret = 0.0;
+            TransmitterComponentDict::const_iterator it = _txs.find(index);
             if ( it != _txs.end() )
                 ret = it->second->getCWSweepFrequencyStep(cwIndex);
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getTransmitterCWSweepDwellTime(int index, int cwIndex) const
         {
-        	double ret = 0.0;
-        	TransmitterComponentDict::const_iterator it = _txs.find(index);
+            double ret = 0.0;
+            TransmitterComponentDict::const_iterator it = _txs.find(index);
             if ( it != _txs.end() )
                 ret = it->second->getCWSweepDwellTime(cwIndex);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setTransmitterCWFrequencySweep(int index, int cwIndex, double start,
-        		                                          double stop, double step, double dwell)
+                double stop, double step, double dwell)
         {
-        	bool ret = false;
-        	TransmitterComponentDict::const_iterator it = _txs.find(index);
+            bool ret = false;
+            TransmitterComponentDict::const_iterator it = _txs.find(index);
             if ( it != _txs.end() )
                 ret = it->second->setCWFrequencySweep(cwIndex, start, stop, step, dwell);
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getNumDuc() const
         {
-        	return _numDuc;
+            return _numDuc;
         }
 
         BasicIntList RadioHandler::getDucIndexRange() const
@@ -1857,254 +1858,254 @@ namespace LibCyberRadio
 
         bool RadioHandler::ducSupportsSnapshotLoad() const
         {
-        	bool ret = false;
-        	DucComponentDict::const_iterator it = _ducs.begin();
+            bool ret = false;
+            DucComponentDict::const_iterator it = _ducs.begin();
             if ( it != _ducs.end() )
                 ret = it->second->supportsSnapshotLoad();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::ducSupportsSnapshotTransmit() const
         {
-        	bool ret = false;
-        	DucComponentDict::const_iterator it = _ducs.begin();
+            bool ret = false;
+            DucComponentDict::const_iterator it = _ducs.begin();
             if ( it != _ducs.end() )
                 ret = it->second->supportsSnapshotTransmit();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::enableDuc(int index, bool enabled)
         {
-        	bool ret = false;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            bool ret = false;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
                 ret = it->second->enable(enabled);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::disableDuc(int index)
         {
-        	return enableDuc(index, false);
+            return enableDuc(index, false);
         }
 
         ConfigurationDict RadioHandler::getDucConfiguration(int index) const
         {
-        	ConfigurationDict ret;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            ConfigurationDict ret;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
                 ret = it->second->getConfiguration();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setDucConfiguration(int index, ConfigurationDict& cfg)
         {
-        	bool ret = false;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            bool ret = false;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
                 ret = it->second->setConfiguration(cfg);
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getDucDataPort(int index) const
         {
-        	int ret = 0;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            int ret = 0;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
                 ret = it->second->getDataPort();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setDucDataPort(int index, int port)
         {
-        	bool ret = false;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            bool ret = false;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
                 ret = it->second->setDataPort(port);
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getDucFrequency(int index) const
         {
-        	double ret = 0.0;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            double ret = 0.0;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
                 ret = it->second->getFrequency();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setDucFrequency(int index, double freq)
         {
-        	bool ret = false;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            bool ret = false;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
                 ret = it->second->setFrequency(freq);
-        	return ret;
+            return ret;
         }
 
         BasicDoubleList RadioHandler::getDucFrequencyRange() const
         {
-        	BasicDoubleList ret;
-        	DucComponentDict::const_iterator it = _ducs.begin();
+            BasicDoubleList ret;
+            DucComponentDict::const_iterator it = _ducs.begin();
             if ( it != _ducs.end() )
                 ret = it->second->getFrequencyRange();
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getDucFrequencyRes() const
         {
-        	double ret = 0.0;
-        	DucComponentDict::const_iterator it = _ducs.begin();
+            double ret = 0.0;
+            DucComponentDict::const_iterator it = _ducs.begin();
             if ( it != _ducs.end() )
                 ret = it->second->getFrequencyRes();
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getDucFrequencyUnit() const
         {
-        	double ret = 0.0;
-        	DucComponentDict::const_iterator it = _ducs.begin();
+            double ret = 0.0;
+            DucComponentDict::const_iterator it = _ducs.begin();
             if ( it != _ducs.end() )
                 ret = it->second->getFrequencyUnit();
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getDucAttenuation(int index) const
         {
-        	double ret = 0.0;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            double ret = 0.0;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
                 ret = it->second->getAttenuation();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setDucAttenuation(int index, double atten)
         {
-        	bool ret = false;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            bool ret = false;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
                 ret = it->second->setAttenuation(atten);
-        	return ret;
+            return ret;
         }
 
         BasicDoubleList RadioHandler::getDucAttenuationRange() const
         {
-        	BasicDoubleList ret;
-        	DucComponentDict::const_iterator it = _ducs.begin();
+            BasicDoubleList ret;
+            DucComponentDict::const_iterator it = _ducs.begin();
             if ( it != _ducs.end() )
                 ret = it->second->getAttenuationRange();
-        	return ret;
+            return ret;
         }
 
         double RadioHandler::getDucAttenuationRes() const
         {
-        	double ret = 0.0;
-        	DucComponentDict::const_iterator it = _ducs.begin();
+            double ret = 0.0;
+            DucComponentDict::const_iterator it = _ducs.begin();
             if ( it != _ducs.end() )
                 ret = it->second->getAttenuationRes();
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getDucRateIndex(int index) const
         {
-        	int ret = 0;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            int ret = 0;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
                 ret = it->second->getRateIndex();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setDucRateIndex(int index, int rateIndex)
         {
-        	bool ret = false;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            bool ret = false;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
                 ret = it->second->setRateIndex(rateIndex);
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getDucTxChannelBitmap(int index) const
         {
-        	int ret = 0;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            int ret = 0;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
                 ret = it->second->getTxChannelBitmap();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setDucTxChannelBitmap(int index, int txChannels)
         {
-        	bool ret = false;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            bool ret = false;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
                 ret = it->second->setTxChannelBitmap(txChannels);
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getDucMode(int index) const
         {
-        	int ret = 0;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            int ret = 0;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
                 ret = it->second->getMode();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setDucMode(int index, int mode)
         {
-        	bool ret = false;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            bool ret = false;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
                 ret = it->second->setMode(mode);
-        	return ret;
+            return ret;
         }
 
         unsigned int RadioHandler::getDucStreamId(int index) const
         {
-        	int ret = 0;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            int ret = 0;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
                 ret = it->second->getStreamId();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setDucStreamId(int index, unsigned int sid)
         {
-        	bool ret = false;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            bool ret = false;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
                 ret = it->second->setStreamId(sid);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::loadDucSnapshot(int index,
-        		                           const std::string& filename,
-        		                           unsigned int startSample,
-									       unsigned int samples)
+                const std::string& filename,
+                unsigned int startSample,
+                unsigned int samples)
         {
-        	bool ret = false;
-        	DucComponentDict::const_iterator it = _ducs.find(index);
+            bool ret = false;
+            DucComponentDict::const_iterator it = _ducs.find(index);
             if ( it != _ducs.end() )
-            	if ( it->second->supportsSnapshotLoad() )
-            		ret = it->second->loadSnapshot(filename, startSample, samples);
-        	return ret;
+                if ( it->second->supportsSnapshotLoad() )
+                    ret = it->second->loadSnapshot(filename, startSample, samples);
+            return ret;
         }
 
         DucRateSet RadioHandler::getDucRateSet() const
         {
-        	DucRateSet ret;
-        	DucComponentDict::const_iterator it = _ducs.begin();
+            DucRateSet ret;
+            DucComponentDict::const_iterator it = _ducs.begin();
             if ( it != _ducs.end() )
                 ret = it->second->getRateSet();
-        	return ret;
+            return ret;
         }
 
         BasicDoubleList RadioHandler::getDucRateList() const
         {
-        	BasicDoubleList ret;
-        	DucComponentDict::const_iterator it = _ducs.begin();
+            BasicDoubleList ret;
+            DucComponentDict::const_iterator it = _ducs.begin();
             if ( it != _ducs.end() )
                 ret = it->second->getRateList();
-        	return ret;
+            return ret;
         }
 
         int RadioHandler::getNumWbddcGroups() const
@@ -2301,7 +2302,7 @@ namespace LibCyberRadio
         {
             bool ret = true;
             for ( DataPortDict::const_iterator it = _dataPorts.begin();
-                  it != _dataPorts.end(); it++)
+                    it != _dataPorts.end(); it++)
             {
                 ret &= it->second->enableFlowControl(enable);
             }
@@ -2313,7 +2314,7 @@ namespace LibCyberRadio
             BasicIntBoolDict ret;
             bool enabled;
             for ( DataPortDict::iterator it = _dataPorts.begin();
-                  it != _dataPorts.end(); it++)
+                    it != _dataPorts.end(); it++)
             {
                 ret[it->first] = it->second->getConfigurationValueAsBool("flowControl");
             }
@@ -2322,38 +2323,38 @@ namespace LibCyberRadio
 
         ConfigurationDict RadioHandler::getDataPortConfiguration(int index) const
         {
-        	ConfigurationDict ret;
-        	DataPortDict::const_iterator it = _dataPorts.find(index);
+            ConfigurationDict ret;
+            DataPortDict::const_iterator it = _dataPorts.find(index);
             if ( it != _dataPorts.end() )
                 ret = it->second->getConfiguration();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setDataPortConfiguration(int index, ConfigurationDict& cfg)
         {
-        	bool ret = false;
-        	DataPortDict::const_iterator it = _dataPorts.find(index);
+            bool ret = false;
+            DataPortDict::const_iterator it = _dataPorts.find(index);
             if ( it != _dataPorts.end() )
                 ret = it->second->setConfiguration(cfg);
-        	return ret;
+            return ret;
         }
 
         std::string RadioHandler::getDataPortSourceIP(int index) const
         {
-        	std::string ret = "";
-        	DataPortDict::const_iterator it = _dataPorts.find(index);
+            std::string ret = "";
+            DataPortDict::const_iterator it = _dataPorts.find(index);
             if ( it != _dataPorts.end() )
                 ret = it->second->getSourceIP();
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setDataPortSourceIP(int index, const std::string& ipAddr)
         {
-        	bool ret = false;
-        	DataPortDict::const_iterator it = _dataPorts.find(index);
+            bool ret = false;
+            DataPortDict::const_iterator it = _dataPorts.find(index);
             if ( it != _dataPorts.end() )
                 ret = it->second->setSourceIP(ipAddr);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::enableDataPortErrors(int index, bool enabled)
@@ -2386,15 +2387,15 @@ namespace LibCyberRadio
 
         std::string RadioHandler::getDataPortDestMACAddress(int index, int dipIndex) const
         {
-        	std::string ret = "";
-        	DataPortDict::const_iterator it = _dataPorts.find(index);
+            std::string ret = "";
+            DataPortDict::const_iterator it = _dataPorts.find(index);
             if ( it != _dataPorts.end() )
                 ret = it->second->getDestMACAddress(dipIndex);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setDataPortDestMACAddress(int index, int dipIndex,
-                                                     const std::string& macAddr)
+                const std::string& macAddr)
         {
             bool ret = false;
             DataPortDict::const_iterator it = _dataPorts.find(index);
@@ -2405,15 +2406,15 @@ namespace LibCyberRadio
 
         std::string RadioHandler::getDataPortDestIPAddress(int index, int dipIndex) const
         {
-        	std::string ret = "";
-        	DataPortDict::const_iterator it = _dataPorts.find(index);
+            std::string ret = "";
+            DataPortDict::const_iterator it = _dataPorts.find(index);
             if ( it != _dataPorts.end() )
                 ret = it->second->getDestIPAddress(dipIndex);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setDataPortDestIPAddress(int index, int dipIndex,
-                                                    const std::string& ipAddr)
+                const std::string& ipAddr)
         {
             bool ret = false;
             DataPortDict::const_iterator it = _dataPorts.find(index);
@@ -2424,15 +2425,15 @@ namespace LibCyberRadio
 
         unsigned int RadioHandler::getDataPortDestSourcePort(int index, int dipIndex) const
         {
-        	unsigned int ret = 0;
-        	DataPortDict::const_iterator it = _dataPorts.find(index);
+            unsigned int ret = 0;
+            DataPortDict::const_iterator it = _dataPorts.find(index);
             if ( it != _dataPorts.end() )
                 ret = it->second->getDestSourcePort(dipIndex);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setDataPortDestSourcePort(int index, int dipIndex,
-                                                     unsigned int sourcePort)
+                unsigned int sourcePort)
         {
             bool ret = false;
             DataPortDict::const_iterator it = _dataPorts.find(index);
@@ -2443,15 +2444,15 @@ namespace LibCyberRadio
 
         unsigned int RadioHandler::getDataPortDestDestPort(int index, int dipIndex) const
         {
-        	unsigned int ret = 0;
-        	DataPortDict::const_iterator it = _dataPorts.find(index);
+            unsigned int ret = 0;
+            DataPortDict::const_iterator it = _dataPorts.find(index);
             if ( it != _dataPorts.end() )
                 ret = it->second->getDestDestPort(dipIndex);
-        	return ret;
+            return ret;
         }
 
         bool RadioHandler::setDataPortDestDestPort(int index, int dipIndex,
-                                                   unsigned int destPort)
+                unsigned int destPort)
         {
             bool ret = false;
             DataPortDict::const_iterator it = _dataPorts.find(index);
@@ -2461,18 +2462,18 @@ namespace LibCyberRadio
         }
 
         bool RadioHandler::setDataPortDestInfo(int index,
-        		                               int dipIndex,
-											   const std::string& ipAddr,
-											   const std::string& macAddr,
-											   unsigned int sourcePort,
-											   unsigned int destPort)
+                int dipIndex,
+                const std::string& ipAddr,
+                const std::string& macAddr,
+                unsigned int sourcePort,
+                unsigned int destPort)
         {
-        	bool ret = false;
-        	DataPortDict::const_iterator it = _dataPorts.find(index);
+            bool ret = false;
+            DataPortDict::const_iterator it = _dataPorts.find(index);
             if ( it != _dataPorts.end() )
                 ret = it->second->setDestInfo(dipIndex, ipAddr, macAddr, sourcePort,
-                                              destPort);
-        	return ret;
+                        destPort);
+            return ret;
         }
 
         ConfigurationDict RadioHandler::getSimpleIPConfiguration() const
@@ -2589,9 +2590,9 @@ namespace LibCyberRadio
             if (ret)
             {
                 ret = executeQueryVER(_versionInfo["softwareVersion"],
-                                      _versionInfo["firmwareVersion"],
-                                      _versionInfo["referenceVersion"],
-                                      _versionInfo["firmwareDate"] );
+                        _versionInfo["firmwareVersion"],
+                        _versionInfo["referenceVersion"],
+                        _versionInfo["firmwareDate"] );
                 if ( ret )
                 {
                     ret = executeQueryHREV(_versionInfo["hardwareVersion"]);
@@ -2651,14 +2652,14 @@ namespace LibCyberRadio
         //        S/N 2038
         //        OK
         bool RadioHandler::executeQueryIDN(std::string& model,
-                                           std::string& serialNumber)
+                std::string& serialNumber)
         {
             bool ret = false;
             // Issue the identity query to get model and serial number
             BasicStringList rsp = sendCommand("*IDN?\n", _defaultTimeout);
             if ( getLastCommandErrorInfo() == "" )
             {
-            	BasicStringList::iterator it;
+                BasicStringList::iterator it;
                 for (it = rsp.begin(); it != rsp.end(); it++)
                 {
                     if ( it->find(" Receiver") != std::string::npos )
@@ -2681,16 +2682,16 @@ namespace LibCyberRadio
         //                  NDR308 Digital Reference Code Version: 16.01.21
         //                  OK
         bool RadioHandler::executeQueryVER(std::string& softwareVersion,
-                                           std::string& firmwareVersion,
-                                           std::string& referenceVersion,
-                                           std::string& firmwareDate)
+                std::string& firmwareVersion,
+                std::string& referenceVersion,
+                std::string& firmwareDate)
         {
             bool ret = true;
             // Query the version command to get software versioning info
             BasicStringList rsp = sendCommand("VER?\n", _defaultTimeout);
             if ( getLastCommandErrorInfo() == "" )
             {
-            	BasicStringList::iterator it;
+                BasicStringList::iterator it;
                 for (it = rsp.begin(); it != rsp.end(); it++)
                 {
                     if ( it->find("   REV: ") != std::string::npos )
@@ -2731,7 +2732,7 @@ namespace LibCyberRadio
             if ( getLastCommandErrorInfo() == "" )
             {
                 std::ostringstream oss;
-            	BasicStringList::iterator it;
+                BasicStringList::iterator it;
                 for (it = rsp.begin(); it != rsp.end(); it++)
                 {
                     if ( *it != "OK" )
@@ -2777,11 +2778,11 @@ namespace LibCyberRadio
             BasicStringList rsp = sendCommand("UTC?\n", _defaultTimeout);
             if ( getLastCommandErrorInfo() == "" )
             {
-            	BasicStringList::iterator it;
+                BasicStringList::iterator it;
                 for (it = rsp.begin(); it != rsp.end(); it++)
                 {
                     if ( it->find("UTC ") != std::string::npos )
-                    	timeStr = Pythonesque::Replace(*it, "UTC ", "");
+                        timeStr = Pythonesque::Replace(*it, "UTC ", "");
                 }
                 ret = true;
             }
@@ -2796,11 +2797,11 @@ namespace LibCyberRadio
             BasicStringList rsp = sendCommand("UTC?\n", _defaultTimeout);
             if ( getLastCommandErrorInfo() == "" )
             {
-            	BasicStringList::iterator it;
+                BasicStringList::iterator it;
                 for (it = rsp.begin(); it != rsp.end(); it++)
                 {
                     if ( it->find("UTC ") != std::string::npos )
-                    	timeStr = Pythonesque::Replace(*it, "UTC ", "");
+                        timeStr = Pythonesque::Replace(*it, "UTC ", "");
                 }
                 ret = true;
             }
@@ -2815,11 +2816,11 @@ namespace LibCyberRadio
             BasicStringList rsp = sendCommand("GUTC?\n", _defaultTimeout);
             if ( getLastCommandErrorInfo() == "" )
             {
-            	BasicStringList::iterator it;
+                BasicStringList::iterator it;
                 for (it = rsp.begin(); it != rsp.end(); it++)
                 {
                     if ( it->find("GUTC ") != std::string::npos )
-                    	timeStr = Pythonesque::Replace(*it, "GUTC ", "");
+                        timeStr = Pythonesque::Replace(*it, "GUTC ", "");
                 }
                 ret = true;
             }
@@ -2837,16 +2838,16 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                     BasicStringList vec = Pythonesque::Split(
-                                              Pythonesque::Replace(rsp.front(), "CFG ", ""),
-                                              ", ");
-                     // vec[0] = Config mode indicator
-                     configMode = boost::lexical_cast<int>(vec[0]);
-                     ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "CFG ", ""),
+                            ", ");
+                    // vec[0] = Config mode indicator
+                    configMode = boost::lexical_cast<int>(vec[0]);
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeConfigModeQuery] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -2861,11 +2862,11 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeConfigModeCommand] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -2880,19 +2881,19 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "COH ", ""),
-                                             ", ");
-                   // vec[0] = Coherent mode indicator
-                   // NOTE: This is a hex string, prefixed by "0x".  Lexical_cast does
-                   // not work.
-                   std::istringstream iss(vec[0]);
-                   iss >> std::hex >> coherentMode;
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "COH ", ""),
+                            ", ");
+                    // vec[0] = Coherent mode indicator
+                    // NOTE: This is a hex string, prefixed by "0x".  Lexical_cast does
+                    // not work.
+                    std::istringstream iss(vec[0]);
+                    iss >> std::hex >> coherentMode;
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeCoherentModeQuery] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -2907,11 +2908,11 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeCoherentModeCommand] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -2926,16 +2927,16 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "FNR ", ""),
-                                             ", ");
-                   // vec[0] = FNR mode indicator
-                   fnrMode = boost::lexical_cast<int>(vec[0]);
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "FNR ", ""),
+                            ", ");
+                    // vec[0] = FNR mode indicator
+                    fnrMode = boost::lexical_cast<int>(vec[0]);
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeFreqNormalizationQuery] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -2950,11 +2951,11 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeFreqNormalizationCommand] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -2969,16 +2970,16 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "GPS ", ""),
-                                             ", ");
-                   // vec[0] = GPS mode indicator
-                   enabled = boost::lexical_cast<int>(vec[0]);
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "GPS ", ""),
+                            ", ");
+                    // vec[0] = GPS mode indicator
+                    enabled = boost::lexical_cast<int>(vec[0]);
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeGpsEnabledQuery] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -2993,18 +2994,18 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "GPOS ", ""),
-                                             ", ");
-                   // vec[0] = GPS position string (comma-separated NMEA)
-                   BasicStringList coords = Pythonesque::Split(vec[0], ",");
-                   lat = this->getDecimalDegreesFromNmea(coords[0]);
-                   lon = this->getDecimalDegreesFromNmea(coords[1]);
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "GPOS ", ""),
+                            ", ");
+                    // vec[0] = GPS position string (comma-separated NMEA)
+                    BasicStringList coords = Pythonesque::Split(vec[0], ",");
+                    lat = this->getDecimalDegreesFromNmea(coords[0]);
+                    lon = this->getDecimalDegreesFromNmea(coords[1]);
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeGpsPositionQuery] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -3019,11 +3020,11 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeGpsEnabledCommand] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -3038,16 +3039,16 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "REF ", ""),
-                                             ", ");
-                   // vec[0] = Ref mode indicator
-                   refMode = boost::lexical_cast<int>(vec[0]);
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "REF ", ""),
+                            ", ");
+                    // vec[0] = Ref mode indicator
+                    refMode = boost::lexical_cast<int>(vec[0]);
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeReferenceModeQuery] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -3062,11 +3063,11 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeReferenceModeCommand] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -3081,16 +3082,16 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "RBYP ", ""),
-                                             ", ");
-                   // vec[0] = Ref bypass mode indicator
-                   bypassMode = boost::lexical_cast<int>(vec[0]);
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "RBYP ", ""),
+                            ", ");
+                    // vec[0] = Ref bypass mode indicator
+                    bypassMode = boost::lexical_cast<int>(vec[0]);
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeReferenceBypassQuery] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -3105,11 +3106,11 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeReferenceBypassCommand] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -3124,16 +3125,16 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "RTV ", ""),
-                                             ", ");
-                   // vec[0] = Ref tuning voltage indicator
-                   voltage = boost::lexical_cast<int>(vec[0]);
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "RTV ", ""),
+                            ", ");
+                    // vec[0] = Ref tuning voltage indicator
+                    voltage = boost::lexical_cast<int>(vec[0]);
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeReferenceVoltageQuery] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -3148,11 +3149,11 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeReferenceVoltageCommand] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -3167,18 +3168,18 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "STAT ", ""),
-                                             ", ");
-                   // vec[0] = Status
-                   // NOTE: This is a hex string, so lexical_cast will not work
-                   std::istringstream iss(vec[0]);
-                   iss >> std::hex >> stat;
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "STAT ", ""),
+                            ", ");
+                    // vec[0] = Status
+                    // NOTE: This is a hex string, so lexical_cast will not work
+                    std::istringstream iss(vec[0]);
+                    iss >> std::hex >> stat;
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeStatusQuery] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -3193,18 +3194,18 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "TSTAT ", ""),
-                                             ", ");
-                   // vec[0] = Status
-                   // NOTE: This is a hex string, so lexical_cast will not work
-                   std::istringstream iss(vec[0]);
-                   iss >> std::hex >> stat;
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "TSTAT ", ""),
+                            ", ");
+                    // vec[0] = Status
+                    // NOTE: This is a hex string, so lexical_cast will not work
+                    std::istringstream iss(vec[0]);
+                    iss >> std::hex >> stat;
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeTstatusQuery] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -3219,16 +3220,16 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "TEMP ", ""),
-                                             ", ");
-                   // vec[0] = Temperature
-                   temp = boost::lexical_cast<int>(vec[0]);
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "TEMP ", ""),
+                            ", ");
+                    // vec[0] = Temperature
+                    temp = boost::lexical_cast<int>(vec[0]);
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeTemperatureQuery] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -3243,23 +3244,23 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "GPIO ", ""),
-                                             ", ");
-                   // vec[0] = GPIO value
-                   // NOTE: This is a hex string, so lexical_cast will not work
-                   std::istringstream iss(vec[0]);
-                   iss >> std::hex >> value;
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "GPIO ", ""),
+                            ", ");
+                    // vec[0] = GPIO value
+                    // NOTE: This is a hex string, so lexical_cast will not work
+                    std::istringstream iss(vec[0]);
+                    iss >> std::hex >> value;
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeGpioStaticQuery] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
         bool RadioHandler::executeGpioSequenceQuery(int index, int& value,
-                                                    int &duration, int& loop)
+                int &duration, int& loop)
         {
             this->debug("[RadioHandler::executeGpioSequenceQuery] Called\n");
             bool ret = false;
@@ -3270,23 +3271,23 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "GPIO ", ""),
-                                             ", ");
-                   // vec[0] = Index
-                   // vec[1] = Value
-                   // NOTE: This is a hex string, so lexical_cast will not work
-                   std::istringstream iss(vec[1]);
-                   iss >> std::hex >> value;
-                   // vec[2] = Duration
-                   duration = boost::lexical_cast<int>(vec[2]);
-                   // vec[3] = Loop
-                   loop = boost::lexical_cast<int>(vec[3]);
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "GPIO ", ""),
+                            ", ");
+                    // vec[0] = Index
+                    // vec[1] = Value
+                    // NOTE: This is a hex string, so lexical_cast will not work
+                    std::istringstream iss(vec[1]);
+                    iss >> std::hex >> value;
+                    // vec[2] = Duration
+                    duration = boost::lexical_cast<int>(vec[2]);
+                    // vec[3] = Loop
+                    loop = boost::lexical_cast<int>(vec[3]);
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeGpioSequenceQuery] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -3301,17 +3302,17 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeGpioStaticCommand] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
         bool RadioHandler::executeGpioSequenceCommand(int index, int& value,
-                                                      int &duration, int& loop,
-                                                      int &go)
+                int &duration, int& loop,
+                int &go)
         {
             this->debug("[RadioHandler::executeGpioSequenceCommand] Called\n");
             bool ret = false;
@@ -3319,19 +3320,19 @@ namespace LibCyberRadio
             {
                 std::ostringstream oss;
                 oss << "GPIO " << index
-                    << ", " << value
-                    << ", " << duration
-                    << ", " << loop
-                    << ", " << go
-                    << "\n";
+                        << ", " << value
+                        << ", " << duration
+                        << ", " << loop
+                        << ", " << go
+                        << "\n";
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeGpioSequenceCommand] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -3346,16 +3347,16 @@ namespace LibCyberRadio
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "CALF ", ""),
-                                             ", ");
-                   // vec[0] = Calibration freq
-                   freq = boost::lexical_cast<double>(vec[0]);
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "CALF ", ""),
+                            ", ");
+                    // vec[0] = Calibration freq
+                    freq = boost::lexical_cast<double>(vec[0]);
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeCalibFrequencyQuery] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 
@@ -3367,15 +3368,15 @@ namespace LibCyberRadio
             {
                 std::ostringstream oss;
                 oss << "CALF " << freq
-                    << "\n";
+                        << "\n";
                 BasicStringList rsp = this->sendCommand(oss.str(), 2.0);
                 if ( this->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             this->debug("[RadioHandler::executeCalibFrequencyCommand] Returning %s\n",
-                        this->debugBool(ret));
+                    this->debugBool(ret));
             return ret;
         }
 

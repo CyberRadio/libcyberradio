@@ -28,82 +28,82 @@ namespace LibCyberRadio
         // Forward declaration for RadioHandler
         class RadioHandler;
 
-		/**
-		 * \brief Provides programming elements for driving NDR472 radios.
-		 */
-    	namespace NDR472
-		{
+        /**
+         * \brief Provides programming elements for driving NDR472 radios.
+         */
+        namespace NDR472
+        {
 
-			/**
-			 * \brief Tuner component class for the NDR472.
-			 *
-			 * Configuration dictionary elements:
-			 * * "enable": Whether or not this tuner is enabled [Boolean/integer/string]
-			 * * "frequency": Tuned frequency (Hz) [double/string]
-			 * * "attenuation": Attenuation (dB) [double/string]
-			 * * "filter": Filter setting [integer/string]
-			 *
-			 */
-			class TunerComponent : public ::LibCyberRadio::Driver::TunerComponent
-			{
-				public:
-					/**
-					 * \brief Constructs a TunerComponent object.
-					 * \param index The index number of this component.
-					 * \param parent A pointer to the RadioHandler object that "owns" this
-					 *    component.
-				     * \param debug Whether the component supports debug output.
-					 * \param frequency Tuned frequency (Hz).
-					 * \param attenuation Attenuation (dB).
-					 * \param filter Filter setting.
-					 */
-					TunerComponent(int index = 1,
-								   ::LibCyberRadio::Driver::RadioHandler* parent = NULL,
-								   bool debug = false,
-								   double frequency = 800e6,
-								   double attenuation = 0.0,
-								   int filter = 0);
-	        		/**
-	        		 * \brief Destroys a TunerComponent object.
-	        		 */
-					virtual ~TunerComponent();
-	        		/**
-	        		 * \brief Copies a TunerComponent object.
-	        		 * \param other The TunerComponent object to copy.
-	        		 */
-					TunerComponent(const TunerComponent& other);
-	        		/**
-	        		 * \brief Assignment operator for TunerComponent objects.
-	        		 * \param other The TunerComponent object to copy.
-	        		 * \returns A reference to the assigned object.
-	        		 */
-					virtual TunerComponent& operator=(const TunerComponent& other);
+            /**
+             * \brief Tuner component class for the NDR472.
+             *
+             * Configuration dictionary elements:
+             * * "enable": Whether or not this tuner is enabled [Boolean/integer/string]
+             * * "frequency": Tuned frequency (Hz) [double/string]
+             * * "attenuation": Attenuation (dB) [double/string]
+             * * "filter": Filter setting [integer/string]
+             *
+             */
+            class TunerComponent : public ::LibCyberRadio::Driver::TunerComponent
+            {
+                public:
+                    /**
+                     * \brief Constructs a TunerComponent object.
+                     * \param index The index number of this component.
+                     * \param parent A pointer to the RadioHandler object that "owns" this
+                     *    component.
+                     * \param debug Whether the component supports debug output.
+                     * \param frequency Tuned frequency (Hz).
+                     * \param attenuation Attenuation (dB).
+                     * \param filter Filter setting.
+                     */
+                    TunerComponent(int index = 1,
+                            ::LibCyberRadio::Driver::RadioHandler* parent = NULL,
+                             bool debug = false,
+                             double frequency = 800e6,
+                             double attenuation = 0.0,
+                             int filter = 0);
+                    /**
+                     * \brief Destroys a TunerComponent object.
+                     */
+                    virtual ~TunerComponent();
+                    /**
+                     * \brief Copies a TunerComponent object.
+                     * \param other The TunerComponent object to copy.
+                     */
+                    TunerComponent(const TunerComponent& other);
+                    /**
+                     * \brief Assignment operator for TunerComponent objects.
+                     * \param other The TunerComponent object to copy.
+                     * \returns A reference to the assigned object.
+                     */
+                    virtual TunerComponent& operator=(const TunerComponent& other);
 
-	            protected:
-	                // RadioComponent interface
-					// OVERRIDE
-	                virtual void initConfigurationDict();
+                protected:
+                    // RadioComponent interface
                     // OVERRIDE
-	                virtual void updateConfigurationDict();
-	                // OVERRIDE
-	                virtual void queryConfiguration();
-	                // TunerComponent extensions
+                    virtual void initConfigurationDict();
                     // OVERRIDE
-	                virtual bool executeEnableQuery(int index, bool& enabled);
+                    virtual void updateConfigurationDict();
                     // OVERRIDE
-	                virtual bool executeFreqQuery(int index, double& freq);
+                    virtual void queryConfiguration();
+                    // TunerComponent extensions
                     // OVERRIDE
-	                virtual bool executeAttenQuery(int index, double& atten);
+                    virtual bool executeEnableQuery(int index, bool& enabled);
                     // OVERRIDE
-	                virtual bool executeFilterQuery(int index, int& filter);
-	                // OVERRIDE
-	                virtual bool executeTimingAdjustmentQuery(int index, int& timingAdj);
+                    virtual bool executeFreqQuery(int index, double& freq);
                     // OVERRIDE
-	                virtual bool executeFilterCommand(int index, int& filter);
+                    virtual bool executeAttenQuery(int index, double& atten);
+                    // OVERRIDE
+                    virtual bool executeFilterQuery(int index, int& filter);
+                    // OVERRIDE
+                    virtual bool executeTimingAdjustmentQuery(int index, int& timingAdj);
+                    // OVERRIDE
+                    virtual bool executeFilterCommand(int index, int& filter);
 
-			}; /* class TunerComponent */
+            }; /* class TunerComponent */
 
-		} /* namespace NDR472 */
+        } /* namespace NDR472 */
 
     } // namespace Driver
 

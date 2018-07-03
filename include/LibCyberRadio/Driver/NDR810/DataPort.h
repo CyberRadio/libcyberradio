@@ -24,57 +24,57 @@ namespace LibCyberRadio
      */
     namespace Driver
     {
-		// Forward declaration for RadioHandler
-		class RadioHandler;
+        // Forward declaration for RadioHandler
+        class RadioHandler;
 
-		/**
-		 * \brief Provides programming elements for driving NDR810 radios.
-		 */
-		namespace NDR810
-		{
-			/**
-			 * \brief 10GigE data port class for the NDR810.
-			 *
+        /**
+         * \brief Provides programming elements for driving NDR810 radios.
+         */
+        namespace NDR810
+        {
+            /**
+             * \brief 10GigE data port class for the NDR810.
+             *
              * Configuration dictionary items:
              * * "sourceIP": Source IP address [string]
              * * "errors": Whether errors are enabled [Boolean/integer/string]
              * * "flowControl": Whether flow control is enabled [Boolean/integer/string]
              *
-			 */
-			class DataPort : public ::LibCyberRadio::Driver::DataPort
-			{
-				public:
-					/**
-					 * \brief Constructs a DataPort object.
-					 * \param index The index number of this object.
-					 * \param parent A pointer to the RadioHandler object that "owns" this
-					 *    object.
-					 * \param debug Whether the object supports debug output.
-					 * \param sourceIP Source IP address.
-					 */
-					DataPort(int index = 0,
-							 ::LibCyberRadio::Driver::RadioHandler* parent = NULL,
-							 bool debug = false,
-							 const std::string& sourceIP = "0.0.0.0");
-					/**
-					 * \brief Destroys a DataPort object.
-					 */
-					virtual ~DataPort();
-					/**
-					 * \brief Copies a DataPort object.
-					 * \param other The DataPort object to copy.
-					 */
-					DataPort(const DataPort& other);
-					/**
-					 * \brief Assignment operator for DataPort objects.
-					 * \param other The DataPort object to copy.
-					 * \returns A reference to the assigned object.
-					 */
-					virtual DataPort& operator=(const DataPort& other);
+             */
+            class DataPort : public ::LibCyberRadio::Driver::DataPort
+            {
+                public:
+                    /**
+                     * \brief Constructs a DataPort object.
+                     * \param index The index number of this object.
+                     * \param parent A pointer to the RadioHandler object that "owns" this
+                     *    object.
+                     * \param debug Whether the object supports debug output.
+                     * \param sourceIP Source IP address.
+                     */
+                    DataPort(int index = 0,
+                            ::LibCyberRadio::Driver::RadioHandler* parent = NULL,
+                             bool debug = false,
+                             const std::string& sourceIP = "0.0.0.0");
+                    /**
+                     * \brief Destroys a DataPort object.
+                     */
+                    virtual ~DataPort();
+                    /**
+                     * \brief Copies a DataPort object.
+                     * \param other The DataPort object to copy.
+                     */
+                    DataPort(const DataPort& other);
+                    /**
+                     * \brief Assignment operator for DataPort objects.
+                     * \param other The DataPort object to copy.
+                     * \returns A reference to the assigned object.
+                     */
+                    virtual DataPort& operator=(const DataPort& other);
 
-			}; /* class DataPort */
+            }; /* class DataPort */
 
-		} /* namespace NDR810 */
+        } /* namespace NDR810 */
 
 
     } /* namespace Driver */

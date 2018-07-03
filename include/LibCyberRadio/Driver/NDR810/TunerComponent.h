@@ -28,60 +28,60 @@ namespace LibCyberRadio
         // Forward declaration for RadioHandler
         class RadioHandler;
 
-		/**
-		 * \brief Provides programming elements for driving NDR810 radios.
-		 */
-    	namespace NDR810
-		{
+        /**
+         * \brief Provides programming elements for driving NDR810 radios.
+         */
+        namespace NDR810
+        {
 
-			/**
-			 * \brief Tuner component class for the NDR810.
-			 *
-			 * Configuration dictionary elements:
-			 * * "enable": Whether or not this tuner is enabled [Boolean/integer/string]
-			 * * "frequency": Tuned frequency (Hz) [double/string]
-			 * * "attenuation": Attenuation (dB) [double/string]
-			 * * "filter": Filter setting [integer/string]
-			 *
-			 */
-			class TunerComponent : public ::LibCyberRadio::Driver::TunerComponent
-			{
-				public:
-					/**
-					 * \brief Constructs a TunerComponent object.
-					 * \param index The index number of this component.
-					 * \param parent A pointer to the RadioHandler object that "owns" this
-					 *    component.
-				     * \param debug Whether the component supports debug output.
-					 * \param frequency Tuned frequency (Hz).
-					 * \param attenuation Attenuation (dB).
-					 * \param filter Filter setting.
-					 */
-					TunerComponent(int index = 1,
-								   ::LibCyberRadio::Driver::RadioHandler* parent = NULL,
-								   bool debug = false,
-								   double frequency = 800e6,
-								   double attenuation = 0.0,
-								   int filter = 0);
-	        		/**
-	        		 * \brief Destroys a TunerComponent object.
-	        		 */
-					virtual ~TunerComponent();
-	        		/**
-	        		 * \brief Copies a TunerComponent object.
-	        		 * \param other The TunerComponent object to copy.
-	        		 */
-					TunerComponent(const TunerComponent& other);
-	        		/**
-	        		 * \brief Assignment operator for TunerComponent objects.
-	        		 * \param other The TunerComponent object to copy.
-	        		 * \returns A reference to the assigned object.
-	        		 */
-					virtual TunerComponent& operator=(const TunerComponent& other);
+            /**
+             * \brief Tuner component class for the NDR810.
+             *
+             * Configuration dictionary elements:
+             * * "enable": Whether or not this tuner is enabled [Boolean/integer/string]
+             * * "frequency": Tuned frequency (Hz) [double/string]
+             * * "attenuation": Attenuation (dB) [double/string]
+             * * "filter": Filter setting [integer/string]
+             *
+             */
+            class TunerComponent : public ::LibCyberRadio::Driver::TunerComponent
+            {
+                public:
+                    /**
+                     * \brief Constructs a TunerComponent object.
+                     * \param index The index number of this component.
+                     * \param parent A pointer to the RadioHandler object that "owns" this
+                     *    component.
+                     * \param debug Whether the component supports debug output.
+                     * \param frequency Tuned frequency (Hz).
+                     * \param attenuation Attenuation (dB).
+                     * \param filter Filter setting.
+                     */
+                    TunerComponent(int index = 1,
+                            ::LibCyberRadio::Driver::RadioHandler* parent = NULL,
+                             bool debug = false,
+                             double frequency = 800e6,
+                             double attenuation = 0.0,
+                             int filter = 0);
+                    /**
+                     * \brief Destroys a TunerComponent object.
+                     */
+                    virtual ~TunerComponent();
+                    /**
+                     * \brief Copies a TunerComponent object.
+                     * \param other The TunerComponent object to copy.
+                     */
+                    TunerComponent(const TunerComponent& other);
+                    /**
+                     * \brief Assignment operator for TunerComponent objects.
+                     * \param other The TunerComponent object to copy.
+                     * \returns A reference to the assigned object.
+                     */
+                    virtual TunerComponent& operator=(const TunerComponent& other);
 
-			}; /* class TunerComponent */
+            }; /* class TunerComponent */
 
-		} /* namespace NDR810 */
+        } /* namespace NDR810 */
 
     } // namespace Driver
 

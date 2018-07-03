@@ -42,8 +42,8 @@ namespace LibCyberRadio
                 if ( it != this->begin() )
                     oss << ", ";
                 oss << it->first.c_str()
-                    << "="
-                    << it->second.c_str();
+                            << "="
+                            << it->second.c_str();
             }
             oss << ")";
             return oss.str();
@@ -56,7 +56,7 @@ namespace LibCyberRadio
 
         Configurable::Configurable(const std::string& name, bool debug) :
             Debuggable(debug, name),
-        	_name(name)
+            _name(name)
         {
         }
 
@@ -98,118 +98,118 @@ namespace LibCyberRadio
         ConfigString Configurable::getConfigurationValue(const std::string& key) const
         {
             ConfigString ret = "";
-        	ConfigurationDict::const_iterator it = _config.find(key);
-        	if ( it != _config.end() )
-        	{
-        		ret = it->second;
-        	}
-        	return ret;
+            ConfigurationDict::const_iterator it = _config.find(key);
+            if ( it != _config.end() )
+            {
+                ret = it->second;
+            }
+            return ret;
         }
 
         bool Configurable::getConfigurationValueAsBool(const std::string& key) const
         {
-        	bool ret = false;
-        	try
-        	{
-        		ret = ( getConfigurationValue(key).asBool() );
-        	}
-        	catch(std::exception& ex)
-        	{
-        	}
-        	return ret;
+            bool ret = false;
+            try
+            {
+                ret = ( getConfigurationValue(key).asBool() );
+            }
+            catch(std::exception& ex)
+            {
+            }
+            return ret;
         }
 
         int Configurable::getConfigurationValueAsInt(const std::string& key) const
         {
-        	int ret = 0;
-        	try
-        	{
+            int ret = 0;
+            try
+            {
                 ret = ( getConfigurationValue(key).asInt() );
-        	}
-        	catch(std::exception& ex)
-        	{
-        	}
-        	return ret;
+            }
+            catch(std::exception& ex)
+            {
+            }
+            return ret;
         }
 
         unsigned int Configurable::getConfigurationValueAsUInt(const std::string& key) const
         {
-        	unsigned int ret = 0;
-        	try
-        	{
+            unsigned int ret = 0;
+            try
+            {
                 ret = ( getConfigurationValue(key).asUInt() );
-        	}
-        	catch(std::exception& ex)
-        	{
-        	}
-        	return ret;
+            }
+            catch(std::exception& ex)
+            {
+            }
+            return ret;
         }
 
         double Configurable::getConfigurationValueAsDbl(const std::string& key) const
         {
-        	double ret = 0.0;
-        	try
-        	{
+            double ret = 0.0;
+            try
+            {
                 ret = ( getConfigurationValue(key).asDouble() );
-        	}
-        	catch(std::exception& ex)
-        	{
-        	}
-        	return ret;
+            }
+            catch(std::exception& ex)
+            {
+            }
+            return ret;
         }
 
         bool Configurable::setConfiguration(ConfigurationDict& cfg)
         {
-        	// Replace elements in the configuration dictionary with
-        	// normalized elements in the incoming dictionary that have the
-        	// same key
-        	ConfigurationDict normCfg = normalizedConfigurationDict(cfg);
-        	ConfigurationDict::iterator nit;
-        	for (ConfigurationDict::iterator it = _config.begin(); it != _config.end(); it++)
-        	{
-        		nit = normCfg.find(it->first);
-        		if ( nit != normCfg.end() )
-        			it->second = nit->second;
-        	}
+            // Replace elements in the configuration dictionary with
+            // normalized elements in the incoming dictionary that have the
+            // same key
+            ConfigurationDict normCfg = normalizedConfigurationDict(cfg);
+            ConfigurationDict::iterator nit;
+            for (ConfigurationDict::iterator it = _config.begin(); it != _config.end(); it++)
+            {
+                nit = normCfg.find(it->first);
+                if ( nit != normCfg.end() )
+                    it->second = nit->second;
+            }
             return true;
         }
-        
+
         bool Configurable::setConfigurationValue(const std::string& key,
-        		                                 const std::string& value)
+                const std::string& value)
         {
-        	bool ret = false;
-        	ConfigurationDict::iterator it = _config.find(key);
-        	if ( it != _config.end() )
-        	{
-        		_config[key] = normalizedBool(value);
-        		ret = true;
-        	}
-        	else
-        	{
-        	}
-        	return ret;
+            bool ret = false;
+            ConfigurationDict::iterator it = _config.find(key);
+            if ( it != _config.end() )
+            {
+                _config[key] = normalizedBool(value);
+                ret = true;
+            }
+            else
+            {
+            }
+            return ret;
         }
 
         bool Configurable::setConfigurationValueToBool(const std::string& key,
-        		                                       const bool value)
+                const bool value)
         {
-        	return setConfigurationValue(key, ConfigString(value));
+            return setConfigurationValue(key, ConfigString(value));
         }
 
         bool Configurable::setConfigurationValueToInt(const std::string& key,
-        		                                      const int value)
+                const int value)
         {
             return setConfigurationValue(key, ConfigString(value));
         }
 
         bool Configurable::setConfigurationValueToUInt(const std::string& key,
-        		                                       const unsigned int value)
+                const unsigned int value)
         {
             return setConfigurationValue(key, ConfigString(value));
         }
 
         bool Configurable::setConfigurationValueToDbl(const std::string& key,
-        		                                      const double value)
+                const double value)
         {
             return setConfigurationValue(key, ConfigString(value));
         }
@@ -226,30 +226,30 @@ namespace LibCyberRadio
         {
         }
 
-    	// Normalization converts strings representing Boolean values to
-    	// standard "0" or "1"
+        // Normalization converts strings representing Boolean values to
+        // standard "0" or "1"
 
         ConfigurationDict Configurable::normalizedConfigurationDict(
-        		const ConfigurationDict& cfg)
+                const ConfigurationDict& cfg)
         {
-        	ConfigurationDict adjCfg = cfg;
-        	for (ConfigurationDict::iterator it = adjCfg.begin(); it != adjCfg.end(); it++)
-        		it->second = normalizedBool(it->second);
-        	return adjCfg;
+            ConfigurationDict adjCfg = cfg;
+            for (ConfigurationDict::iterator it = adjCfg.begin(); it != adjCfg.end(); it++)
+                it->second = normalizedBool(it->second);
+            return adjCfg;
         }
 
         std::string Configurable::normalizedBool(const std::string& val)
         {
-        	std::string ret = "";
-         	std::string adjVal = val;
-        	std::transform(val.begin(), val.end(), adjVal.begin(), tolower);
-        	if ( (adjVal == "1") || (adjVal == "yes") || (adjVal == "on") || (adjVal == "true") )
-        		ret = "1";
-        	else if ( (adjVal == "0") || (adjVal == "no") || (adjVal == "off") || (adjVal == "false") )
-        		ret = "0";
-        	else
-        		ret = val;
-         	return ret;
+            std::string ret = "";
+            std::string adjVal = val;
+            std::transform(val.begin(), val.end(), adjVal.begin(), tolower);
+            if ( (adjVal == "1") || (adjVal == "yes") || (adjVal == "on") || (adjVal == "true") )
+                ret = "1";
+            else if ( (adjVal == "0") || (adjVal == "no") || (adjVal == "off") || (adjVal == "false") )
+                ret = "0";
+            else
+                ret = val;
+            return ret;
         }
 
         void Configurable::dumpConfiguration()

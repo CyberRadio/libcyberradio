@@ -22,60 +22,60 @@ namespace LibCyberRadio
     namespace Driver
     {
 
-		SimpleIpSetup::SimpleIpSetup(const std::string& name,
-				           RadioHandler* parent,
-				           bool debug,
-				           const std::string& sourceIP,
-	                       const std::string& destIP,
-	                       const std::string& destMAC) :
-			Configurable(name, debug),
-			_parent(parent),
-			_sourceIP(sourceIP),
-			_sourceMAC("00:00:00:00:00:00"),
+        SimpleIpSetup::SimpleIpSetup(const std::string& name,
+                RadioHandler* parent,
+                bool debug,
+                const std::string& sourceIP,
+                const std::string& destIP,
+                const std::string& destMAC) :
+            Configurable(name, debug),
+            _parent(parent),
+            _sourceIP(sourceIP),
+            _sourceMAC("00:00:00:00:00:00"),
             _destIP(destIP),
             _destMAC(destMAC)
-		{
+        {
             initConfigurationDict();
-		}
+        }
 
-		SimpleIpSetup::~SimpleIpSetup()
-		{
-		}
+        SimpleIpSetup::~SimpleIpSetup()
+        {
+        }
 
-		SimpleIpSetup::SimpleIpSetup(const SimpleIpSetup& other) :
-			Configurable(other),
-			_parent(other._parent),
-			_sourceIP(other._sourceIP),
-			_sourceMAC(other._sourceMAC),
-			_destIP(other._destIP),
-			_destMAC(other._destMAC)
-		{
-		}
+        SimpleIpSetup::SimpleIpSetup(const SimpleIpSetup& other) :
+            Configurable(other),
+            _parent(other._parent),
+            _sourceIP(other._sourceIP),
+            _sourceMAC(other._sourceMAC),
+            _destIP(other._destIP),
+            _destMAC(other._destMAC)
+        {
+        }
 
-		SimpleIpSetup& SimpleIpSetup::operator=(const SimpleIpSetup& other)
-		{
-			Configurable::operator=(other);
-			if ( this != &other )
-			{
-				_parent = other._parent;
-				_sourceIP = other._sourceIP;
-				_sourceMAC = other._sourceMAC;
-				_destIP = other._destIP;
-				_destMAC = other._destMAC;
-			}
-			return *this;
-		}
+        SimpleIpSetup& SimpleIpSetup::operator=(const SimpleIpSetup& other)
+        {
+            Configurable::operator=(other);
+            if ( this != &other )
+            {
+                _parent = other._parent;
+                _sourceIP = other._sourceIP;
+                _sourceMAC = other._sourceMAC;
+                _destIP = other._destIP;
+                _destMAC = other._destMAC;
+            }
+            return *this;
+        }
 
-		bool SimpleIpSetup::setConfiguration(ConfigurationDict& cfg)
-		{
-        	this->debug("[SimpleIpSetup::setConfiguration] Called\n");
-        	// Call the base-class version to modify the configuration dictionary
-        	bool ret = Configurable::setConfiguration(cfg);
-        	// Use the keys provided in the *incoming* dictionary to determine
-        	// what needs to be changed.
+        bool SimpleIpSetup::setConfiguration(ConfigurationDict& cfg)
+        {
+            this->debug("[SimpleIpSetup::setConfiguration] Called\n");
+            // Call the base-class version to modify the configuration dictionary
+            bool ret = Configurable::setConfiguration(cfg);
+            // Use the keys provided in the *incoming* dictionary to determine
+            // what needs to be changed.
             if ( cfg.hasKey("sourceIP") && _config.hasKey("sourceIP") )
             {
-            	ret &= setSourceIP(cfg["sourceIP"]);
+                ret &= setSourceIP(cfg["sourceIP"]);
             }
             if ( cfg.hasKey("destIP") && _config.hasKey("destIP") )
             {
@@ -85,14 +85,14 @@ namespace LibCyberRadio
             {
                 ret &= setDestMACAddress(cfg["destMAC"]);
             }
-        	this->debug("[SimpleIpSetup::setConfiguration] Returning\n");
+            this->debug("[SimpleIpSetup::setConfiguration] Returning\n");
             return ret;
-		}
+        }
 
-		void SimpleIpSetup::queryConfiguration()
-		{
-        	this->debug("[SimpleIpSetup::queryConfiguration] Called\n");
-        	// Query source and destination information
+        void SimpleIpSetup::queryConfiguration()
+        {
+            this->debug("[SimpleIpSetup::queryConfiguration] Called\n");
+            // Query source and destination information
             if ( _config.hasKey("sourceIP") )
                 executeSourceIPQuery(_sourceIP);
             if ( _config.hasKey("sourceMAC") )
@@ -103,20 +103,20 @@ namespace LibCyberRadio
                 executeDestMACQuery(_destMAC);
             updateConfigurationDict();
             this->debug("[SimpleIpSetup::queryConfiguration] Returning\n");
-		}
+        }
 
-		std::string SimpleIpSetup::getSourceMAC() const
-		{
-		    return _sourceMAC;
-		}
+        std::string SimpleIpSetup::getSourceMAC() const
+        {
+            return _sourceMAC;
+        }
 
         std::string SimpleIpSetup::getSourceIP() const
-		{
-			return _sourceIP;
-		}
+        {
+            return _sourceIP;
+        }
 
-		bool SimpleIpSetup::setSourceIP(const std::string& ipAddr)
-		{
+        bool SimpleIpSetup::setSourceIP(const std::string& ipAddr)
+        {
             bool ret = false;
             if ( _config.hasKey("sourceIP") )
             {
@@ -129,11 +129,11 @@ namespace LibCyberRadio
                 }
             }
             return ret;
-		}
+        }
 
         std::string SimpleIpSetup::getDestMACAddress() const
         {
-        	return _destMAC;
+            return _destMAC;
         }
 
         std::string SimpleIpSetup::getDestIPAddress() const
@@ -174,19 +174,19 @@ namespace LibCyberRadio
         }
 
         void SimpleIpSetup::initConfigurationDict()
-		{
+        {
             _config.clear();
-        	//this->debug("[SimpleIpSetup::initConfigurationDict] Called\n");
-			_config["sourceIP"] = _sourceIP;
-			_config["sourceMAC"] = _sourceMAC;
+            //this->debug("[SimpleIpSetup::initConfigurationDict] Called\n");
+            _config["sourceIP"] = _sourceIP;
+            _config["sourceMAC"] = _sourceMAC;
             _config["destIP"] = _destIP;
             _config["destMAC"] = _destMAC;
             //this->debug("[SimpleIpSetup::initConfigurationDict] Returning\n");
-		}
+        }
 
-		void SimpleIpSetup::updateConfigurationDict()
-		{
-        	this->debug("[SimpleIpSetup::updateConfigurationDict] Called\n");
+        void SimpleIpSetup::updateConfigurationDict()
+        {
+            this->debug("[SimpleIpSetup::updateConfigurationDict] Called\n");
             if ( _config.hasKey("sourceIP") )
                 setConfigurationValue("sourceIP", _sourceIP);
             if ( _config.hasKey("sourceMAC") )
@@ -196,7 +196,7 @@ namespace LibCyberRadio
             if ( _config.hasKey("destMAC") )
                 setConfigurationValue("destMAC", _destMAC);
             this->debug("[SimpleIpSetup::updateConfigurationDict] Returning\n");
-		}
+        }
 
         // Default implementation uses the NDR472 pattern
         bool SimpleIpSetup::executeSourceMACQuery(std::string& macAddr)
@@ -209,20 +209,20 @@ namespace LibCyberRadio
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "#MAC ", ""),
-                                             ", ");
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "#MAC ", ""),
+                            ", ");
                     // vec[0] = Source MAC address
-                   macAddr = vec[0];
-                   ret = true;
+                    macAddr = vec[0];
+                    ret = true;
                 }
             }
             return ret;
         }
 
-		// Default implementation uses the NDR472 pattern
-		bool SimpleIpSetup::executeSourceIPQuery(std::string& sourceIP)
-		{
+        // Default implementation uses the NDR472 pattern
+        bool SimpleIpSetup::executeSourceIPQuery(std::string& sourceIP)
+        {
             bool ret = false;
             if ( (_parent != NULL) && (_parent->isConnected()) )
             {
@@ -231,39 +231,39 @@ namespace LibCyberRadio
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "SIP ", ""),
-                                             ", ");
-                   // vec[0] = Source IP address
-                   sourceIP = vec[0];
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "SIP ", ""),
+                            ", ");
+                    // vec[0] = Source IP address
+                    sourceIP = vec[0];
+                    ret = true;
                 }
             }
             return ret;
-		}
+        }
 
         // Default implementation uses the NDR472 pattern
-		bool SimpleIpSetup::executeSourceIPCommand(std::string& sourceIP)
-		{
+        bool SimpleIpSetup::executeSourceIPCommand(std::string& sourceIP)
+        {
             bool ret = false;
             if ( (_parent != NULL) && (_parent->isConnected()) )
             {
                 std::ostringstream oss;
                 oss << "SIP "
-                    << sourceIP
-                    << "\n";
+                        << sourceIP
+                        << "\n";
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             return ret;
-		}
+        }
 
         // Default implementation uses the NDR472 pattern
-		bool SimpleIpSetup::executeDestIPQuery(std::string& ipAddr)
-		{
+        bool SimpleIpSetup::executeDestIPQuery(std::string& ipAddr)
+        {
             bool ret = false;
             if ( (_parent != NULL) && (_parent->isConnected()) )
             {
@@ -272,35 +272,35 @@ namespace LibCyberRadio
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "DIP ", ""),
-                                             ", ");
-                   // vec[0] = Destination IP address
-                   ipAddr = vec[0];
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "DIP ", ""),
+                            ", ");
+                    // vec[0] = Destination IP address
+                    ipAddr = vec[0];
+                    ret = true;
                 }
             }
             return ret;
-		}
+        }
 
         // Default implementation uses the NDR472 pattern
-		bool SimpleIpSetup::executeDestIPCommand(std::string& ipAddr)
-		{
+        bool SimpleIpSetup::executeDestIPCommand(std::string& ipAddr)
+        {
             bool ret = false;
             if ( (_parent != NULL) && (_parent->isConnected()) )
             {
                 std::ostringstream oss;
                 oss << "DIP "
-                    << ipAddr
-                    << "\n";
+                        << ipAddr
+                        << "\n";
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             return ret;
-		}
+        }
 
         // Default implementation uses the NDR472 pattern
         bool SimpleIpSetup::executeDestMACQuery(std::string& macAddr)
@@ -313,12 +313,12 @@ namespace LibCyberRadio
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   BasicStringList vec = Pythonesque::Split(
-                                             Pythonesque::Replace(rsp.front(), "TDMAC ", ""),
-                                             ", ");
-                   // vec[0] = Destination MAC address
-                   macAddr = vec[0];
-                   ret = true;
+                    BasicStringList vec = Pythonesque::Split(
+                            Pythonesque::Replace(rsp.front(), "TDMAC ", ""),
+                            ", ");
+                    // vec[0] = Destination MAC address
+                    macAddr = vec[0];
+                    ret = true;
                 }
             }
             return ret;
@@ -332,12 +332,12 @@ namespace LibCyberRadio
             {
                 std::ostringstream oss;
                 oss << "TDMAC "
-                    << macAddr
-                    << "\n";
+                        << macAddr
+                        << "\n";
                 BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
                 if ( _parent->getLastCommandErrorInfo() == "" )
                 {
-                   ret = true;
+                    ret = true;
                 }
             }
             return ret;

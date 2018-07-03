@@ -90,8 +90,8 @@ LIST(APPEND libcyberradio_sources
 )
 SET(libcyberradio_sources "${libcyberradio_sources}" PARENT_SCOPE)
 IF(NOT libcyberradio_sources)
-	MESSAGE(STATUS "No C++ sources... skipping lib/")
-	RETURN()
+MESSAGE(STATUS "No C++ sources... skipping lib/")
+RETURN()
 ENDIF(NOT libcyberradio_sources)
 # -- Library name
 SET(libcyberradio_lib_name cyberradio)

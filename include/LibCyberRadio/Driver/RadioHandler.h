@@ -53,21 +53,21 @@ namespace LibCyberRadio
         class RadioHandler : public Configurable
         {
             public:
-        		/**
-        		 * \brief Constructs a RadioHandler object.
-        		 * \param name Name of the radio.
-        		 * \param numTuner Number of tuners on the radio.
-        		 * \param tunerIndexBase Number that tuner indices start on.
-        		 * \param numWbddc Number of WBDDCs on the radio.
-        		 * \param wbddcIndexBase Number that WBDDC indices start on.
-        		 * \param numNbddc Number of NBDDCs on the radio.
-        		 * \param nbddcIndexBase Number that NBDDC indices start on.
-        		 * \param numTunerBoards Number of tuner boards expected to be
-        		 *    on the radio.
-        		 * \param maxTunerBw Expected maximum tuner bandwidth.
-        		 * \param numTransmitter Number of transmitters on the radio.
-        		 * \param transmitterIndexBase Number that transmitter indices start on.
-        		 * \param numDuc Number of DUCs on the radio.
+                /**
+                 * \brief Constructs a RadioHandler object.
+                 * \param name Name of the radio.
+                 * \param numTuner Number of tuners on the radio.
+                 * \param tunerIndexBase Number that tuner indices start on.
+                 * \param numWbddc Number of WBDDCs on the radio.
+                 * \param wbddcIndexBase Number that WBDDC indices start on.
+                 * \param numNbddc Number of NBDDCs on the radio.
+                 * \param nbddcIndexBase Number that NBDDC indices start on.
+                 * \param numTunerBoards Number of tuner boards expected to be
+                 *    on the radio.
+                 * \param maxTunerBw Expected maximum tuner bandwidth.
+                 * \param numTransmitter Number of transmitters on the radio.
+                 * \param transmitterIndexBase Number that transmitter indices start on.
+                 * \param numDuc Number of DUCs on the radio.
                  * \param ducIndexBase Number that DUC indices start on.
                  * \param numWbddcGroups Number of WBDDC groups on the radio.
                  * \param wbddcGroupIndexBase Number that WBDDC group indices start on.
@@ -75,15 +75,15 @@ namespace LibCyberRadio
                  * \param nbddcGroupIndexBase Number that NBDDC group indices start on.
                  * \param numDdcGroups Number of combined DDC groups on the radio.
                  * \param ddcGroupIndexBase Number that combined DDC group indices start on.
-        		 * \param numDataPorts Number of 10GigE data ports on the radio.
-        		 * \param dataPortIndexBase Number that 10GigE data port indices
-        		 *    start on.
-        		 * \param numSimpleIpSetups Number of simple IP setups for 1Gig data
-        		 *    channels.
-        		 * \param adcRate ADC sample rate, in Hz.
-        		 * \param ifSpec VITA 49 interface specification for this radio.
-				 * \param debug Whether the object supports debug output.
-        		 */
+                 * \param numDataPorts Number of 10GigE data ports on the radio.
+                 * \param dataPortIndexBase Number that 10GigE data port indices
+                 *    start on.
+                 * \param numSimpleIpSetups Number of simple IP setups for 1Gig data
+                 *    channels.
+                 * \param adcRate ADC sample rate, in Hz.
+                 * \param ifSpec VITA 49 interface specification for this radio.
+                 * \param debug Whether the object supports debug output.
+                 */
                 RadioHandler(
                         const std::string& name = "NDR",
                         int numTuner = 0,
@@ -94,23 +94,23 @@ namespace LibCyberRadio
                         int nbddcIndexBase = 1,
                         int numTunerBoards = 1,
                         int maxTunerBw = 0,
-						int numTransmitter = 0,
-						int transmitterIndexBase = 1,
-						int numDuc = 0,
-						int ducIndexBase = 1,
-		                int numWbddcGroups = 0,
-		                int wbddcGroupIndexBase = 1,
-		                int numNbddcGroups = 0,
-		                int nbddcGroupIndexBase = 1,
-		                int numDdcGroups = 0,
-		                int ddcGroupIndexBase = 1,
+                        int numTransmitter = 0,
+                        int transmitterIndexBase = 1,
+                        int numDuc = 0,
+                        int ducIndexBase = 1,
+                        int numWbddcGroups = 0,
+                        int wbddcGroupIndexBase = 1,
+                        int numNbddcGroups = 0,
+                        int nbddcGroupIndexBase = 1,
+                        int numDdcGroups = 0,
+                        int ddcGroupIndexBase = 1,
                         int numDataPorts = 0,
                         int dataPortIndexBase = 1,
                         int numSimpleIpSetups = 0,
-						double adcRate = 102.4e6,
-						VitaIfSpec ifSpec = VitaIfSpec(),
-						bool debug = false
-						);
+                        double adcRate = 102.4e6,
+                        VitaIfSpec ifSpec = VitaIfSpec(),
+                        bool debug = false
+                );
                 /**
                  * \brief Destroys a RadioHandler object.
                  */
@@ -123,7 +123,7 @@ namespace LibCyberRadio
                 /**
                  * \brief Assignment operator for RadioHandler objects.
                  * \param other The RadioHandler object to copy.
-	        	 * \returns A reference to the assigned object.
+                 * \returns A reference to the assigned object.
                  */
                 virtual RadioHandler& operator=(const RadioHandler& other);
                 /**
@@ -154,7 +154,7 @@ namespace LibCyberRadio
                         const std::string& mode,
                         const std::string& host_or_dev,
                         const int port_or_baudrate
-                        );
+                );
                 /**
                  * \brief Disconnects from the radio.
                  */
@@ -169,7 +169,7 @@ namespace LibCyberRadio
                 virtual BasicStringList sendCommand(
                         const std::string& cmdString,
                         double timeout = -1
-                        );
+                );
                 /**
                  * \brief Sets the configuration dictionary for this object.
                  *
@@ -182,11 +182,11 @@ namespace LibCyberRadio
                  * \returns True if successful, false otherwise.
                  */
                 virtual bool setConfiguration(ConfigurationDict& cfg);
-        		/**
-        		 * \brief Tells the radio to query its hardware configuration in
-        		 *    order to create its configuration dictionary (including the
-        		 *    dictionaries of any components managed by the radio).
-        		 */
+                /**
+                 * \brief Tells the radio to query its hardware configuration in
+                 *    order to create its configuration dictionary (including the
+                 *    dictionaries of any components managed by the radio).
+                 */
                 virtual void queryConfiguration();
                 /**
                  * \brief Gets the error message from the last command attempted.
@@ -309,7 +309,7 @@ namespace LibCyberRadio
                  *    GPIO output is not supported.
                  */
                 virtual bool setGpioOutputByIndex(int index, int value,
-                                                  int duration, int loop, int go);
+                        int duration, int loop, int go);
                 /**
                  * \brief Gets the calibration frequency.
                  * \returns The calibration frequency, in MHz. A value of 0 means
@@ -404,114 +404,114 @@ namespace LibCyberRadio
                  * \returns The number of tuners.
                  */
                 virtual int getNumTunerBoards() const;
-        		/**
-        		 * \brief Gets the tuner index range.
-        		 * \returns A list containing the tuner indices.
-        		 */
+                /**
+                 * \brief Gets the tuner index range.
+                 * \returns A list containing the tuner indices.
+                 */
                 virtual BasicIntList getTunerIndexRange() const;
-        		/**
-        		 * \brief Gets the tunable frequency range.
-        		 * \returns A list containing the minimum and maximum frequencies.
-        		 */
+                /**
+                 * \brief Gets the tunable frequency range.
+                 * \returns A list containing the minimum and maximum frequencies.
+                 */
                 virtual BasicDoubleList getTunerFrequencyRange() const;
-        		/**
-        		 * \brief Gets the tuned frequency resolution.
-         		 * \returns The frequency resolution, in Hz.
-        		 */
+                /**
+                 * \brief Gets the tuned frequency resolution.
+                 * \returns The frequency resolution, in Hz.
+                 */
                 virtual double getTunerFrequencyRes() const;
-				/**
-        		 * \brief Gets the tuned frequency units for tuners.
-				 *
-				 * The frequency unit is a floating-point value that indicates
-				 * how the frequency is specified in commands given to the radio.
-				 * <ul>
-				 * <li> 1.0: Frequency given in Hz
-				 * <li> 1.0e6: Frequency given in MHz
-				 * </ul>
-				 *
-				 * \return The frequency unit.
-				 */
+                /**
+                 * \brief Gets the tuned frequency units for tuners.
+                 *
+                 * The frequency unit is a floating-point value that indicates
+                 * how the frequency is specified in commands given to the radio.
+                 * <ul>
+                 * <li> 1.0: Frequency given in Hz
+                 * <li> 1.0e6: Frequency given in MHz
+                 * </ul>
+                 *
+                 * \return The frequency unit.
+                 */
                 virtual double getTunerFrequencyUnit() const;
-        		/**
-        		 * \brief Gets the tuner attenuation range.
-        		 * \returns A list containing the minimum and maximum attenuation values.
-        		 */
+                /**
+                 * \brief Gets the tuner attenuation range.
+                 * \returns A list containing the minimum and maximum attenuation values.
+                 */
                 virtual BasicDoubleList getTunerAttenuationRange() const;
-        		/**
-        		 * \brief Gets the attenuation resolution.
-        		 * \returns The resolution.
-        		 */
+                /**
+                 * \brief Gets the attenuation resolution.
+                 * \returns The resolution.
+                 */
                 virtual double getTunerAttenuationRes() const;
-        		/**
-        		 * \brief Gets whether or not a given tuner is enabled.
-        		 * \param index The tuner index number.
-        		 * \returns True if the tuner is enabled, false otherwise.
-        		 */
+                /**
+                 * \brief Gets whether or not a given tuner is enabled.
+                 * \param index The tuner index number.
+                 * \returns True if the tuner is enabled, false otherwise.
+                 */
                 virtual bool isTunerEnabled(int index) const;
-        		/**
-        		 * \brief Enables a given tuner.
-        		 * \param index The tuner index number.
-        		 * \param enabled Whether or not this tuner should be enabled.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Enables a given tuner.
+                 * \param index The tuner index number.
+                 * \param enabled Whether or not this tuner should be enabled.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool enableTuner(int index, bool enabled = true);
-        		/**
-        		 * \brief Disables a given tuner.
-        		 * \param index The tuner index number.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Disables a given tuner.
+                 * \param index The tuner index number.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool disableTuner(int index);
-        		/**
-        		 * \brief Gets the tuned frequency for a given tuner.
-        		 * \param index The tuner index number.
-        		 * \returns The tuned frequency, in Hz.
-        		 */
+                /**
+                 * \brief Gets the tuned frequency for a given tuner.
+                 * \param index The tuner index number.
+                 * \returns The tuned frequency, in Hz.
+                 */
                 virtual double getTunerFrequency(int index) const;
-        		/**
-        		 * \brief Sets the tuned frequency for a given tuner.
-        		 * \param index The tuner index number.
-        		 * \param freq The new tuned frequency (Hz).
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the tuned frequency for a given tuner.
+                 * \param index The tuner index number.
+                 * \param freq The new tuned frequency (Hz).
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setTunerFrequency(int index, double freq);
-        		/**
-        		 * \brief Gets the attenuation for a given tuner.
-        		 * \param index The tuner index number.
-        		 * \returns The attenuation, in dB.
-        		 */
+                /**
+                 * \brief Gets the attenuation for a given tuner.
+                 * \param index The tuner index number.
+                 * \returns The attenuation, in dB.
+                 */
                 virtual double getTunerAttenuation(int index) const;
-        		/**
-        		 * \brief Sets the attenuation for a given tuner.
-        		 * \param index The tuner index number.
-        		 * \param atten The new attenuation (dB).
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the attenuation for a given tuner.
+                 * \param index The tuner index number.
+                 * \param atten The new attenuation (dB).
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setTunerAttenuation(int index, double atten);
-        		/**
-        		 * \brief Gets the filter setting for a given tuner.
-        		 * \param index The tuner index number.
-        		 * \returns The filter setting.
-        		 */
+                /**
+                 * \brief Gets the filter setting for a given tuner.
+                 * \param index The tuner index number.
+                 * \returns The filter setting.
+                 */
                 virtual int getTunerFilter(int index) const;
-        		/**
-        		 * \brief Sets the filter setting for a given tuner.
-        		 * \param index The tuner index number.
-        		 * \param filter The new filter setting.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the filter setting for a given tuner.
+                 * \param index The tuner index number.
+                 * \param filter The new filter setting.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setTunerFilter(int index, int filter);
-        		/**
-        		 * \brief Gets the configuration dictionary for a given tuner.
-        		 * \param index The tuner index number.
-        		 * \returns The configuration dictionary.
-        		 */
+                /**
+                 * \brief Gets the configuration dictionary for a given tuner.
+                 * \param index The tuner index number.
+                 * \returns The configuration dictionary.
+                 */
                 virtual ConfigurationDict getTunerConfiguration(int index) const;
-        		/**
-        		 * \brief Sets the configuration dictionary for a given tuner.
-        		 * \param index The tuner index number.
-        		 * \param cfg The configuration dictionary.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the configuration dictionary for a given tuner.
+                 * \param index The tuner index number.
+                 * \param cfg The configuration dictionary.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setTunerConfiguration(int index, ConfigurationDict& cfg);
                 /**
                  * \brief Gets the number of WBDDCs on the radio.
@@ -534,179 +534,179 @@ namespace LibCyberRadio
                  * \returns True if selectable, false otherwise.
                  */
                 virtual bool isWbddcSelectableSource() const;
-        		/**
-        		 * \brief Gets the tunable frequency range for WBDDCs.
-        		 * \returns A list containing the minimum and maximum frequencies.
-        		 *    These numbers have no meaning if the WBDDCs are not tunable.
-        		 */
+                /**
+                 * \brief Gets the tunable frequency range for WBDDCs.
+                 * \returns A list containing the minimum and maximum frequencies.
+                 *    These numbers have no meaning if the WBDDCs are not tunable.
+                 */
                 virtual BasicDoubleList getWbddcFrequencyRange() const;
-        		/**
-        		 * \brief Gets the tuned frequency resolution for WBDDCs.
-         		 * \returns The frequency resolution, in Hz.  This value has no
-         		 *    meaning if the WBDDCs are not tunable.
-        		 */
+                /**
+                 * \brief Gets the tuned frequency resolution for WBDDCs.
+                 * \returns The frequency resolution, in Hz.  This value has no
+                 *    meaning if the WBDDCs are not tunable.
+                 */
                 virtual double getWbddcFrequencyRes() const;
-				/**
-        		 * \brief Gets the tuned frequency units for WBDDCs.
-				 *
-				 * The frequency unit is a floating-point value that indicates
-				 * how the frequency is specified in commands given to the radio.
-				 * <ul>
-				 * <li> 1.0: Frequency given in Hz
-				 * <li> 1.0e6: Frequency given in MHz
-				 * </ul>
-				 *
-				 * \return The frequency unit.
-				 */
+                /**
+                 * \brief Gets the tuned frequency units for WBDDCs.
+                 *
+                 * The frequency unit is a floating-point value that indicates
+                 * how the frequency is specified in commands given to the radio.
+                 * <ul>
+                 * <li> 1.0: Frequency given in Hz
+                 * <li> 1.0e6: Frequency given in MHz
+                 * </ul>
+                 *
+                 * \return The frequency unit.
+                 */
                 virtual double getWbddcFrequencyUnit() const;
-        		/**
-        		 * \brief Gets the WBDDC rate set.
-        		 * \returns The rate set.
-        		 */
+                /**
+                 * \brief Gets the WBDDC rate set.
+                 * \returns The rate set.
+                 */
                 virtual WbddcRateSet getWbddcRateSet() const;
-        		/**
-        		 * \brief Gets the list of allowed WBDDC sample rates, based on the
-        		 *    rate set.
-        		 * \returns The rate list.
-        		 */
+                /**
+                 * \brief Gets the list of allowed WBDDC sample rates, based on the
+                 *    rate set.
+                 * \returns The rate list.
+                 */
                 virtual BasicDoubleList getWbddcRateList() const;
-        		/**
-        		 * \brief Gets whether or not a given WBDDC is enabled.
-        		 * \param index WBDDC index number.
-        		 * \returns True if enabled, false otherwise.
-        		 */
+                /**
+                 * \brief Gets whether or not a given WBDDC is enabled.
+                 * \param index WBDDC index number.
+                 * \returns True if enabled, false otherwise.
+                 */
                 virtual bool isWbddcEnabled(int index) const;
-        		/**
-        		 * \brief Enables a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \param enabled Whether or not this component should be enabled.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Enables a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \param enabled Whether or not this component should be enabled.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool enableWbddc(int index, bool enabled = true);
-        		/**
-        		 * \brief Disables a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Disables a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool disableWbddc(int index);
-        		/**
-        		 * \brief Gets the tuned frequency for a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \returns The tuned frequency, in Hz.  This value has no meaning if
-        		 *    the WBDDC is not tunable.
-        		 */
+                /**
+                 * \brief Gets the tuned frequency for a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \returns The tuned frequency, in Hz.  This value has no meaning if
+                 *    the WBDDC is not tunable.
+                 */
                 virtual double getWbddcFrequency(int index) const;
-        		/**
-        		 * \brief Sets the tuned frequency for a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \param freq The new tuned frequency (Hz).
-        		 * \returns True if successful, false otherwise.  Returns
-        		 *    false if the WBDDC is not tunable.
-        		 */
+                /**
+                 * \brief Sets the tuned frequency for a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \param freq The new tuned frequency (Hz).
+                 * \returns True if successful, false otherwise.  Returns
+                 *    false if the WBDDC is not tunable.
+                 */
                 virtual bool setWbddcFrequency(int index, double freq);
-        		/**
-        		 * \brief Gets the source (which tuner is supplying the signal) for
-        		 *    a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \returns The source index.  This value has no meaning if the WBDDC
-        		 *    does not support selectable source.
-        		 */
+                /**
+                 * \brief Gets the source (which tuner is supplying the signal) for
+                 *    a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \returns The source index.  This value has no meaning if the WBDDC
+                 *    does not support selectable source.
+                 */
                 virtual int getWbddcSource(int index) const;
-        		/**
-        		 * \brief Sets the source (which tuner is supplying the signal) for
-        		 *    a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \param source The new WBDDC source index.
-        		 * \returns True if successful, false otherwise.  Returns false if the
-        		 *    WBDDC does not support selectable source.
-        		 */
+                /**
+                 * \brief Sets the source (which tuner is supplying the signal) for
+                 *    a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \param source The new WBDDC source index.
+                 * \returns True if successful, false otherwise.  Returns false if the
+                 *    WBDDC does not support selectable source.
+                 */
                 virtual bool setWbddcSource(int index, int source);
-        		/**
-        		 * \brief Gets the rate index for a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \returns The rate index.
-        		 */
+                /**
+                 * \brief Gets the rate index for a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \returns The rate index.
+                 */
                 virtual int getWbddcRateIndex(int index) const;
-        		/**
-        		 * \brief Sets the rate index for a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \param rateIndex The new rate index.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the rate index for a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \param rateIndex The new rate index.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setWbddcRateIndex(int index, int rateIndex);
-        		/**
-        		 * \brief Gets the UDP destination for a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \returns The UDP destination.
-        		 */
+                /**
+                 * \brief Gets the UDP destination for a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \returns The UDP destination.
+                 */
                 virtual int getWbddcUdpDestination(int index) const;
-        		/**
-        		 * \brief Sets the UDP destination for a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \param dest The new UDP destination.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the UDP destination for a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \param dest The new UDP destination.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setWbddcUdpDestination(int index, int dest);
-        		/**
-        		 * \brief Gets the VITA 49 setting for a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \returns The VITA 49 setting.
-        		 */
+                /**
+                 * \brief Gets the VITA 49 setting for a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \returns The VITA 49 setting.
+                 */
                 virtual int getWbddcVitaEnable(int index) const;
-        		/**
-        		 * \brief Sets the VITA 49 setting for a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \param enable The new VITA 49 setting.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the VITA 49 setting for a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \param enable The new VITA 49 setting.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setWbddcVitaEnable(int index, int enable);
-        		/**
-        		 * \brief Gets the VITA 49 stream ID for a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \returns The VITA 49 stream ID.
-        		 */
+                /**
+                 * \brief Gets the VITA 49 stream ID for a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \returns The VITA 49 stream ID.
+                 */
                 virtual unsigned int getWbddcStreamId(int index) const;
-        		/**
-        		 * \brief Sets the VITA 49 stream ID for a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \param sid The new stream ID.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the VITA 49 stream ID for a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \param sid The new stream ID.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setWbddcStreamId(int index, unsigned int sid);
-        		/**
-        		 * \brief Gets the data port for a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \returns The data port. This number has no meaning if the
-        		 *    radio does not use data ports.
-        		 */
+                /**
+                 * \brief Gets the data port for a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \returns The data port. This number has no meaning if the
+                 *    radio does not use data ports.
+                 */
                 virtual int getWbddcDataPort(int index) const;
-        		/**
-        		 * \brief Sets the data port for a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \param port The new data port.
-        		 * \returns True if successful, false otherwise. Returns false
-        		 *    if the radio does not use data ports.
-        		 */
+                /**
+                 * \brief Sets the data port for a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \param port The new data port.
+                 * \returns True if successful, false otherwise. Returns false
+                 *    if the radio does not use data ports.
+                 */
                 virtual bool setWbddcDataPort(int index, int port);
-        		/**
-        		 * \brief Sets the rate set for a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \param set The new rate set.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the rate set for a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \param set The new rate set.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setWbddcRateSet(int index, const WbddcRateSet& set);
-        		/**
-        		 * \brief Gets the configuration dictionary for a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \returns The configuration dictionary.
-        		 */
+                /**
+                 * \brief Gets the configuration dictionary for a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \returns The configuration dictionary.
+                 */
                 virtual ConfigurationDict getWbddcConfiguration(int index) const;
-        		/**
-        		 * \brief Sets the configuration dictionary for a given WBDDC.
-        		 * \param index WBDDC index number.
-        		 * \param cfg The configuration dictionary.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the configuration dictionary for a given WBDDC.
+                 * \param index WBDDC index number.
+                 * \param cfg The configuration dictionary.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setWbddcConfiguration(int index, ConfigurationDict& cfg);
                 /**
                  * \brief Gets the number of NBDDCs on the radio.
@@ -718,179 +718,179 @@ namespace LibCyberRadio
                  * \returns A list of NBDDC indices.
                  */
                 virtual BasicIntList getNbddcIndexRange() const;
-        		/**
-        		 * \brief Gets the tunable frequency range for NBDDCs.
-        		 * \returns A list containing the minimum and maximum frequencies.
-        		 *    These numbers have no meaning if the NBDDCs are not tunable.
-        		 */
+                /**
+                 * \brief Gets the tunable frequency range for NBDDCs.
+                 * \returns A list containing the minimum and maximum frequencies.
+                 *    These numbers have no meaning if the NBDDCs are not tunable.
+                 */
                 virtual BasicDoubleList getNbddcFrequencyRange() const;
-        		/**
-        		 * \brief Gets the tuned frequency resolution for NBDDCs.
-         		 * \returns The frequency resolution, in Hz.  This value has no
-         		 *    meaning if the NBDDCs are not tunable.
-        		 */
+                /**
+                 * \brief Gets the tuned frequency resolution for NBDDCs.
+                 * \returns The frequency resolution, in Hz.  This value has no
+                 *    meaning if the NBDDCs are not tunable.
+                 */
                 virtual double getNbddcFrequencyRes() const;
-				/**
-        		 * \brief Gets the tuned frequency units for NBDDCs.
-				 *
-				 * The frequency unit is a floating-point value that indicates
-				 * how the frequency is specified in commands given to the radio.
-				 * <ul>
-				 * <li> 1.0: Frequency given in Hz
-				 * <li> 1.0e6: Frequency given in MHz
-				 * </ul>
-				 *
-				 * \return The frequency unit.
-				 */
+                /**
+                 * \brief Gets the tuned frequency units for NBDDCs.
+                 *
+                 * The frequency unit is a floating-point value that indicates
+                 * how the frequency is specified in commands given to the radio.
+                 * <ul>
+                 * <li> 1.0: Frequency given in Hz
+                 * <li> 1.0e6: Frequency given in MHz
+                 * </ul>
+                 *
+                 * \return The frequency unit.
+                 */
                 virtual double getNbddcFrequencyUnit() const;
-        		/**
-        		 * \brief Gets the NBDDC rate set.
-        		 * \returns The rate set.
-        		 */
+                /**
+                 * \brief Gets the NBDDC rate set.
+                 * \returns The rate set.
+                 */
                 virtual NbddcRateSet getNbddcRateSet() const;
-        		/**
-        		 * \brief Gets the list of allowed NBDDC sample rates, based on the
-        		 *    rate set.
-        		 * \returns The rate list.
-        		 */
+                /**
+                 * \brief Gets the list of allowed NBDDC sample rates, based on the
+                 *    rate set.
+                 * \returns The rate list.
+                 */
                 virtual BasicDoubleList getNbddcRateList() const;
-        		/**
-        		 * \brief Gets whether or not a given NBDDC is enabled.
-        		 * \param index NBDDC index number.
-        		 * \returns True if enabled, false otherwise.
-        		 */
+                /**
+                 * \brief Gets whether or not a given NBDDC is enabled.
+                 * \param index NBDDC index number.
+                 * \returns True if enabled, false otherwise.
+                 */
                 virtual bool isNbddcEnabled(int index) const;
-        		/**
-        		 * \brief Enables a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \param enabled Whether or not this component should be enabled.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Enables a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \param enabled Whether or not this component should be enabled.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool enableNbddc(int index, bool enabled = true);
-        		/**
-        		 * \brief Disables a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Disables a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool disableNbddc(int index);
-        		/**
-        		 * \brief Gets the tuned frequency for a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \returns The tuned frequency, in Hz.  This value has no meaning if
-        		 *    the NBDDC is not tunable.
-        		 */
+                /**
+                 * \brief Gets the tuned frequency for a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \returns The tuned frequency, in Hz.  This value has no meaning if
+                 *    the NBDDC is not tunable.
+                 */
                 virtual double getNbddcFrequency(int index) const;
-        		/**
-        		 * \brief Sets the tuned frequency for a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \param freq The new tuned frequency (Hz).
-        		 * \returns True if successful, false otherwise.  Returns
-        		 *    false if the NBDDC is not tunable.
-        		 */
+                /**
+                 * \brief Sets the tuned frequency for a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \param freq The new tuned frequency (Hz).
+                 * \returns True if successful, false otherwise.  Returns
+                 *    false if the NBDDC is not tunable.
+                 */
                 virtual bool setNbddcFrequency(int index, double freq);
-        		/**
-        		 * \brief Gets the source (which tuner is supplying the signal) for
-        		 *    a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \returns The source index.  This value has no meaning if the NBDDC
-        		 *    does not support selectable source.
-        		 */
+                /**
+                 * \brief Gets the source (which tuner is supplying the signal) for
+                 *    a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \returns The source index.  This value has no meaning if the NBDDC
+                 *    does not support selectable source.
+                 */
                 virtual int getNbddcSource(int index) const;
-        		/**
-        		 * \brief Sets the source (which tuner is supplying the signal) for
-        		 *    a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \param source The new NBDDC source index.
-        		 * \returns True if successful, false otherwise.  Returns false if the
-        		 *    NBDDC does not support selectable source.
-        		 */
+                /**
+                 * \brief Sets the source (which tuner is supplying the signal) for
+                 *    a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \param source The new NBDDC source index.
+                 * \returns True if successful, false otherwise.  Returns false if the
+                 *    NBDDC does not support selectable source.
+                 */
                 virtual bool setNbddcSource(int index, int source);
-        		/**
-        		 * \brief Gets the rate index for a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \returns The rate index.
-        		 */
+                /**
+                 * \brief Gets the rate index for a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \returns The rate index.
+                 */
                 virtual int getNbddcRateIndex(int index) const;
-        		/**
-        		 * \brief Sets the rate index for a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \param rateIndex The new rate index.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the rate index for a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \param rateIndex The new rate index.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setNbddcRateIndex(int index, int rateIndex);
-        		/**
-        		 * \brief Gets the UDP destination for a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \returns The UDP destination.
-        		 */
+                /**
+                 * \brief Gets the UDP destination for a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \returns The UDP destination.
+                 */
                 virtual int getNbddcUdpDestination(int index) const;
-        		/**
-        		 * \brief Sets the UDP destination for a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \param dest The new UDP destination.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the UDP destination for a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \param dest The new UDP destination.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setNbddcUdpDestination(int index, int dest);
-        		/**
-        		 * \brief Gets the VITA 49 setting for a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \returns The VITA 49 setting.
-        		 */
+                /**
+                 * \brief Gets the VITA 49 setting for a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \returns The VITA 49 setting.
+                 */
                 virtual int getNbddcVitaEnable(int index) const;
-        		/**
-        		 * \brief Sets the VITA 49 setting for a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \param enable The new VITA 49 setting.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the VITA 49 setting for a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \param enable The new VITA 49 setting.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setNbddcVitaEnable(int index, int enable);
-        		/**
-        		 * \brief Gets the VITA 49 stream ID for a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \returns The VITA 49 stream ID.
-        		 */
+                /**
+                 * \brief Gets the VITA 49 stream ID for a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \returns The VITA 49 stream ID.
+                 */
                 virtual unsigned int getNbddcStreamId(int index) const;
-        		/**
-        		 * \brief Sets the VITA 49 stream ID for a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \param sid The new stream ID.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the VITA 49 stream ID for a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \param sid The new stream ID.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setNbddcStreamId(int index, unsigned int sid);
-        		/**
-        		 * \brief Gets the data port for a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \returns The data port. This number has no meaning if the
-        		 *    radio does not use data ports.
-        		 */
+                /**
+                 * \brief Gets the data port for a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \returns The data port. This number has no meaning if the
+                 *    radio does not use data ports.
+                 */
                 virtual int getNbddcDataPort(int index) const;
-        		/**
-        		 * \brief Sets the data port for a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \param port The new data port.
-        		 * \returns True if successful, false otherwise. Returns false
-        		 *    if the radio does not use data ports.
-        		 */
+                /**
+                 * \brief Sets the data port for a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \param port The new data port.
+                 * \returns True if successful, false otherwise. Returns false
+                 *    if the radio does not use data ports.
+                 */
                 virtual bool setNbddcDataPort(int index, int port);
-        		/**
-        		 * \brief Sets the rate set for a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \param set The new rate set.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the rate set for a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \param set The new rate set.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setNbddcRateSet(int index, const NbddcRateSet& set);
-        		/**
-        		 * \brief Gets the configuration dictionary for a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \returns The configuration dictionary.
-        		 */
+                /**
+                 * \brief Gets the configuration dictionary for a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \returns The configuration dictionary.
+                 */
                 virtual ConfigurationDict getNbddcConfiguration(int index) const;
-        		/**
-        		 * \brief Sets the configuration dictionary for a given NBDDC.
-        		 * \param index NBDDC index number.
-        		 * \param cfg The configuration dictionary.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the configuration dictionary for a given NBDDC.
+                 * \param index NBDDC index number.
+                 * \param cfg The configuration dictionary.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setNbddcConfiguration(int index, ConfigurationDict& cfg);
                 /**
                  * \brief Gets the number of transmitters on the radio.
@@ -912,24 +912,24 @@ namespace LibCyberRadio
                  * \returns The frequency resolution.
                  */
                 virtual double getTransmitterFrequencyRes() const;
-				/**
-				 * \brief Gets the frequency unit for transmitters on the radio.
-				 *
-				 * The frequency unit is a floating-point value that indicates
-				 * how the frequency is specified in commands given to the radio.
-				 * <ul>
-				 * <li> 1.0: Frequency given in Hz
-				 * <li> 1.0e6: Frequency given in MHz
-				 * </ul>
-				 *
-				 * \return The frequency unit.
-				 */
+                /**
+                 * \brief Gets the frequency unit for transmitters on the radio.
+                 *
+                 * The frequency unit is a floating-point value that indicates
+                 * how the frequency is specified in commands given to the radio.
+                 * <ul>
+                 * <li> 1.0: Frequency given in Hz
+                 * <li> 1.0e6: Frequency given in MHz
+                 * </ul>
+                 *
+                 * \return The frequency unit.
+                 */
                 virtual double getTransmitterFrequencyUnit() const;
-				/**
-				 * \brief Gets the attenuation range for the transmitters on the radio.
-				 *
-				 * \return A list containing the minimum and maximum attenuation values.
-				 */
+                /**
+                 * \brief Gets the attenuation range for the transmitters on the radio.
+                 *
+                 * \return A list containing the minimum and maximum attenuation values.
+                 */
                 virtual BasicDoubleList getTransmitterAttenuationRange() const;
                 /**
                  * \brief Gets the attenuation resolution for transmitters on the radio.
@@ -981,18 +981,18 @@ namespace LibCyberRadio
                  * \returns True if successful, false otherwise.
                  */
                 virtual bool setTransmitterAttenuation(int index, double atten);
-        		/**
-        		 * \brief Gets the configuration dictionary for a given transmitter.
-        		 * \param index Transmitter index number.
-        		 * \returns The configuration dictionary.
-        		 */
+                /**
+                 * \brief Gets the configuration dictionary for a given transmitter.
+                 * \param index Transmitter index number.
+                 * \returns The configuration dictionary.
+                 */
                 virtual ConfigurationDict getTransmitterConfiguration(int index) const;
-        		/**
-        		 * \brief Sets the configuration dictionary for a given transmitter.
-        		 * \param index Transmitter index number.
-        		 * \param cfg The configuration dictionary.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the configuration dictionary for a given transmitter.
+                 * \param index Transmitter index number.
+                 * \param cfg The configuration dictionary.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setTransmitterConfiguration(int index, ConfigurationDict& cfg);
                 /**
                  * \brief Gets whether transmitters support continuous-wave (CW) tone
@@ -1006,218 +1006,218 @@ namespace LibCyberRadio
                  * \returns The number of generators.
                  */
                 virtual int getTransmitterCWNum() const;
-        		/**
-        		 * \brief Gets the range of indices for CW tone generators.
-        		 * \returns A list containing the generator indices.
-        		 */
+                /**
+                 * \brief Gets the range of indices for CW tone generators.
+                 * \returns A list containing the generator indices.
+                 */
                 virtual BasicIntList getTransmitterCWIndexRange() const;
-        		/**
-        		 * \brief Gets the CW frequency range.
-        		 * \returns A list containing the minimum and maximum frequencies.
-        		 */
+                /**
+                 * \brief Gets the CW frequency range.
+                 * \returns A list containing the minimum and maximum frequencies.
+                 */
                 virtual BasicDoubleList getTransmitterCWFrequencyRange() const;
-        		/**
-        		 * \brief Gets the CW frequency resolution.
-         		 * \returns The frequency resolution, in Hz.
-        		 */
+                /**
+                 * \brief Gets the CW frequency resolution.
+                 * \returns The frequency resolution, in Hz.
+                 */
                 virtual double getTransmitterCWFrequencyRes() const;
-        		/**
-        		 * \brief Gets the CW amplitude range.
-        		 * \returns A list containing the minimum and maximum amplitude values.
-        		 */
+                /**
+                 * \brief Gets the CW amplitude range.
+                 * \returns A list containing the minimum and maximum amplitude values.
+                 */
                 virtual BasicDoubleList getTransmitterCWAmplitudeRange() const;
-        		/**
-        		 * \brief Gets the CW amplitude resolution.
-        		 * \returns The resolution.
-        		 */
+                /**
+                 * \brief Gets the CW amplitude resolution.
+                 * \returns The resolution.
+                 */
                 virtual double getTransmitterCWAmplitudeRes() const;
-        		/**
-        		 * \brief Gets the CW phase range.
-        		 * \returns A list containing the minimum and maximum phase values.
-        		 */
+                /**
+                 * \brief Gets the CW phase range.
+                 * \returns A list containing the minimum and maximum phase values.
+                 */
                 virtual BasicDoubleList getTransmitterCWPhaseRange() const;
-        		/**
-        		 * \brief Gets the CW phase resolution.
-        		 * \returns The resolution.
-        		 */
+                /**
+                 * \brief Gets the CW phase resolution.
+                 * \returns The resolution.
+                 */
                 virtual int getTransmitterCWPhaseRes() const;
                 /**
                  * \brief Gets whether the transmitter supports CW tone sweeping.
                  * \returns True if supported, false otherwise.
                  */
                 virtual bool transmitterSupportsCWSweep() const;
-        		/**
-        		 * \brief Gets the CW start frequency range.
-        		 * \returns A list containing the minimum and maximum frequency values.
-        		 */
+                /**
+                 * \brief Gets the CW start frequency range.
+                 * \returns A list containing the minimum and maximum frequency values.
+                 */
                 virtual BasicDoubleList getTransmitterCWSweepStartRange() const;
-        		/**
-        		 * \brief Gets the CW start frequency resolution.
-        		 * \returns The resolution.
-        		 */
+                /**
+                 * \brief Gets the CW start frequency resolution.
+                 * \returns The resolution.
+                 */
                 virtual double getTransmitterCWSweepStartRes() const;
-        		/**
-        		 * \brief Gets the CW stop frequency range.
-        		 * \returns A list containing the minimum and maximum frequency values.
-        		 */
+                /**
+                 * \brief Gets the CW stop frequency range.
+                 * \returns A list containing the minimum and maximum frequency values.
+                 */
                 virtual BasicDoubleList getTransmitterCWSweepStopRange() const;
-        		/**
-        		 * \brief Gets the CW stop frequency resolution.
-        		 * \returns The resolution.
-        		 */
+                /**
+                 * \brief Gets the CW stop frequency resolution.
+                 * \returns The resolution.
+                 */
                 virtual double getTransmitterCWSweepStopRes() const;
-        		/**
-        		 * \brief Gets the CW frequency step range.
-        		 * \returns A list containing the minimum and maximum frequency values.
-        		 */
+                /**
+                 * \brief Gets the CW frequency step range.
+                 * \returns A list containing the minimum and maximum frequency values.
+                 */
                 virtual BasicDoubleList getTransmitterCWSweepStepRange() const;
-        		/**
-        		 * \brief Gets the CW frequency step resolution.
-        		 * \returns The resolution.
-        		 */
+                /**
+                 * \brief Gets the CW frequency step resolution.
+                 * \returns The resolution.
+                 */
                 virtual double getTransmitterCWSweepStepRes() const;
-        		/**
-        		 * \brief Gets the CW dwell time range.
-        		 * \returns A list containing the minimum and maximum dwell time values.
-        		 */
+                /**
+                 * \brief Gets the CW dwell time range.
+                 * \returns A list containing the minimum and maximum dwell time values.
+                 */
                 virtual BasicDoubleList getTransmitterCWSweepDwellRange() const;
-        		/**
-        		 * \brief Gets the CW dwell time resolution.
-        		 * \returns The resolution.
-        		 */
+                /**
+                 * \brief Gets the CW dwell time resolution.
+                 * \returns The resolution.
+                 */
                 virtual double getTransmitterCWSweepDwellRes() const;
-        		/**
-        		 * \brief Enables a given CW tone generator.
-        		 * \param index Transmitter index.
-        		 * \param cwIndex CW tone generator index.
-        		 * \param enabled Whether or not this component should be enabled.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Enables a given CW tone generator.
+                 * \param index Transmitter index.
+                 * \param cwIndex CW tone generator index.
+                 * \param enabled Whether or not this component should be enabled.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool enableTransmitterCW(int index, int cwIndex,
-                		                         bool enabled = true);
-        		/**
-        		 * \brief Disables a given CW tone generator.
-        		 * \param index Transmitter index.
-        		 * \param cwIndex CW tone generator index.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                        bool enabled = true);
+                /**
+                 * \brief Disables a given CW tone generator.
+                 * \param index Transmitter index.
+                 * \param cwIndex CW tone generator index.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool disableTransmitterCW(int index, int cwIndex);
-        		/**
-        		 * \brief Gets the configuration for a given CW tone generator.
-        		 * \param index Transmitter index.
-        		 * \param cwIndex CW tone generator index.
-        		 * \returns The configuration dictionary.
-        		 */
+                /**
+                 * \brief Gets the configuration for a given CW tone generator.
+                 * \param index Transmitter index.
+                 * \param cwIndex CW tone generator index.
+                 * \returns The configuration dictionary.
+                 */
                 virtual ConfigurationDict getTransmitterCWConfiguration(int index,
-                		                                                int cwIndex) const;
-        		/**
-        		 * \brief Sets the configuration dictionary for a given CW tone
-        		 *    generator.
-        		 * \param index Transmitter index.
-        		 * \param cwIndex CW tone generator index.
-        		 * \param cfg The component configuration dictionary.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                        int cwIndex) const;
+                /**
+                 * \brief Sets the configuration dictionary for a given CW tone
+                 *    generator.
+                 * \param index Transmitter index.
+                 * \param cwIndex CW tone generator index.
+                 * \param cfg The component configuration dictionary.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setTransmitterCWConfiguration(int index, int cwIndex,
-                		                                   ConfigurationDict& cfg);
-        		/**
-        		 * \brief Gets the constant frequency for a given CW tone generator.
-        		 * \param index Transmitter index.
-        		 * \param cwIndex CW tone generator index.
-        		 * \returns The constant frequency, in Hz.
-        		 */
+                        ConfigurationDict& cfg);
+                /**
+                 * \brief Gets the constant frequency for a given CW tone generator.
+                 * \param index Transmitter index.
+                 * \param cwIndex CW tone generator index.
+                 * \returns The constant frequency, in Hz.
+                 */
                 virtual double getTransmitterCWFrequency(int index, int cwIndex) const;
-        		/**
-        		 * \brief Sets the constant frequency for a given CW tone generator.
-        		 * \param index Transmitter index.
-        		 * \param cwIndex CW tone generator index.
-        		 * \param freq The new constant frequency (Hz).
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the constant frequency for a given CW tone generator.
+                 * \param index Transmitter index.
+                 * \param cwIndex CW tone generator index.
+                 * \param freq The new constant frequency (Hz).
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setTransmitterCWFrequency(int index, int cwIndex, double freq);
-        		/**
-        		 * \brief Gets the signal amplitude for a given CW tone generator.
-        		 * \param index Transmitter index.
-        		 * \param cwIndex CW tone generator index.
-        		 * \returns The signal amplitude, in scale units.
-        		 */
+                /**
+                 * \brief Gets the signal amplitude for a given CW tone generator.
+                 * \param index Transmitter index.
+                 * \param cwIndex CW tone generator index.
+                 * \returns The signal amplitude, in scale units.
+                 */
                 virtual double getTransmitterCWAmplitude(int index, int cwIndex) const;
-        		/**
-        		 * \brief Sets the signal amplitude for a given CW tone generator.
-        		 * \param index Transmitter index.
-        		 * \param cwIndex CW tone generator index.
-        		 * \param amp The new signal amplitude (scale units).
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the signal amplitude for a given CW tone generator.
+                 * \param index Transmitter index.
+                 * \param cwIndex CW tone generator index.
+                 * \param amp The new signal amplitude (scale units).
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setTransmitterCWAmplitude(int index, int cwIndex, double amp);
-        		/**
-        		 * \brief Gets the signal phase for a given CW tone generator.
-        		 * \param index Transmitter index.
-        		 * \param cwIndex CW tone generator index.
-        		 * \returns The signal phase, in degrees.
-        		 */
+                /**
+                 * \brief Gets the signal phase for a given CW tone generator.
+                 * \param index Transmitter index.
+                 * \param cwIndex CW tone generator index.
+                 * \returns The signal phase, in degrees.
+                 */
                 virtual double getTransmitterCWPhase(int index, int cwIndex) const;
-        		/**
-        		 * \brief Sets the signal phase for a given CW tone generator.
-        		 * \param index Transmitter index.
-        		 * \param cwIndex CW tone generator index.
-        		 * \param phase The new signal phase (degrees).
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the signal phase for a given CW tone generator.
+                 * \param index Transmitter index.
+                 * \param cwIndex CW tone generator index.
+                 * \param phase The new signal phase (degrees).
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setTransmitterCWPhase(int index, int cwIndex, double phase);
-        		/**
-        		 * \brief Gets whether or not a given CW tone generator supports
-        		 *    signal sweeps.
-        		 * \param index Transmitter index.
-        		 * \param cwIndex CW tone generator index.
-        		 * \returns True if supported, false otherwise.
-        		 */
+                /**
+                 * \brief Gets whether or not a given CW tone generator supports
+                 *    signal sweeps.
+                 * \param index Transmitter index.
+                 * \param cwIndex CW tone generator index.
+                 * \returns True if supported, false otherwise.
+                 */
                 virtual bool transmitterSupportsCWSweep(int index, int cwIndex) const;
-        		/**
-        		 * \brief Gets the start frequency for a signal sweep for a given
-        		 *    CW tone generator.
-        		 * \param index Transmitter index.
-        		 * \param cwIndex CW tone generator index.
-        		 * \returns The start frequency, in Hz.
-        		 */
+                /**
+                 * \brief Gets the start frequency for a signal sweep for a given
+                 *    CW tone generator.
+                 * \param index Transmitter index.
+                 * \param cwIndex CW tone generator index.
+                 * \returns The start frequency, in Hz.
+                 */
                 virtual double getTransmitterCWSweepStartFrequency(int index, int cwIndex) const;
-        		/**
-        		 * \brief Gets the stop frequency for a signal sweep for a given
-        		 *    CW tone generator.
-        		 * \param index Transmitter index.
-        		 * \param cwIndex CW tone generator index.
-        		 * \returns The stop frequency, in Hz.
-        		 */
+                /**
+                 * \brief Gets the stop frequency for a signal sweep for a given
+                 *    CW tone generator.
+                 * \param index Transmitter index.
+                 * \param cwIndex CW tone generator index.
+                 * \returns The stop frequency, in Hz.
+                 */
                 virtual double getTransmitterCWSweepStopFrequency(int index, int cwIndex) const;
-        		/**
-        		 * \brief Gets the frequency step for a signal sweep for a given
-        		 *    CW tone generator.
-        		 * \param index Transmitter index.
-        		 * \param cwIndex CW tone generator index.
-        		 * \returns The frequency step, in Hz.
-        		 */
+                /**
+                 * \brief Gets the frequency step for a signal sweep for a given
+                 *    CW tone generator.
+                 * \param index Transmitter index.
+                 * \param cwIndex CW tone generator index.
+                 * \returns The frequency step, in Hz.
+                 */
                 virtual double getTransmitterCWSweepFrequencyStep(int index, int cwIndex) const;
-        		/**
-        		 * \brief Gets the dwell time for a signal sweep for a given
-        		 *    CW tone generator.
-        		 * \param index Transmitter index.
-        		 * \param cwIndex CW tone generator index.
-        		 * \returns The dwell time, in ADC samples.
-        		 */
+                /**
+                 * \brief Gets the dwell time for a signal sweep for a given
+                 *    CW tone generator.
+                 * \param index Transmitter index.
+                 * \param cwIndex CW tone generator index.
+                 * \returns The dwell time, in ADC samples.
+                 */
                 virtual double getTransmitterCWSweepDwellTime(int index, int cwIndex) const;
-        		/**
-        		 * \brief Sets the parameters for a frequency sweep for a given
-        		 *    CW tone generator.
-        		 * \param index Transmitter index.
-        		 * \param cwIndex CW tone generator index.
-        		 * \param start The new start frequency (Hz).
-        		 * \param stop The new stop frequency (Hz).
-        		 * \param step The new frequency step (Hz).
-        		 * \param dwell The new dwell time (ADC samples).
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the parameters for a frequency sweep for a given
+                 *    CW tone generator.
+                 * \param index Transmitter index.
+                 * \param cwIndex CW tone generator index.
+                 * \param start The new start frequency (Hz).
+                 * \param stop The new stop frequency (Hz).
+                 * \param step The new frequency step (Hz).
+                 * \param dwell The new dwell time (ADC samples).
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setTransmitterCWFrequencySweep(int index, int cwIndex, double start,
-                		                                    double stop, double step, double dwell);
+                        double stop, double step, double dwell);
                 /**
                  * \brief Gets the number of DUCs on the radio.
                  * \returns The number of DUCs.
@@ -1238,186 +1238,186 @@ namespace LibCyberRadio
                  * \returns True if supported, false otherwise.
                  */
                 virtual bool ducSupportsSnapshotTransmit() const;
-        		/**
-        		 * \brief Enables a given DUC.
-        		 * \param index The DUC index number.
-        		 * \param enabled Whether or not the DUC should be enabled.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Enables a given DUC.
+                 * \param index The DUC index number.
+                 * \param enabled Whether or not the DUC should be enabled.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool enableDuc(int index, bool enabled);
-        		/**
-        		 * \brief Disables a given DUC.
-        		 * \param index The DUC index number.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Disables a given DUC.
+                 * \param index The DUC index number.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool disableDuc(int index);
-        		/**
-        		 * \brief Gets the configuration dictionary for a given DUC.
-        		 * \param index DUC index number.
-        		 * \returns The configuration dictionary.
-        		 */
+                /**
+                 * \brief Gets the configuration dictionary for a given DUC.
+                 * \param index DUC index number.
+                 * \returns The configuration dictionary.
+                 */
                 virtual ConfigurationDict getDucConfiguration(int index) const;
-        		/**
-        		 * \brief Sets the configuration dictionary for a given DUC.
-        		 * \param index The DUC index number.
-        		 * \param cfg The component configuration dictionary.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the configuration dictionary for a given DUC.
+                 * \param index The DUC index number.
+                 * \param cfg The component configuration dictionary.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setDucConfiguration(int index, ConfigurationDict& cfg);
-        		/**
-        		 * \brief Gets the data port for a given DUC.
-        		 * \param index The DUC index number.
-        		 * \returns The data port.
-        		 */
+                /**
+                 * \brief Gets the data port for a given DUC.
+                 * \param index The DUC index number.
+                 * \returns The data port.
+                 */
                 virtual int getDucDataPort(int index) const;
-        		/**
-        		 * \brief Sets the data port for a given DUC.
-        		 * \param index The DUC index number.
-        		 * \param port The new data port. Setting this to 0 disables
-        		 *    streaming.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the data port for a given DUC.
+                 * \param index The DUC index number.
+                 * \param port The new data port. Setting this to 0 disables
+                 *    streaming.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setDucDataPort(int index, int port);
-        		/**
-        		 * \brief Gets the tuned frequency for a given DUC.
-        		 * \param index The DUC index number.
-        		 * \returns The tuned frequency, in Hz.
-        		 */
+                /**
+                 * \brief Gets the tuned frequency for a given DUC.
+                 * \param index The DUC index number.
+                 * \returns The tuned frequency, in Hz.
+                 */
                 virtual double getDucFrequency(int index) const;
-        		/**
-        		 * \brief Sets the tuned frequency for a given DUC.
-        		 * \param index The DUC index number.
-        		 * \param freq The new tuned frequency (Hz).
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the tuned frequency for a given DUC.
+                 * \param index The DUC index number.
+                 * \param freq The new tuned frequency (Hz).
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setDucFrequency(int index, double freq);
-        		/**
-        		 * \brief Gets the tunable frequency range for DUCs.
-        		 * \returns A list containing the minimum and maximum frequencies.
-        		 */
+                /**
+                 * \brief Gets the tunable frequency range for DUCs.
+                 * \returns A list containing the minimum and maximum frequencies.
+                 */
                 virtual BasicDoubleList getDucFrequencyRange() const;
-        		/**
-        		 * \brief Gets the tuned frequency resolution for DUCs.
-         		 * \returns The frequency resolution, in Hz.
-        		 */
+                /**
+                 * \brief Gets the tuned frequency resolution for DUCs.
+                 * \returns The frequency resolution, in Hz.
+                 */
                 virtual double getDucFrequencyRes() const;
-        		/**
-        		 * \brief Gets the tuned frequency units for DUCs.
-         		 * \returns The frequency units, in Hz.
-        		 */
+                /**
+                 * \brief Gets the tuned frequency units for DUCs.
+                 * \returns The frequency units, in Hz.
+                 */
                 virtual double getDucFrequencyUnit() const;
-        		/**
-        		 * \brief Gets the attenuation for a given DUC.
-        		 * \param index The DUC index number.
-        		 * \returns The attenuation, in dB.
-        		 */
+                /**
+                 * \brief Gets the attenuation for a given DUC.
+                 * \param index The DUC index number.
+                 * \returns The attenuation, in dB.
+                 */
                 virtual double getDucAttenuation(int index) const;
-        		/**
-        		 * \brief Sets the attenuation for a given DUC.
-        		 * \param index The DUC index number.
-        		 * \param atten The new attenuation (dB).
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the attenuation for a given DUC.
+                 * \param index The DUC index number.
+                 * \param atten The new attenuation (dB).
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setDucAttenuation(int index, double atten);
-        		/**
+                /**
                  * \brief Gets the DUC attenuation range.
-        		 * \returns A list containing the minimum and maximum attenuation values.
-        		 */
+                 * \returns A list containing the minimum and maximum attenuation values.
+                 */
                 virtual BasicDoubleList getDucAttenuationRange() const;
-        		/**
-        		 * \brief Gets the DUC attenuation resolution.
-        		 * \returns The resolution.
-        		 */
+                /**
+                 * \brief Gets the DUC attenuation resolution.
+                 * \returns The resolution.
+                 */
                 virtual double getDucAttenuationRes() const;
-        		/**
-        		 * \brief Gets the rate index for a given DUC.
-        		 * \param index The DUC index number.
-        		 * \returns The rate index.
-        		 */
+                /**
+                 * \brief Gets the rate index for a given DUC.
+                 * \param index The DUC index number.
+                 * \returns The rate index.
+                 */
                 virtual int getDucRateIndex(int index) const;
-        		/**
-        		 * \brief Sets the rate index for a given DUC.
-        		 * \param index The DUC index number.
-        		 * \param rateIndex The new rate index.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the rate index for a given DUC.
+                 * \param index The DUC index number.
+                 * \param rateIndex The new rate index.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setDucRateIndex(int index, int rateIndex);
-        		/**
-        		 * \brief Gets the transmit channel bitmap for a given DUC.
-        		 * \param index The DUC index number.
-				 * \returns Bitmap indicating which transmitters are outputting the
-				 *    signal from this DUC.  If a bit position is 1, the associated
-				 *    transmitter is active. The LSB corresponds to TX 1, and each
-				 *    succeeding bit corresponds to the other transmitters.
-        		 */
+                /**
+                 * \brief Gets the transmit channel bitmap for a given DUC.
+                 * \param index The DUC index number.
+                 * \returns Bitmap indicating which transmitters are outputting the
+                 *    signal from this DUC.  If a bit position is 1, the associated
+                 *    transmitter is active. The LSB corresponds to TX 1, and each
+                 *    succeeding bit corresponds to the other transmitters.
+                 */
                 virtual int getDucTxChannelBitmap(int index) const;
-        		/**
-        		 * \brief Sets the transmit channel bitmap for a given DUC.
-        		 * \param index The DUC index number.
-        		 * \param txChannels Bitmap indicating which transmitters output the
-				 *    signal from this DUC.  Setting a bit position to 1 enables transmit
-				 *    on the associated transmitter. The LSB corresponds to TX 1, and each
-				 *    succeeding bit corresponds to the other transmitters.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the transmit channel bitmap for a given DUC.
+                 * \param index The DUC index number.
+                 * \param txChannels Bitmap indicating which transmitters output the
+                 *    signal from this DUC.  Setting a bit position to 1 enables transmit
+                 *    on the associated transmitter. The LSB corresponds to TX 1, and each
+                 *    succeeding bit corresponds to the other transmitters.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setDucTxChannelBitmap(int index, int txChannels);
-        		/**
-        		 * \brief Gets the mode for a given DUC.
-        		 * \param index The DUC index number.
-        		 * \returns The mode.  This is either 0 (streaming) or 1 (playback).
-        		 */
+                /**
+                 * \brief Gets the mode for a given DUC.
+                 * \param index The DUC index number.
+                 * \returns The mode.  This is either 0 (streaming) or 1 (playback).
+                 */
                 virtual int getDucMode(int index) const;
-        		/**
-        		 * \brief Sets the mode for a given DUC.
-        		 * \param index The DUC index number.
-        		 * \param mode The new mode.  This is either 0 (streaming) or 1 (playback).
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the mode for a given DUC.
+                 * \param index The DUC index number.
+                 * \param mode The new mode.  This is either 0 (streaming) or 1 (playback).
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setDucMode(int index, int mode);
-        		/**
-        		 * \brief Gets the VITA 49 stream ID for a given DUC.
-        		 * \param index The DUC index number.
-        		 * \returns The VITA 49 stream ID.
-        		 */
+                /**
+                 * \brief Gets the VITA 49 stream ID for a given DUC.
+                 * \param index The DUC index number.
+                 * \returns The VITA 49 stream ID.
+                 */
                 virtual unsigned int getDucStreamId(int index) const;
-        		/**
-        		 * \brief Sets the VITA 49 stream ID for a given DUC.
-        		 * \param index The DUC index number.
-        		 * \param sid The new stream ID.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the VITA 49 stream ID for a given DUC.
+                 * \param index The DUC index number.
+                 * \param sid The new stream ID.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setDucStreamId(int index, unsigned int sid);
                 /**
-        		 * \brief Load a snapshot file into a given DUC's memory block.
-        		 *
-        		 * Snapshot files contain 16-bit complex I/Q data samples.
-        		 *
-        		 * \param index The DUC index number.
-        		 * \param filename Snapshot file name.  The snapshot file needs to be
-        		 *    present on the radio.
-        		 * \param startSample Starting address in DUC's memory block.  Must
-        		 *    be a multiple of 1024.
-        		 * \param samples Number of I/Q samples to load.  Must be a multiple
-        		 *    of 16.  If specified as 0, load the maximum number of samples
-        		 *    from the file.
-        		 * \returns True if successful, false otherwise.  Returns false if
-        		 *    the DUC does not support snapshot loading.
+                 * \brief Load a snapshot file into a given DUC's memory block.
+                 *
+                 * Snapshot files contain 16-bit complex I/Q data samples.
+                 *
+                 * \param index The DUC index number.
+                 * \param filename Snapshot file name.  The snapshot file needs to be
+                 *    present on the radio.
+                 * \param startSample Starting address in DUC's memory block.  Must
+                 *    be a multiple of 1024.
+                 * \param samples Number of I/Q samples to load.  Must be a multiple
+                 *    of 16.  If specified as 0, load the maximum number of samples
+                 *    from the file.
+                 * \returns True if successful, false otherwise.  Returns false if
+                 *    the DUC does not support snapshot loading.
                  */
                 virtual bool loadDucSnapshot(int index,
                         const std::string& filename,
                         unsigned int startSample = 0,
                         unsigned int samples = 0
-                        );
-        		/**
-        		 * \brief Gets the DUC's rate set.
-        		 * \returns The rate set.
-        		 */
+                );
+                /**
+                 * \brief Gets the DUC's rate set.
+                 * \returns The rate set.
+                 */
                 virtual DucRateSet getDucRateSet() const;
-        		/**
-        		 * \brief Gets the list of allowed DUC sample rates, based on the
-        		 *    rate set.
-        		 * \returns The rate list.
-        		 */
+                /**
+                 * \brief Gets the list of allowed DUC sample rates, based on the
+                 *    rate set.
+                 * \returns The rate list.
+                 */
                 virtual BasicDoubleList getDucRateList() const;
                 /**
                  * \brief Gets the number of WBDDC groups on the radio.
@@ -1579,32 +1579,32 @@ namespace LibCyberRadio
                  *    by data port indices (integers).
                  */
                 virtual BasicIntBoolDict getTenGigFlowControlStatus();
-        		/**
-        		 * \brief Gets the configuration dictionary for a given data port.
-        		 * \param index Data port index number.
-        		 * \returns The configuration dictionary.
-        		 */
+                /**
+                 * \brief Gets the configuration dictionary for a given data port.
+                 * \param index Data port index number.
+                 * \returns The configuration dictionary.
+                 */
                 virtual ConfigurationDict getDataPortConfiguration(int index) const;
-				/**
-				 * \brief Sets the configuration dictionary for a given data port.
-				 *
-        		 * \param index Data port index number.
-				 * \param cfg The configuration dictionary.
-				 * \returns True if successful, false otherwise.
-				 */
-				virtual bool setDataPortConfiguration(int index, ConfigurationDict& cfg);
-        		/**
-        		 * \brief Gets the source IP address for a given data port.
-        		 * \param index Data port index number.
-        		 * \returns The source IP address.
-        		 */
+                /**
+                 * \brief Sets the configuration dictionary for a given data port.
+                 *
+                 * \param index Data port index number.
+                 * \param cfg The configuration dictionary.
+                 * \returns True if successful, false otherwise.
+                 */
+                virtual bool setDataPortConfiguration(int index, ConfigurationDict& cfg);
+                /**
+                 * \brief Gets the source IP address for a given data port.
+                 * \param index Data port index number.
+                 * \returns The source IP address.
+                 */
                 virtual std::string getDataPortSourceIP(int index) const;
-        		/**
-        		 * \brief Sets the source IP address for a given data port.
-        		 * \param index Data port index number.
-        		 * \param ipAddr The new source IP address.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the source IP address for a given data port.
+                 * \param index Data port index number.
+                 * \param ipAddr The new source IP address.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setDataPortSourceIP(int index, const std::string& ipAddr);
                 /**
                  * \brief Enables errors on the data port.
@@ -1628,13 +1628,13 @@ namespace LibCyberRadio
                  * \returns True if successful, false otherwise.
                  */
                 virtual bool disableDataPortFlowControl(int index);
-        		/**
-        		 * \brief Gets the MAC address for a given entry in the
-        		 *    destination IP table on a given data port.
-        		 * \param index Data port index number.
-        		 * \param dipIndex Index number for the entry in the DIP table.
-        		 * \returns The MAC address.
-        		 */
+                /**
+                 * \brief Gets the MAC address for a given entry in the
+                 *    destination IP table on a given data port.
+                 * \param index Data port index number.
+                 * \param dipIndex Index number for the entry in the DIP table.
+                 * \returns The MAC address.
+                 */
                 virtual std::string getDataPortDestMACAddress(int index, int dipIndex) const;
                 /**
                  * \brief Sets the MAC address for a given entry in the
@@ -1645,14 +1645,14 @@ namespace LibCyberRadio
                  * \returns True if successful, false otherwise.
                  */
                 virtual bool setDataPortDestMACAddress(int index, int dipIndex,
-                                                       const std::string& macAddr);
-        		/**
-        		 * \brief Gets the IP address for a given entry in the
-        		 *    destination IP table on a given data port.
-        		 * \param index Data port index number.
-        		 * \param dipIndex Index number for the entry in the DIP table.
-        		 * \returns The IP address.
-        		 */
+                        const std::string& macAddr);
+                /**
+                 * \brief Gets the IP address for a given entry in the
+                 *    destination IP table on a given data port.
+                 * \param index Data port index number.
+                 * \param dipIndex Index number for the entry in the DIP table.
+                 * \returns The IP address.
+                 */
                 virtual std::string getDataPortDestIPAddress(int index, int dipIndex) const;
                 /**
                  * \brief Sets the IP address for a given entry in the
@@ -1663,14 +1663,14 @@ namespace LibCyberRadio
                  * \returns True if successful, false otherwise.
                  */
                 virtual bool setDataPortDestIPAddress(int index, int dipIndex,
-                                                      const std::string& ipAddr);
-        		/**
-        		 * \brief Gets the source UDP port number for a given entry in the
-        		 *    destination IP table on a given data port.
-        		 * \param index Data port index number.
-        		 * \param dipIndex Index number for the entry in the DIP table.
-        		 * \returns The port number.
-        		 */
+                        const std::string& ipAddr);
+                /**
+                 * \brief Gets the source UDP port number for a given entry in the
+                 *    destination IP table on a given data port.
+                 * \param index Data port index number.
+                 * \param dipIndex Index number for the entry in the DIP table.
+                 * \returns The port number.
+                 */
                 virtual unsigned int getDataPortDestSourcePort(int index, int dipIndex) const;
                 /**
                  * \brief Sets the UDP port number for a given entry in the
@@ -1681,14 +1681,14 @@ namespace LibCyberRadio
                  * \returns True if successful, false otherwise.
                  */
                 virtual bool setDataPortDestSourcePort(int index, int dipIndex,
-                                                       unsigned int sourcePort);
-        		/**
-        		 * \brief Gets the destination UDP port number for a given entry in the
-        		 *    destination IP table on a given data port.
-         		 * \param index Data port index number.
-        		 * \param dipIndex Index number for the entry in the DIP table.
-        		 * \returns The stream ID.
-        		 */
+                        unsigned int sourcePort);
+                /**
+                 * \brief Gets the destination UDP port number for a given entry in the
+                 *    destination IP table on a given data port.
+                 * \param index Data port index number.
+                 * \param dipIndex Index number for the entry in the DIP table.
+                 * \returns The stream ID.
+                 */
                 virtual unsigned int getDataPortDestDestPort(int index, int dipIndex) const;
                 /**
                  * \brief Sets the VITA stream ID for a given entry in the
@@ -1699,24 +1699,24 @@ namespace LibCyberRadio
                  * \returns True if successful, false otherwise.
                  */
                 virtual bool setDataPortDestDestPort(int index, int dipIndex,
-                                                     unsigned int destPort);
+                        unsigned int destPort);
                 /**
                  * \brief Sets the destination table information for a given entry
                  *    in the DIP table on a given data port.
-        		 * \param index Data port index number.
-        		 * \param dipIndex Index number for the entry in the DIP table.
-        		 * \param ipAddr The IP address.
-        		 * \param macAddr The MAC address.
+                 * \param index Data port index number.
+                 * \param dipIndex Index number for the entry in the DIP table.
+                 * \param ipAddr The IP address.
+                 * \param macAddr The MAC address.
                  * \param sourcePort The source UDP port number.
                  * \param destPort The destination UDP port number.
-        		 * \returns True if successful, false otherwise.
+                 * \returns True if successful, false otherwise.
                  */
                 virtual bool setDataPortDestInfo(int index,
-                		                         int dipIndex,
-                		                         const std::string& ipAddr,
-                		                         const std::string& macAddr,
-												 unsigned int sourcePort,
-												 unsigned int destPort);
+                        int dipIndex,
+                        const std::string& ipAddr,
+                        const std::string& macAddr,
+                        unsigned int sourcePort,
+                        unsigned int destPort);
                 /**
                  * \brief Gets the "simple" IP configuration dictionary for
                  *     radios without 10Gig data ports.
@@ -1812,12 +1812,12 @@ namespace LibCyberRadio
                 virtual bool queryRadioConfiguration();
                 // Executes the *IDN? query on the radio.
                 virtual bool executeQueryIDN(std::string& model,
-                                             std::string& serialNumber);
+                        std::string& serialNumber);
                 // Executes the VER? query on the radio.
                 virtual bool executeQueryVER(std::string& softwareVersion,
-                                             std::string& firmwareVersion,
-                                             std::string& referenceVersion,
-                                             std::string& firmwareDate);
+                        std::string& firmwareVersion,
+                        std::string& referenceVersion,
+                        std::string& firmwareDate);
                 // Executes the HREV? query on the radio.
                 virtual bool executeQueryHREV(std::string& hardwareInfo);
                 // Executes the reset command on the radio.
@@ -1918,7 +1918,7 @@ namespace LibCyberRadio
                 // Override this as needed for radios that support this command.
                 // Value, duration, loop are in/out parameters
                 virtual bool executeGpioSequenceQuery(int index, int& value,
-                                                      int &duration, int& loop);
+                        int &duration, int& loop);
                 // Executes the GPIO static command
                 // Override this as needed for radios that support this command.
                 // Value is an in/out parameter
@@ -1927,8 +1927,8 @@ namespace LibCyberRadio
                 // Override this as needed for radios that support this command.
                 // Value, duration, loop, go are in/out parameters
                 virtual bool executeGpioSequenceCommand(int index, int& value,
-                                                        int &duration, int& loop,
-                                                        int &go);
+                        int &duration, int& loop,
+                        int &go);
                 // Executes the calibration frequency query
                 // Override this as needed for radios that support this command.
                 // Freq is an in/out parameter

@@ -25,31 +25,31 @@ namespace LibCyberRadio
     namespace Driver
     {
 
-		/**
-		 * \brief Provides programming elements for driving NDR472 radios.
-		 */
-    	namespace NDR472
-		{
+        /**
+         * \brief Provides programming elements for driving NDR472 radios.
+         */
+        namespace NDR472
+        {
 
-			/**
-			 * \brief Radio handler class for the NDR472.
-			 *
-			 * \section Radio_NDR472 Radio
-			 *
-			 * This radio has the following settings:
-			 * * Configuration mode: 0 (off) or 1 (on)
-			 * * Reference mode:
-			 *   * 0: Internal 10MHz
-			 *   * 1: External 10MHz
-			 *   * 2: Internal GPS Disciplined 10MHz
-			 *   * 3: External 1PPS disciplined internal 10MHz
+            /**
+             * \brief Radio handler class for the NDR472.
+             *
+             * \section Radio_NDR472 Radio
+             *
+             * This radio has the following settings:
+             * * Configuration mode: 0 (off) or 1 (on)
+             * * Reference mode:
+             *   * 0: Internal 10MHz
+             *   * 1: External 10MHz
+             *   * 2: Internal GPS Disciplined 10MHz
+             *   * 3: External 1PPS disciplined internal 10MHz
              *   * 3: External 1PPS disciplined internal 10MHz with control loop
              *       optimized for external GPS PPS
              * * Frequency normalization mode: 0 (off) or 1 (on)
              * * GPS enabled: 0 (off) or 1 (on)
              * * Reference tuning voltage value: 0-65565
              *
-			 * Configuration dictionary items:
+             * Configuration dictionary items:
              * * "configMode": Configuration mode [Boolean/integer/string]
              * * "referenceMode": Reference mode [integer/string]
              * * "freqNormalization": Whether frequency normalization is in effect
@@ -79,9 +79,9 @@ namespace LibCyberRadio
              * * "udpDestination": UDP destination [integer/string]
              * * "vitaEnable": VITA 49 framing setting [integer/string]
              * * "streamId": VITA 49 streamId [integer/string]
-			 *
-			 * Rate indices:
-			 *
+             *
+             * Rate indices:
+             *
              * <table>
              * <tr><th>Rate Index</th><th>WBDDC Rate (samples per second)</th><th>Sample Type</th></tr>
              * <tr><td>0</td><td>12800000.0</td><td>Complex</td></tr>
@@ -129,37 +129,37 @@ namespace LibCyberRadio
              * <tr><td>3</td><td>VITA-49 header enabled, fractional timestamp in sample counts</td></tr>
              * </table>
              *
-			 */
-			class RadioHandler : public ::LibCyberRadio::Driver::RadioHandler
-			{
-				public:
-					RadioHandler(bool debug = false);
-					virtual ~RadioHandler();
-					RadioHandler(const RadioHandler& other);
-					virtual RadioHandler& operator=(const RadioHandler& other);
-					// OVERRIDE
-					virtual void queryConfiguration();
-
-				protected:
+             */
+            class RadioHandler : public ::LibCyberRadio::Driver::RadioHandler
+            {
+                public:
+                    RadioHandler(bool debug = false);
+                    virtual ~RadioHandler();
+                    RadioHandler(const RadioHandler& other);
+                    virtual RadioHandler& operator=(const RadioHandler& other);
                     // OVERRIDE
-	                virtual void initConfigurationDict();
-					// OVERRIDE
-					virtual bool queryVersionInfo();
-					// OVERRIDE
-					virtual bool executeQueryIDN(std::string& model,
-												 std::string& serialNumber);
-					// OVERRIDE
-					virtual bool executeQueryVER(std::string& softwareVersion,
-												 std::string& firmwareVersion,
-												 std::string& referenceVersion,
-												 std::string& firmwareDate);
-					// OVERRIDE
-					virtual bool executeQueryHREV(std::string& hardwareInfo);
+                    virtual void queryConfiguration();
+
+                protected:
+                    // OVERRIDE
+                    virtual void initConfigurationDict();
+                    // OVERRIDE
+                    virtual bool queryVersionInfo();
+                    // OVERRIDE
+                    virtual bool executeQueryIDN(std::string& model,
+                            std::string& serialNumber);
+                    // OVERRIDE
+                    virtual bool executeQueryVER(std::string& softwareVersion,
+                            std::string& firmwareVersion,
+                            std::string& referenceVersion,
+                            std::string& firmwareDate);
+                    // OVERRIDE
+                    virtual bool executeQueryHREV(std::string& hardwareInfo);
 
 
-			}; /* class RadioHandler */
+            }; /* class RadioHandler */
 
-		} /* namespace NDR472 */
+        } /* namespace NDR472 */
 
     } /* namespace Driver */
 

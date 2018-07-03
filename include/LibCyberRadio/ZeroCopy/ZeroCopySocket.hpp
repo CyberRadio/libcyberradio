@@ -39,51 +39,51 @@
 #define BLOCK_TIMEOUT 250L // Millisecond timeout before block expires (use 0 to let kernel decide)
 
 struct block_desc {
-	uint32_t version;
-	uint32_t offset_to_priv;
-	struct tpacket_hdr_v1 h1;
+        uint32_t version;
+        uint32_t offset_to_priv;
+        struct tpacket_hdr_v1 h1;
 };
 
 struct ring {
-	struct iovec *rd;
-	uint8_t *map;
-	struct tpacket_req3 req;
+        struct iovec *rd;
+        uint8_t *map;
+        struct tpacket_req3 req;
 };
 
 class ZeroCopySocket
 {
 
-private:
-    // Disable Copying
-    ZeroCopySocket( const ZeroCopySocket& other ); // non construction-copyable
-    ZeroCopySocket& operator=( const ZeroCopySocket& ); // non copyable
+    private:
+        // Disable Copying
+        ZeroCopySocket( const ZeroCopySocket& other ); // non construction-copyable
+        ZeroCopySocket& operator=( const ZeroCopySocket& ); // non copyable
 
-    // Variables
-    std::string captureFilter;  // TCPDUMP / Berkely Packet Filter for packet capture
-    int blockTimeout;
-    int pollTimeout;
-    int sockfd; // Socket File Descriptor
-    struct ring ring;
-    unsigned int currentBlockInd;
-    bool blocking;
+        // Variables
+        std::string captureFilter;  // TCPDUMP / Berkely Packet Filter for packet capture
+        int blockTimeout;
+        int pollTimeout;
+        int sockfd; // Socket File Descriptor
+        struct ring ring;
+        unsigned int currentBlockInd;
+        bool blocking;
 
-    // Functions
-    void generatePacketFilter(const char * filter_string, struct sock_fprog ** capture_prog_ptr);
-    void initSocket();
-    void flushBlock(struct block_desc *pbd);
+        // Functions
+        void generatePacketFilter(const char * filter_string, struct sock_fprog ** capture_prog_ptr);
+        void initSocket();
+        void flushBlock(struct block_desc *pbd);
 
 
-public:
-    // Constructor/Destructor
-    ZeroCopySocket(std::string captureFilter);
-    ~ZeroCopySocket();
+    public:
+        // Constructor/Destructor
+        ZeroCopySocket(std::string captureFilter);
+        ~ZeroCopySocket();
 
-    // Functions
-    struct block_desc * holdBlock(); // waits until the next block in the ring is available to the user
-    void releaseBlock(); // passes block access to kernel and increments to the next block
-    void setPollTimeout(int);
-    void clearBuffer();
-    void setBlocking(bool);
+        // Functions
+        struct block_desc * holdBlock(); // waits until the next block in the ring is available to the user
+        void releaseBlock(); // passes block access to kernel and increments to the next block
+        void setPollTimeout(int);
+        void clearBuffer();
+        void setBlocking(bool);
 
 };
 

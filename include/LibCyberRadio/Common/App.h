@@ -22,11 +22,11 @@
  */
 namespace LibCyberRadio
 {
-	/**
-	 * \brief Defines a command-line option that is supported by an application.
-	 */
-	class AppOption
-	{
+    /**
+     * \brief Defines a command-line option that is supported by an application.
+     */
+    class AppOption
+    {
         public:
             /**
              * \brief Constructs an empty AppOption object.
@@ -56,9 +56,9 @@ namespace LibCyberRadio
              * the help text given in helpText.
              */
             AppOption(const std::string& shortName, const std::string& longName,
-                      int valueType, void *valuePtr,
-                      const std::string& helpArgName, const std::string& helpText,
-                      bool showDefault);
+                    int valueType, void *valuePtr,
+                    const std::string& helpArgName, const std::string& helpText,
+                    bool showDefault);
             /**
              * \brief Constructs an AppOption object as a copy of another.
              *
@@ -147,20 +147,20 @@ namespace LibCyberRadio
              * if this option is specified.
              */
             static int TYPE_BOOLEAN_SET_FALSE;
-	};
+    };
 
 
-	/**
-	 * \brief Defines a list of AppOption objects.
-	 */
-	typedef BASIC_LIST_CONTAINER<AppOption> AppOptionList;
+    /**
+     * \brief Defines a list of AppOption objects.
+     */
+    typedef BASIC_LIST_CONTAINER<AppOption> AppOptionList;
 
 
-	/**
-	 * \brief Formats help text for display on the screen.
-	 */
-	class AppHelpTextFormatter
-	{
+    /**
+     * \brief Formats help text for display on the screen.
+     */
+    class AppHelpTextFormatter
+    {
         public:
             /**
              * \brief Constructs an AppHelpTextFormatter object.
@@ -234,19 +234,19 @@ namespace LibCyberRadio
             BasicStringList _postOptionText;
             int _maxOptionWidth;
             int _displayWidth;
-	};
+    };
 
 
-	/**
-	 * \brief Parses command-line options supported by the application.
-	 *
-	 * The option parser defines the following options by default:
-	 * --help         Prints help text and exits
-	 * --version      Prints version information and exits
-	 *
-	 */
-	class AppOptionParser
-	{
+    /**
+     * \brief Parses command-line options supported by the application.
+     *
+     * The option parser defines the following options by default:
+     * --help         Prints help text and exits
+     * --version      Prints version information and exits
+     *
+     */
+    class AppOptionParser
+    {
         public:
             /**
              * \brief Constructs an AppOptionParser object.
@@ -349,9 +349,9 @@ namespace LibCyberRadio
              * the help text given in helpText.
              */
             virtual void addOption(const std::string& shortName, const std::string& longName,
-                int valueType, void *valuePtr,
-                const std::string& helpArgName, const std::string& helpText,
-                bool showDefault);
+                    int valueType, void *valuePtr,
+                    const std::string& helpArgName, const std::string& helpText,
+                    bool showDefault);
             /**
              * \brief Parses the command-line options.
              *
@@ -417,22 +417,22 @@ namespace LibCyberRadio
             int _displayWidth;
             typedef int (AppOptionParser::*OptionHelper)(int optindex, const std::string& optarg);
             std::map<int, OptionHelper> _optionHelpers;
-	};
+    };
 
 
-	/**
-	 * \brief Provides basic application functionality.
-	 *
-	 * Applications using this class as a base should override the following:
-	 * \li \link description \endlink: The application description.
-	 * \li \link version \endlink: The application version.
-	 * \li defineOptions(): Defines which options are supported.
-	 * \li mainLoop(): Performs application processing.
-	 *
-	 * The entry point for running the application processing loop is run().
-	 */
-	class App
-	{
+    /**
+     * \brief Provides basic application functionality.
+     *
+     * Applications using this class as a base should override the following:
+     * \li \link description \endlink: The application description.
+     * \li \link version \endlink: The application version.
+     * \li defineOptions(): Defines which options are supported.
+     * \li mainLoop(): Performs application processing.
+     *
+     * The entry point for running the application processing loop is run().
+     */
+    class App
+    {
         public:
             /**
              * \brief Constructs an App object.
@@ -497,7 +497,7 @@ namespace LibCyberRadio
 
         protected:
             AppOptionParser _optParser;
-	};
+    };
 
 } /* namespace LibCyberRadio */
 

@@ -79,41 +79,41 @@ namespace LibCyberRadio
         class Configurable : public Debuggable
         {
             public:
-        		/**
-        		 * \brief Constructs a Configurable object.
-        		 * \param name The name of this configurable object.
-        		 * \param debug Whether or not this object supports debug output methods.
-        		 */
+                /**
+                 * \brief Constructs a Configurable object.
+                 * \param name The name of this configurable object.
+                 * \param debug Whether or not this object supports debug output methods.
+                 */
                 Configurable(const std::string& name = "<unknown>", bool debug = false);
-        		/**
-        		 * \brief Destroys a Configurable object.
-        		 */
+                /**
+                 * \brief Destroys a Configurable object.
+                 */
                 virtual ~Configurable();
-        		/**
-        		 * \brief Copies a Configurable object.
-        		 * \param other The Configurable object to copy.
-        		 */
+                /**
+                 * \brief Copies a Configurable object.
+                 * \param other The Configurable object to copy.
+                 */
                 Configurable(const Configurable& other);
-        		/**
-        		 * \brief Assignment operator for Configurable objects.
-        		 * \param other The Configurable object to copy.
-        		 * \returns A reference to the assigned object.
-        		 */
+                /**
+                 * \brief Assignment operator for Configurable objects.
+                 * \param other The Configurable object to copy.
+                 * \returns A reference to the assigned object.
+                 */
                 virtual Configurable& operator=(const Configurable& other);
-        		/**
-        		 * \brief Gets the name of the configurable object.
-        		 * \returns The name, as a string.
-        		 */
+                /**
+                 * \brief Gets the name of the configurable object.
+                 * \returns The name, as a string.
+                 */
                 virtual std::string getName() const;
-        		/**
-        		 * \brief Sets the name of the configurable object.
-        		 * \param name The new name.
-        		 */
+                /**
+                 * \brief Sets the name of the configurable object.
+                 * \param name The new name.
+                 */
                 virtual void setName(const std::string &name);
-        		/**
-        		 * \brief Gets the configuration dictionary for this object.
-        		 * \returns The configuration dictionary.
-        		 */
+                /**
+                 * \brief Gets the configuration dictionary for this object.
+                 * \returns The configuration dictionary.
+                 */
                 virtual ConfigurationDict getConfiguration() const;
                 /**
                  * \brief Gets a named configuration value as a string.
@@ -154,17 +154,17 @@ namespace LibCyberRadio
                  *    value cannot be represented as a double.
                  */
                 virtual double getConfigurationValueAsDbl(const std::string& key) const;
-        		/**
-        		 * \brief Sets the configuration dictionary for this object.
-        		 *
-        		 * This method is intended to allow users to change the object's
-        		 * settings based on the configuration dictionary. It should
-        		 * not be used to set configuration dictionary elements that the
-        		 * object does not use.
-        		 *
-        		 * \param cfg The configuration dictionary.
-        		 * \returns True if successful, false otherwise.
-        		 */
+                /**
+                 * \brief Sets the configuration dictionary for this object.
+                 *
+                 * This method is intended to allow users to change the object's
+                 * settings based on the configuration dictionary. It should
+                 * not be used to set configuration dictionary elements that the
+                 * object does not use.
+                 *
+                 * \param cfg The configuration dictionary.
+                 * \returns True if successful, false otherwise.
+                 */
                 virtual bool setConfiguration(ConfigurationDict& cfg);
                 /**
                  * \brief Sets a named configuration value to a string.
@@ -176,7 +176,7 @@ namespace LibCyberRadio
                  *    false if the key is not in the configuration dictionary.
                  */
                 virtual bool setConfigurationValue(const std::string& key,
-                		                           const std::string& value);
+                        const std::string& value);
                 /**
                  * \brief Sets a named configuration value to a Boolean.
                  * \param key The key string in the configuration dictionary.
@@ -185,7 +185,7 @@ namespace LibCyberRadio
                  *    false if the key is not in the configuration dictionary.
                  */
                 virtual bool setConfigurationValueToBool(const std::string& key,
-                                                         const bool value);
+                        const bool value);
                 /**
                  * \brief Sets a named configuration value to an integer value.
                  * \param key The key string in the configuration dictionary.
@@ -194,7 +194,7 @@ namespace LibCyberRadio
                  *    false if the key is not in the configuration dictionary.
                  */
                 virtual bool setConfigurationValueToInt(const std::string& key,
-                                                        const int value);
+                        const int value);
                 /**
                  * \brief Sets a named configuration value to an unsigned
                  *    integer value.
@@ -204,7 +204,7 @@ namespace LibCyberRadio
                  *    false if the key is not in the configuration dictionary.
                  */
                 virtual bool setConfigurationValueToUInt(const std::string& key,
-                                                         const unsigned int value);
+                        const unsigned int value);
                 /**
                  * \brief Sets a named configuration value to a double value.
                  * \param key The key string in the configuration dictionary.
@@ -213,60 +213,60 @@ namespace LibCyberRadio
                  *    false if the key is not in the configuration dictionary.
                  */
                 virtual bool setConfigurationValueToDbl(const std::string& key,
-                		                                const double value);
-        		/**
-        		 * \brief Tells the object to create its configuration dictionary.
-        		 *
-        		 * Derived classes should override this so that they issue
-        		 * hardware commands to determine initial configuration.
-        		 */
+                        const double value);
+                /**
+                 * \brief Tells the object to create its configuration dictionary.
+                 *
+                 * Derived classes should override this so that they issue
+                 * hardware commands to determine initial configuration.
+                 */
                 virtual void queryConfiguration();
 
             protected:
-        		/**
-        		 * \brief Initializes the configuration dictionary, defining the allowed
-        		 *    keys.
-        		 *
-        		 * Derived classes should use this method to define which settings
-        		 *    are configurable through a configuration dictionary.
-        		 *
-        		 * \note Derived classes must also call this method explicitly in
-        		 *    order to initialize their configuration dictionary.
-           		 */
+                /**
+                 * \brief Initializes the configuration dictionary, defining the allowed
+                 *    keys.
+                 *
+                 * Derived classes should use this method to define which settings
+                 *    are configurable through a configuration dictionary.
+                 *
+                 * \note Derived classes must also call this method explicitly in
+                 *    order to initialize their configuration dictionary.
+                 */
                 virtual void initConfigurationDict();
-        		/**
-        		 * \brief Updates the configuration dictionary from object settings.
-        		 *
-        		 * Derived classes should use this method to convert the object's
-        		 * configurable settings into a configuration dictionary.
-        		 */
+                /**
+                 * \brief Updates the configuration dictionary from object settings.
+                 *
+                 * Derived classes should use this method to convert the object's
+                 * configurable settings into a configuration dictionary.
+                 */
                 virtual void updateConfigurationDict();
-        		/**
-        		 * \brief Normalizes an incoming configuration dictionary.
-        		 *
-        		 * "Normalizing" a configuration dictionary replaces certain strings
-        		 * representing Boolean values ("yes", "on", "true", "no", "off", and
-        		 * "false", case is irrelevant) with standard values ("0" and "1").
-        		 *
-        		 * \note The default behavior of this method normalizes every string
-        		 *    in the configuration dictionary. Override this method if
-        		 *    certain configuration items need to be protected from
-        		 *    normalization.
-        		 *
-        		 * \returns The new configuration dictionary.
-        		 */
+                /**
+                 * \brief Normalizes an incoming configuration dictionary.
+                 *
+                 * "Normalizing" a configuration dictionary replaces certain strings
+                 * representing Boolean values ("yes", "on", "true", "no", "off", and
+                 * "false", case is irrelevant) with standard values ("0" and "1").
+                 *
+                 * \note The default behavior of this method normalizes every string
+                 *    in the configuration dictionary. Override this method if
+                 *    certain configuration items need to be protected from
+                 *    normalization.
+                 *
+                 * \returns The new configuration dictionary.
+                 */
                 virtual ConfigurationDict normalizedConfigurationDict(
-                		const ConfigurationDict& cfg);
-        		/**
-        		 * \brief Normalizes a Boolean string value.
-        		 * \returns The "normalized" string value.
-        		 */
+                        const ConfigurationDict& cfg);
+                /**
+                 * \brief Normalizes a Boolean string value.
+                 * \returns The "normalized" string value.
+                 */
                 virtual std::string normalizedBool(const std::string& val);
                 /**
                  * \brief Dumps this object's configuration dictionary to debug output.
                  */
                 virtual void dumpConfiguration();
-                
+
             protected:
                 // Name of this configurable object
                 std::string _name;

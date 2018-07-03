@@ -20,44 +20,44 @@ namespace LibCyberRadio
     namespace Driver
     {
 
-    	namespace NDR472
-		{
+        namespace NDR472
+        {
 
-			SimpleIpSetup::SimpleIpSetup(::LibCyberRadio::Driver::RadioHandler* parent,
-										 bool debug,
-										 const std::string& sourceIP,
-										 const std::string& destIP,
-										 const std::string& destMAC) :
-				::LibCyberRadio::Driver::SimpleIpSetup(
-					           /* const std::string& name */ "NDR472-IP",
-							   /* ::LibCyberRadio::Driver::RadioHandler* parent */ parent,
-							   /* bool debug */ debug,
-							   /* const std::string& sourceIP */ "0.0.0.0",
-							   /* const std::string& destIP */ "0.0.0.0",
-							   /* const std::string& destMAC */ "00:00:00:00:00:00")
-			{
+            SimpleIpSetup::SimpleIpSetup(::LibCyberRadio::Driver::RadioHandler* parent,
+                    bool debug,
+                    const std::string& sourceIP,
+                    const std::string& destIP,
+                    const std::string& destMAC) :
+                ::LibCyberRadio::Driver::SimpleIpSetup(
+                        /* const std::string& name */ "NDR472-IP",
+                        /* ::LibCyberRadio::Driver::RadioHandler* parent */ parent,
+                        /* bool debug */ debug,
+                        /* const std::string& sourceIP */ "0.0.0.0",
+                        /* const std::string& destIP */ "0.0.0.0",
+                        /* const std::string& destMAC */ "00:00:00:00:00:00")
+            {
                 initConfigurationDict();
-			}
+            }
 
-			SimpleIpSetup::~SimpleIpSetup()
-			{
-			}
+            SimpleIpSetup::~SimpleIpSetup()
+            {
+            }
 
-			SimpleIpSetup::SimpleIpSetup(const SimpleIpSetup& other) :
-				::LibCyberRadio::Driver::SimpleIpSetup(other)
-			{
-			}
+            SimpleIpSetup::SimpleIpSetup(const SimpleIpSetup& other) :
+                ::LibCyberRadio::Driver::SimpleIpSetup(other)
+            {
+            }
 
-			SimpleIpSetup& SimpleIpSetup::operator=(const SimpleIpSetup& other)
-			{
-				::LibCyberRadio::Driver::SimpleIpSetup::operator=(other);
-				if ( this != &other )
-				{
-				}
-				return *this;
-			}
+            SimpleIpSetup& SimpleIpSetup::operator=(const SimpleIpSetup& other)
+            {
+                ::LibCyberRadio::Driver::SimpleIpSetup::operator=(other);
+                if ( this != &other )
+                {
+                }
+                return *this;
+            }
 
-		} /* namespace NDR472 */
+        } /* namespace NDR472 */
 
     } // namespace Driver
 
