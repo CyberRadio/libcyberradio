@@ -19,6 +19,7 @@
 #include <sys/ioctl.h>
 #include <net/if.h>
 #include <algorithm>    // std::min
+#include <iostream>
 
 
 namespace LibCyberRadio {

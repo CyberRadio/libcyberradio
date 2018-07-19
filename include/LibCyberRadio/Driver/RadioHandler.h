@@ -1608,23 +1608,27 @@ namespace LibCyberRadio
                 virtual bool setDataPortSourceIP(int index, const std::string& ipAddr);
                 /**
                  * \brief Enables errors on the data port.
+                 * \param index Data port index number.
                  * \param enabled Whether or not errors should be enabled.
                  * \returns True if successful, false otherwise.
                  */
                 virtual bool enableDataPortErrors(int index, bool enabled = true);
                 /**
                  * \brief Disables errors on the data port.
+                 * \param index Data port index number.
                  * \returns True if successful, false otherwise.
                  */
                 virtual bool disableDataPortErrors(int index);
                 /**
                  * \brief Enables flow control on the data port.
+                 * \param index Data port index number.
                  * \param enabled Whether or not errors should be enabled.
                  * \returns True if successful, false otherwise.
                  */
                 virtual bool enableDataPortFlowControl(int index, bool enabled = true);
                 /**
                  * \brief Disables flow control on the data port.
+                 * \param index Data port index number.
                  * \returns True if successful, false otherwise.
                  */
                 virtual bool disableDataPortFlowControl(int index);

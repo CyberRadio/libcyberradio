@@ -176,12 +176,7 @@ namespace LibCyberRadio
                 virtual bool executeDestIPQuery(std::string& ipAddr);
                 /**
                  * \brief Executes the destination IP set command.
-                 * \param index Data port index.
-                 * \param dipIndex DIP table entry index.
                  * \param ipAddr Destination IP address.
-                 * \param macAddr Destination MAC address.
-                 * \param sourcePort Source UDP port.
-                 * \param destPort Destination UDP port.
                  * \returns True if the command succeeded, false otherwise.
                  */
                 virtual bool executeDestIPCommand(std::string& ipAddr);

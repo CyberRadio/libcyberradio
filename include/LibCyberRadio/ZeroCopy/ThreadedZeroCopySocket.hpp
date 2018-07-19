@@ -19,6 +19,7 @@
 #include <cstdint>
 #include <mutex>
 #include <string>
+#include <cstdint>
 
 
 /**
@@ -64,6 +65,8 @@ class ThreadedZeroCopySocket : public LibCyberRadio::Debuggable
          * \param frameSize Size of a frame.  Must be a power of 2.
          * \param blockTimeout Timeout (in milliseconds) before a block
          *     expires.  Setting this to 0 uses the kernel's default.
+         * \param pollTimeout Timout (in milliseconds) before a polling
+         *     attempt times out.
          * \param debug Whether this object produces debug output.
          * \param debugName Name of this object for debugging purposes.
          */
