@@ -24,6 +24,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <ifaddrs.h>
+#include <iostream>
+
 
 namespace LibCyberRadio
 {
@@ -125,7 +127,7 @@ namespace LibCyberRadio
              */
             if (_isBroadcast||true) {
                 rv = setsockopt(_sockfd, SOL_SOCKET, SO_BROADCAST, (const void *)&optval, sizeof(int) );
-                std::cout << "setsockopt SO_BROADCAST: " << ((rv==0)?"Success":"Fail") << std::endl;
+                //std::cout << "setsockopt SO_BROADCAST: " << ((rv==0)?"Success":"Fail") << std::endl;
 
                 struct ifaddrs *ifap, *ifa;
                 struct sockaddr_in *sa;
