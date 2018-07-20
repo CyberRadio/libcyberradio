@@ -11,9 +11,6 @@ IF("${PACKAGE_VERSION}" STREQUAL "")
        CACHE STRING "Package version number" FORCE)
 ENDIF("${PACKAGE_VERSION}" STREQUAL "")
 
-## Setup C++11
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
 # Set the project name and version
 PROJECT(libcyberradio CXX C)
 SET(PROJECT_NAME "libcyberradio"
