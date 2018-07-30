@@ -31,6 +31,13 @@ LIST(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 ########################################################################
 # Find Required Packages
 ########################################################################
+# -- The kernel needs to be able to support TPACKET_V3 capture 
+#    semantics.
+INCLUDE(CheckCXXSymbolExists)
+CHECK_CXX_SYMBOL_EXISTS("struct tpacket_req3" "linux/if_packet.h" HAVE_TPACKET_V3)
+IF(NOT HAVE_TPACKET_V3)
+    MESSAGE(FATAL_ERROR "Kernel must support TPACKET_V3 capture semantics to build ${PROJECT_NAME}")
+ENDIF()
 # -- Boost: This needs to be version 1.47 at minimum, since we rely on
 #    Boost::Chrono.
 IF(UNIX AND EXISTS "/usr/lib64")
