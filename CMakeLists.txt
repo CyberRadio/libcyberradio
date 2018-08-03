@@ -28,13 +28,32 @@ SET(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Build type")
 #make sure our local CMake Modules path comes first
 LIST(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
+# Set the version information here
+set(VERSION_INFO_MAJOR_VERSION 1)
+set(VERSION_INFO_API_COMPAT    0)
+set(VERSION_INFO_MINOR_VERSION 0)
+set(VERSION_INFO_MAINT_VERSION git)
+# -- If PACKAGE_VERSION is set from an external source, such as during Debian package
+#    builds, use it to set the version information.
+if(DEFINED PACKAGE_VERSION)
+    include(UnpackVersionInfo)
+    UNPACK_VERSION_INFO(PACKAGE_VERSION VERSION_INFO_MAJOR_VERSION VERSION_INFO_API_COMPAT
+                        VERSION_INFO_MINOR_VERSION VERSION_INFO_MAINT_VERSION)
+    #message(STATUS "UNPACK_VERSION_INFO ${PACKAGE_VERSION} ->")
+    #message(STATUS "* VERSION_INFO_MAJOR_VERSION=${VERSION_INFO_MAJOR_VERSION}")
+    #message(STATUS "* VERSION_INFO_API_COMPAT=${VERSION_INFO_API_COMPAT}")
+    #message(STATUS "* VERSION_INFO_MINOR_VERSION=${VERSION_INFO_MINOR_VERSION}")
+    #message(STATUS "* VERSION_INFO_MAINT_VERSION=${VERSION_INFO_MAINT_VERSION}")
+endif(DEFINED PACKAGE_VERSION)
+
 ########################################################################
 # Find Required Packages
 ########################################################################
 # -- The kernel needs to be able to support TPACKET_V3 capture 
 #    semantics.
-INCLUDE(CheckCXXSymbolExists)
-CHECK_CXX_SYMBOL_EXISTS("struct tpacket_req3" "linux/if_packet.h" HAVE_TPACKET_V3)
+INCLUDE(CheckStructHasMember)
+CHECK_STRUCT_HAS_MEMBER("struct tpacket_req3" tp_retire_blk_tov "linux/if_packet.h" HAVE_TPACKET_V3)
+#CHECK_CXX_SYMBOL_EXISTS("struct tpacket_req3" "linux/if_packet.h" HAVE_TPACKET_V3)
 IF(NOT HAVE_TPACKET_V3)
     MESSAGE(FATAL_ERROR "Kernel must support TPACKET_V3 capture semantics to build ${PROJECT_NAME}")
 ENDIF()

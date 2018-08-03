@@ -19,8 +19,10 @@ Source: RPM_PKG_NAME-RPM_PKG_VERSION.tar.gz
 URL: http://www.cyberradiosolutions.com
 Vendor: CyberRadio Solutions, Inc.
 Packager: CyberRadio Solutions, Inc. <sales@cyberradiosolutions.com>
-BuildRequires: libpcap-devel, doxygen
-#Requires: libpcap
+BuildRequires: boost160-devel
+BuildRequires: jsoncpp-devel
+BuildRequires: libpcap-devel
+BuildRequires: doxygen
 
 %description
 Provides a common set of software components for interacting with 
@@ -36,7 +38,7 @@ CyberRadio Solutions radios.
 # -- CMake project: Both the "%cmake" and "%{__make}" steps
 # -- Autotools project: TBD
 # -- Python project: None (the install step takes care of this)
-%cmake .
+%cmake . -DPACKAGE_VERSION=RPM_PKG_VERSION
 %{__make} %{?_smp_mflags}
 
 %install

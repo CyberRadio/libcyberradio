@@ -95,22 +95,6 @@ RETURN()
 ENDIF(NOT libcyberradio_sources)
 # -- Library name
 SET(libcyberradio_lib_name cyberradio)
-# -- Package versioning info
-# Set package versioning info
-#SET(PACKAGE_VERSION "@PACKAGE_VERSION@")
-# Deconstruct PACKAGE_VERSION value into "major", "minor", and "patch"
-# values.   
-# -- NOTE: The MATH() commands below strip leading zeros from version
-#    components. The "patch" version needs to strip anything non-numeric
-#    prior to evaluation.
-STRING(REPLACE "." ";" PACKAGE_VERSION_LIST ${PACKAGE_VERSION})
-LIST(GET PACKAGE_VERSION_LIST 0 PACKAGE_VERSION_MAJOR_IN)
-LIST(GET PACKAGE_VERSION_LIST 1 PACKAGE_VERSION_MINOR_IN)
-LIST(GET PACKAGE_VERSION_LIST 2 PACKAGE_VERSION_PATCH_IN)
-MATH(EXPR PACKAGE_VERSION_MAJOR ${PACKAGE_VERSION_MAJOR_IN}+0)
-MATH(EXPR PACKAGE_VERSION_MINOR ${PACKAGE_VERSION_MINOR_IN}+0)
-STRING(REGEX MATCH "[0-9]+" PATCH_STRIPPED ${PACKAGE_VERSION_PATCH_IN})
-MATH(EXPR PACKAGE_VERSION_PATCH ${PATCH_STRIPPED}+0)
 
 ########################################################################
 # Link Library
@@ -125,7 +109,7 @@ TARGET_LINK_LIBRARIES(${libcyberradio_lib_name}
 SET_TARGET_PROPERTIES(${libcyberradio_lib_name} PROPERTIES 
                       DEFINE_SYMBOL "libcyberradio_EXPORTS"
                       VERSION ${PACKAGE_VERSION}
-                      SOVERSION ${PACKAGE_VERSION_MAJOR})
+                      SOVERSION ${VERSION_INFO_MAJOR_VERSION})
 
 ########################################################################
 # Install Library

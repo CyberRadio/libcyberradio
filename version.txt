@@ -1,2 +1,2 @@
 libcyberradio
-18.06.29-dev
+18.06.29b1.60
