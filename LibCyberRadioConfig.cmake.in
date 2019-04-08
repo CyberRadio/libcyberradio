@@ -63,11 +63,20 @@ FIND_LIBRARY(
 )
 GET_FILENAME_COMPONENT(LIBCYBERRADIO_LIB_DIR ${LIBCYBERRADIO_LIB} PATH)
 
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(LibCyberRadio
-                                  FOUND_VAR LIBCYBERRADIO_FOUND
-                                  REQUIRED_VARS LIBCYBERRADIO_INCLUDE_DIR LIBCYBERRADIO_LIB_DIR
-                                                LIBCYBERRADIO_LIB
-                                  )
+# For FIND_PACKAGE_HANDLE_STANDARD_ARGS, the FOUND_VAR argument was introduced
+# in CMake 2.8.11.  We need to do version-checking to get the right syntax.
+IF(${CMAKE_VERSION} VERSION_LESS "2.8.11")
+    FIND_PACKAGE_HANDLE_STANDARD_ARGS(LibCyberRadio
+                                      REQUIRED_VARS LIBCYBERRADIO_INCLUDE_DIR LIBCYBERRADIO_LIB_DIR
+                                                    LIBCYBERRADIO_LIB
+                                      )
+ELSE()
+    FIND_PACKAGE_HANDLE_STANDARD_ARGS(LibCyberRadio
+                                      FOUND_VAR LIBCYBERRADIO_FOUND
+                                      REQUIRED_VARS LIBCYBERRADIO_INCLUDE_DIR LIBCYBERRADIO_LIB_DIR
+                                                    LIBCYBERRADIO_LIB
+                                      )
+ENDIF()
 
 SET(LIBCYBERRADIO_FOUND ${LIBCYBERRADIO_FOUND} CACHE BOOL "LibCyberRadio found")
 SET(LIBCYBERRADIO_INCLUDE_DIR ${LIBCYBERRADIO_INCLUDE_DIR} CACHE STRING "LibCyberRadio include directory")
