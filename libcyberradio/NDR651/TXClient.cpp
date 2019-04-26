@@ -32,7 +32,6 @@ namespace LibCyberRadio
             DUCPaused(true),
             prefillSampleCount(0L)
         {
-
             // Create a radio controller (sends cmds to 651)
             this->rc = new RadioController(radioHostName, 8617, debug);
         }
@@ -147,7 +146,9 @@ namespace LibCyberRadio
         void TXClient::disableRF()
         {
             // TXP off
+            this->debug("[disableRF] Called\n");
             this->rc->setTXP(this->rfChannel, false);
+            this->debug("[disableRF] Returning\n");
         }
 
         bool TXClient::setDUCChannel(unsigned int ducChannel)
@@ -166,11 +167,15 @@ namespace LibCyberRadio
 
         bool TXClient::setTxChannel(unsigned int txChannel)
         {
+            bool ret = false;
+            this->debug("[setTxChannel] Called\n");
+            this->debug("[setTxChannel] -- txChannel = %u\n", txChannel);
             if (!this->isRunning) {
                 this->rfChannel = txChannel;
-                return true;
+                ret = true;
             }
-            return false;
+            this->debug("[setTxChannel] Returning %s\n", debugBool(ret) );
+            return ret;
         }
 
         // Should be able to be called on the fly
@@ -258,26 +263,38 @@ namespace LibCyberRadio
         // Can be called on the fly
         bool TXClient::setTxAtten(double txAttenuation)
         {
-            if (this->ducChannel == INVALID_VALUE) return false; // Not configured yet
-            bool result = this->rc->setTXA(this->rfChannel, txAttenuation);
-            if (result == true)
+            this->debug("[setTxAtten] Called\n");
+            this->debug("[setTxAtten] -- txAttenuation = %f\n", txAttenuation);
+            bool result = false;
+            if (this->ducChannel != INVALID_VALUE)
             {
-                // Because TX attenuation doesn't have a well-defined behavior in
-                // the ICD -- particularly in regard to allowed resolution -- play
-                // it safe by querying what attenuation value the radio actually set.
-                this->txAttenuation = this->rc->getTXA(this->rfChannel);
+                result = this->rc->setTXA(this->rfChannel, txAttenuation);
+                if (result == true)
+                {
+                    // Because TX attenuation doesn't have a well-defined behavior in
+                    // the ICD -- particularly in regard to allowed resolution -- play
+                    // it safe by querying what attenuation value the radio actually set.
+                    this->txAttenuation = this->rc->getTXA(this->rfChannel);
+                }
             }
+            this->debug("[setTxAtten] Returning %s\n", debugBool(result) );
             return result;
         }
 
         // Can be called on the fly
         bool TXClient::setTxFreq(double txFreq)
         {
-            if (this->rfChannel == INVALID_VALUE) return false; // Not configured yet
-            bool result = this->rc->setTXF(this->rfChannel, txFreq);
-            if (result == true) {
-                this->txFreq = txFreq;
+            this->debug("[setTxFreq] Called\n");
+            this->debug("[setTxFreq] -- txFreq = %f\n", txFreq);
+            bool result = false;
+            if (this->rfChannel != INVALID_VALUE)
+            {
+                result = this->rc->setTXF(this->rfChannel, txFreq);
+                if (result == true) {
+                    this->txFreq = txFreq;
+                }
             }
+            this->debug("[setTxFreq] Returning %s\n", debugBool(result) );
             return result;
         }
 
@@ -320,7 +337,7 @@ namespace LibCyberRadio
             }
 
             this->isRunning = true;
-            this->debug("Starting Transmit Client\n");
+            this->debug("[start] Starting Transmit Client\n");
 
             // Prefill 50% of DUC buffer before enabling DUC
             this->prefillSampleCount = ((unsigned int )(0.50 * 67108860)) - ((unsigned int )(0.50 * 67108860)%4);
@@ -333,6 +350,7 @@ namespace LibCyberRadio
             this->statusRX = new StatusReceiver(this->txInterfaceName, UDP_STATUS_BASE + this->ducChannel, this->debugOn, false);
 
             // Enable TX Channel Power (setTXP checks if it is already enabled, and that seems to avoid some timing issues)
+            this->debug("[start] Enabling TX\n");
             this->rc->setTXP(
                     this->rfChannel,
                     true
@@ -348,7 +366,7 @@ namespace LibCyberRadio
                     this->ducRateIndex,
                     this->rfChannel, // Note 3 is TX on RF1 and RF2
                     this->DUCPaused ? 2 : 0,  // Mode 2 is pause mode.  We decided to always prefill the DUC
-                            this->txUdpPort // Stream ID, which is same as txUdpPort
+                    this->txUdpPort // Stream ID, which is same as txUdpPort
             );
             this->debug("[start] Configuring DUC complete\n");
 
@@ -427,7 +445,7 @@ namespace LibCyberRadio
                                     this->ducRateIndex,
                                     this->rfChannel, // Note 3 is TX on RF1 and RF2
                                     this->DUCPaused ? 2 : 0,  // Mode 0 unpauses the DUC
-                                            this->txUdpPort // Stream ID, which is same as txUdpPort
+                                    this->txUdpPort // Stream ID, which is same as txUdpPort
                             );
                         }
                     }
@@ -452,13 +470,14 @@ namespace LibCyberRadio
 
         bool TXClient::pauseDUC(bool paused)
         {
+            this->debug("[pauseDUC] Called\n");
+            this->debug("[pauseDUC] -- paused = %s\n", this->debugBool(paused));
             bool ret = false;
             boost::mutex::scoped_lock lock(this->objectAccessMutex);
             this->DUCPaused = paused;
             if (this->ducChannel != INVALID_VALUE)
             {
-                // Call method to send radio command, which sets the DUC mode
-                ret = this->setDUCRateIndexUnlocked(this->ducRateIndex);
+                ret = this->rc->setDUCP(this->ducChannel, this->DUCPaused);
             }
             return ret;
         }

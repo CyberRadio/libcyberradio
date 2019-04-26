@@ -8,7 +8,7 @@ namespace LibCyberRadio
                 std::vector<TXClient *> txClients,
                 bool debug
         ):
-            Debuggable(debug),
+            Debuggable(debug, "SyncTXClient"),
             txClients(txClients),
             ducGroup(1),
             rc(NULL),
@@ -48,18 +48,31 @@ namespace LibCyberRadio
             }
             this->isRunning = true;
 
-            // Clear DUC Group
-            this->rc->setDUCGE(ducGroup, 0);
+            // Set up DUC group to cover the DUCs managed by the
+            // member TXClient objects
+            this->debug("[start] Setting up DUC Group %d\n", ducGroup);
+            // -- Clear all DUC group members
             this->rc->clearDUCG(ducGroup);
+            // -- Add DUCs from TXClients to DUC group
+            for (int i = 0; i < this->txClients.size(); i++)
+            {
+//                this->debug("[start] Adding DUC %d to DUC Group %d\n",
+//                            this->txClients[i]->getDucChannel(),
+//                            ducGroup);
+                this->rc->setDUCG(ducGroup, this->txClients[i]->getDucChannel(), true);
+            }
 
-            // Call SYNCDAC
+            // Disable the DUC group for now.  We will enable it later when
+            // the managed TXClients pre-fill the DUC buffers enough.
+            this->debug("[start] Disabling DUC Group %d\n", ducGroup);
+            this->rc->setDUCGE(ducGroup, false);
 
             // Start the individual clients
             for (int i = 0; i < this->txClients.size(); i++)
             {
-                // Add client to DUC group
-                this->rc->setDUCG(ducGroup, this->txClients[i]->getDucChannel(), true);
-
+                this->debug("[start] Starting TX Client for DUC %d\n",
+                            this->txClients[i]->getDucChannel(),
+                            ducGroup);
                 // Start the clients
                 this->txClients[i]->start();
             }
@@ -80,20 +93,36 @@ namespace LibCyberRadio
 
         void SyncTXClient::sendFrames(short **frames, unsigned int samplesPerFrame)
         {
-            // Call send frame on each client.
+            // When this method is called, the managed DUCs may be in the
+            // "paused" state, waiting to be pre-filled with data before we
+            // enable the DUC group.
+            // -- First, check to see if any DUCs are in the "paused" state,
+            //    waiting for pre-filling.
+            bool anyDucsInPause = false;
             for (int i = 0; i < this->txClients.size(); i++)
             {
-                if (this->txClients[i]->isDUCPaused())
+                anyDucsInPause |= this->txClients[i]->isDUCPaused();
+            }
+            // -- Call send frame on each client.  This will either pre-fill
+            //    the buffer if paused, or send the data if not.
+            for (int i = 0; i < this->txClients.size(); i++)
+            {
+                this->txClients[i]->sendFrame(frames[i], samplesPerFrame);
+            }
+            // -- Proceed only if we had DUCs "in pause" waiting for pre-filling
+            if ( anyDucsInPause )
+            {
+                // -- Check to see if any DUCs are pre-filled and ready to go.
+                bool anyDucsReady = false;
+                for (int i = 0; i < this->txClients.size(); i++)
                 {
-                    this->txClients[i]->sendFrame(frames[i], samplesPerFrame);
-                    if (!this->txClients[i]->isDUCPaused())
-                    {
-                        this->rc->setDUCGE(ducGroup, true);
-                    }
+                    anyDucsReady |= !(this->txClients[i]->isDUCPaused());
                 }
-                else
+                // If any DUCs are ready, then enable the DUC group.
+                if (anyDucsReady)
                 {
-                    this->txClients[i]->sendFrame(frames[i], samplesPerFrame);
+                    this->debug("[sendFrames] DUCs are ready, enabling DUC Group %d", ducGroup);
+                    this->rc->setDUCGE(ducGroup, true);
                 }
             }
         }
