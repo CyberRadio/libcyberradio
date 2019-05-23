@@ -58,6 +58,7 @@ namespace LibCyberRadio
                 bool isGrouped; // Is this Client part of a sync transmit?
                 bool isRunning;  // Has the user called start()
                 bool DUCPaused; // Should the DUC currently paused?
+                bool DUCReady; // Is the DUC ready to be unpaused?
                 long prefillSampleCount;
 
                 // To synchronize calls from other threads
@@ -80,6 +81,8 @@ namespace LibCyberRadio
                 void sendFrame(short * samples, unsigned int samplesPerFrame);
                 unsigned int getDucChannel();
                 bool isDUCPaused();
+                bool isDUCReady();
+                bool setDUCPaused(bool paused);
 
                 // Config Setters
                 bool setDUCChannel(unsigned int ducChannel);                    // Required (fulfillled by setDucParameters)

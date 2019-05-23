@@ -54,6 +54,7 @@ namespace LibCyberRadio
     void Thread::start()
     {
         _thisThread = boost::thread(&Thread::thisThreadRun, this);
+        pthread_setname_np(_thisThread.native_handle(), this->_name.c_str());
     }
 
     void Thread::interrupt()
@@ -73,7 +74,7 @@ namespace LibCyberRadio
 
     void Thread::setName(const std::string& name)
     {
-        _name = name;
+        this->_name = name;
     }
 
     void Thread::setClass(const std::string& cls)

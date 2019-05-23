@@ -30,6 +30,7 @@ namespace LibCyberRadio
             isGrouped(false),
             isRunning(false),
             DUCPaused(true),
+            DUCReady(false),
             prefillSampleCount(0L)
         {
             // Create a radio controller (sends cmds to 651)
@@ -135,6 +136,18 @@ namespace LibCyberRadio
         bool TXClient::isDUCPaused()
         {
             return this->DUCPaused;
+        }
+
+        bool TXClient::setDUCPaused(bool paused)
+        {
+            std::cout << "setDUCPaused( " << this->DUCPaused << " -> " << paused << " )" << std::endl;
+            this->DUCPaused = paused;
+        }
+
+        bool TXClient::isDUCReady()
+        {
+            // std::cout << "isDUCReady() = " << this->DUCReady << std::endl;
+            return this->DUCReady;
         }
 
         unsigned int TXClient::getDucChannel()
@@ -348,6 +361,9 @@ namespace LibCyberRadio
 
             // Create the status receiver for radio flow control notifications
             this->statusRX = new StatusReceiver(this->txInterfaceName, UDP_STATUS_BASE + this->ducChannel, this->debugOn, false);
+            std::ostringstream statusRxName;
+            statusRxName << "StatusRx" << this->txUdpPort;
+            this->statusRX->setName(statusRxName.str());
 
             // Enable TX Channel Power (setTXP checks if it is already enabled, and that seems to avoid some timing issues)
             this->debug("[start] Enabling TX\n");
@@ -433,9 +449,11 @@ namespace LibCyberRadio
                     this->prefillSampleCount -= samplesPerFrame;
                     if ((this->prefillSampleCount <= 0))  // We have sent enough samples to prefill the buffer
                     {
-                        this->DUCPaused = false;
+                        // this->DUCPaused = false;
+                        this->DUCReady = true;
                         if (!this->isGrouped)  // If we are in a group, DUCGE will be called instead
                         {
+                            this->DUCPaused = false;
                             // We have sent the prefill sample amount
                             this->rc->setDUC(
                                     this->ducChannel,

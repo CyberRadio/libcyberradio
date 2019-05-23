@@ -33,11 +33,15 @@ namespace LibCyberRadio
                 void setDucGroup(int ducGroup);
                 int getDucGroup();
 
+                bool sendFrameToClient(short *frame, unsigned int samplesPerFrame, int client);
+                bool checkClientStatus(void);
+
             private:
                 std::vector<TXClient *> txClients;
                 RadioController *rc;
                 bool isRunning;
                 int ducGroup;
+                bool waitingToEnableDUCGE;
         };
     }
 }
