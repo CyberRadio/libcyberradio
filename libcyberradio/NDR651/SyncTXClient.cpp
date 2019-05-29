@@ -6,10 +6,12 @@ namespace LibCyberRadio
     {
         SyncTXClient::SyncTXClient(
                 std::vector<TXClient *> txClients,
+                std::string hostname, 
                 bool debug
         ):
             Debuggable(debug, "SyncTXClient"),
             txClients(txClients),
+            hostname(hostname),
             ducGroup(1),
             rc(NULL),
             isRunning(false)
@@ -20,7 +22,7 @@ namespace LibCyberRadio
                 this->txClients[i]->setGrouped(true);
             }
             // Create a radio controller (sends cmds to 651)
-            this->rc = new RadioController("ndr651", 8617, debug);
+            this->rc = new RadioController(this->hostname, 8617, debug);
         }
 
         SyncTXClient::~SyncTXClient()
@@ -84,6 +86,7 @@ namespace LibCyberRadio
         {
             if (this->isRunning)
             {
+                this->rc->setDUCGE(ducGroup, false);
                 for (int i = 0; i < this->txClients.size(); i++)
                 {
                     this->txClients[i]->stop();

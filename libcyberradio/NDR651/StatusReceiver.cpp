@@ -174,7 +174,7 @@ namespace LibCyberRadio {
                         status = (struct TxStatusFrame *)_rxbuff;
                         oldFreeSpace = _651freeSpace;
                         if ((bool)status->status.PE||(bool)status->status.PF) {
-                            std::cout << "DUCHS FRAME: PEF = " << status->status.PP << status->status.PE << status->status.PF;
+                            std::cout << "DUCHS FRAME (" << status->v49.streamId << "): PEF = " << status->status.PP << status->status.PE << status->status.PF;
                             std::cout << ", Free Space = " << status->status.spaceAvailable << " samples";
                             std::cout << std::endl;
                         }

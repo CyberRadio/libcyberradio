@@ -24,7 +24,7 @@ namespace LibCyberRadio
         {
 
             public:
-                SyncTXClient(std::vector<TXClient *> txClients, bool debug = false);
+                SyncTXClient(std::vector<TXClient *> txClients, std::string hostname="ndr651", bool debug = false);
                 ~SyncTXClient();
 
                 void start();
@@ -38,6 +38,7 @@ namespace LibCyberRadio
 
             private:
                 std::vector<TXClient *> txClients;
+                std::string hostname;
                 RadioController *rc;
                 bool isRunning;
                 int ducGroup;
