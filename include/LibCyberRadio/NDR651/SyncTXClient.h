@@ -35,6 +35,7 @@ namespace LibCyberRadio
 
                 bool sendFrameToClient(short *frame, unsigned int samplesPerFrame, int client);
                 bool checkClientStatus(void);
+                bool areAllDucsPaused(void);
 
             private:
                 std::vector<TXClient *> txClients;

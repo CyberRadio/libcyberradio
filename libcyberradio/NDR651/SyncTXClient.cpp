@@ -95,6 +95,15 @@ namespace LibCyberRadio
             }
         }
 
+        bool SyncTXClient::areAllDucsPaused(void) {
+            bool allDucsInPause = true;
+            for (int i = 0; i < this->txClients.size(); i++)
+            {
+                allDucsInPause &= this->txClients[i]->isDUCPaused();
+            }
+            return allDucsInPause;
+        }
+
         bool SyncTXClient::checkClientStatus(void) {
             bool ducsStarted = false;
             bool anyDucsInPause = false;
