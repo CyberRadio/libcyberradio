@@ -254,8 +254,8 @@ namespace LibCyberRadio
             if (this->sendCmdAndQry(cmd, qry))
             {
                 double setAttenuation = atof(this->rspVec.at(3).c_str());
-                double epsilon = 0.1;
-                return (std::fabs(setAttenuation - attenuation) < epsilon);
+                double epsilon = 0.2;
+                return (std::fabs(setAttenuation - attenuation) <= epsilon);
             }
             return false;
         }
