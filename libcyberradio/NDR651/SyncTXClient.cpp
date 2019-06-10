@@ -161,14 +161,14 @@ namespace LibCyberRadio
             
             // -- Proceed only if we had DUCs "in pause" waiting for pre-filling
             if (anyDucsInPause) {
-                this->debug("[sendFrames] DUCs are paused, Checking to see if we should enable the DUC Group %d", ducGroup);
+                // this->debug("[sendFrames] DUCs are paused, Checking to see if we should enable the DUC Group %d", ducGroup);
                 bool anyDucsReady = false;
                 for (int i = 0; i < this->txClients.size(); i++)
                 {
                     anyDucsReady |= this->txClients[i]->isDUCReady();
                 }
                 if (anyDucsReady) {
-                    this->debug("[sendFrames] DUCs are ready, enabling DUC Group %d", ducGroup);
+                    // this->debug("[sendFrames] DUCs are ready, enabling DUC Group %d", ducGroup);
                     this->rc->setDUCGE(ducGroup, true);
                     for (int i = 0; i < this->txClients.size(); i++)
                     {
