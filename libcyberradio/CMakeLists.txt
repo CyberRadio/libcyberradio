@@ -85,8 +85,6 @@ LIST(APPEND libcyberradio_sources
        NDR651/TXClient.cpp
        NDR651/TransmitSocket.cpp
        NDR651/UdpStatusReceiver.cpp
-       ZeroCopy/ZeroCopySocket.cpp
-       ZeroCopy/ThreadedZeroCopySocket.cpp
 )
 SET(libcyberradio_sources "${libcyberradio_sources}" PARENT_SCOPE)
 IF(NOT libcyberradio_sources)

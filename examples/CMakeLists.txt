@@ -54,27 +54,6 @@ INSTALL(FILES ${ndr651_driver_sources}
         )
 
 ########################################################################
-# ZeroCopyReceiver
-########################################################################
-LIST(APPEND ZeroCopyReceiver_sources
-     ZeroCopyReceiver.cpp)
-SET(ZeroCopyReceiver_executable ZeroCopyReceiver)
-ADD_EXECUTABLE(${ZeroCopyReceiver_executable} ${ZeroCopyReceiver_sources})
-TARGET_LINK_LIBRARIES(${ZeroCopyReceiver_executable}
-                      cyberradio 
-                      )
-LINK_DIRECTORIES(
-    ${CMAKE_BINARY_DIR}/libcyberradio}
-)
-INSTALL(TARGETS ${ZeroCopyReceiver_executable}
-        RUNTIME DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
-        )
-INSTALL(FILES ${ZeroCopyReceiver_sources}
-        DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
-        )
-
-
-########################################################################
 # NDR651 TX Example
 ########################################################################
 LIST(APPEND ndr651_tx_test_sources
