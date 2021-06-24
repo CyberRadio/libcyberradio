@@ -1,0 +1,21 @@
+############################################################
+# CyberRadio Driver .gitignore File
+# Defines files that git will ignore when determining what
+# needs to be version-controlled
+############################################################
+
+# Tarballs
+**/*.tar.gz
+# Python byte-compiled files
+**/*.pyc
+**/*.pyo
+**/__pycache__
+# Debian packages
+**/*.deb
+# RPM packages
+**/*.rpm
+# build dirs
+**/build
+# Eclipse preferences settings
+**/.settings/*.prefs
+

@@ -1,0 +1,635 @@
+#############################################################################
+# Gitlab CI/CD Configuration File
+#############################################################################
+# Author: Dave Askew (based on the work of Brandon Smith)
+#
+# NOTES
+# -----
+# * Any shell scripts get executed in an environment with root access, so
+#   no "sudo" commands are needed
+# * Use "radiotest" as the tag to select an appropriate Runner
+# * Set the variable GIT_SSL_NO_VERIFY to true in the project's CI/CD 
+#   settings
+# * Watch out for using special characters in shell scripts!  YAML can
+#   interpret them differently than you expect.
+# * There is no inherent machanism in Gitlab for tracking the number
+#   of successful builds per day.  So we have to get creative with 
+#   determining if we need to add a letter suffix to the package version
+#   number.
+# * It might be easier to write scripts for each job using YAML's multiline
+#   string capability, rather than putting each line in a YAML list.  
+#   Doubly true if your scripts use conditionals or loops.
+# * If your shell script requires checking the result of a command
+#   (using $?), then make sure to frame these sections with "set +e" 
+#   and "set -e" so that Gitlab doesn't fail your build when a command 
+#   that is expected to fail at times does fail.
+# * Gitlab does not support using YAML anchors for inheritance.  It uses
+#   hidden jobs (those whose names start with a period) and the "extends"
+#   keyword to specify inheritance.
+#
+#############################################################################
+
+#####################################################
+# STAGES
+#####################################################
+
+# Defines stages for the build pipeline
+stages:
+  - stage-setup
+  - stage-build
+  - stage-deploy
+
+#####################################################
+# BASE configuration items
+#####################################################
+
+# The default configuration targets Ubuntu Xenial.
+.default:
+    # Defines which runner should build the CI/CD pipeline
+    tags:
+        - radiotest
+    # Defines which branches trigger CI/CD pipelines
+    only:
+        - master
+    # Defines the image to use as a base
+    image: burninator.mamd.g3ti.local:8443/cyberradiobuild-xenial
+    # Defines the job as interruptible, so that Gitlab can auto-cancel
+    # it if a newer pipeline gets launched
+    interruptible: true
+    # Defines variables for the build
+    variables:
+        PKG_REPO_SERVER: asterix
+        PKG_TARGET_DISTROS: xenial
+        FTP_SERVER: asterix
+        FTP_REMOTE_DIR_BASE: jenkins_pub/libcyberradio
+
+# The Ubuntu Xenial configuration is the default.
+.ubuntu-xenial:
+    extends: .default
+    
+# The Ubuntu Bionic configuration inherits the default (Ubuntu Xenial) 
+# configuration, but changes some values.
+.ubuntu-bionic:
+    extends: .ubuntu-xenial
+    image: burninator.mamd.g3ti.local:8443/cyberradiobuild-bionic
+    variables:
+        PKG_REPO_SERVER: asterix
+        PKG_TARGET_DISTROS: bionic
+        FTP_SERVER: asterix
+        FTP_REMOTE_DIR_BASE: jenkins_pub/libcyberradio
+    
+# The CentOS 7 configuration inherits the default (Ubuntu Xenial) 
+# configuration, but changes some values.
+.centos7:
+    extends: .default
+    image: burninator.mamd.g3ti.local:8443/cyberradiobuild-centos7
+    variables:
+        PKG_REPO_SERVER: asterix
+        PKG_TARGET_DISTROS: centos7
+        FTP_SERVER: asterix
+        FTP_REMOTE_DIR_BASE: jenkins_pub/libcyberradio
+        
+# The Fedora 28 configuration inherits the default (Ubuntu Xenial) 
+# configuration, but changes some values.
+.fedora28:
+    extends: .default
+    image: burninator.mamd.g3ti.local:8443/cyberradiobuild-fedora28
+    variables:
+        PKG_REPO_SERVER: asterix
+        PKG_TARGET_DISTROS: fedora28
+        FTP_SERVER: asterix
+        FTP_REMOTE_DIR_BASE: jenkins_pub/libcyberradio
+        
+# Defines a common script for setting up a build environment
+# -- Requires the following variables in the job configuration:
+#    -- FTP_SERVER: Host name for the FTP server
+#    -- FTP_REMOTE_DIR_BASE: Path to the base folder on the FTP server for this project
+#    -- PKG_REPO_SERVER: Host name for the machine hosting the package repository
+#    -- PKG_TARGET_DISTROS: List of distributions to push packages into
+# -- Creates a build artifact (environment_variables.txt) that contains
+#    environment variables for future build steps
+# -- Defines the following environment variables through this artifact:
+#    -- FTP_SERVER: Host name for the FTP server
+#    -- FTP_REMOTE_DIR: Path to the folder on the FTP server for this version
+#    -- PKG_REPO_SERVER: Host name for the machine hosting the package repository
+#    -- PKG_TARGET_DISTROS: List of distributions to push packages into
+#    -- OS_NAME: Operating system name
+#    -- OS_REL: Operating system release identifier (name + version)
+#    -- PACKAGE_VERSION: Package version identifier
+#
+.setup-build-environment:
+    # Set a resource group on this job so that only one pipeline accesses
+    # the FTP server at any given time
+    resource_group: ftp-server
+    artifacts:
+        paths:
+            - environment_variables.txt
+    script: |
+        set +e
+        # Get the OS release name
+        if [ -e /etc/centos-release ]
+        then
+            echo "Getting OS release name from /etc/centos-release"
+            OS_TEMP=( $(cut /etc/centos-release -d' ' -f1-) )
+            OS_NAME=$(echo ${OS_TEMP[0]} | tr '[:upper:]' '[:lower:]')
+            OS_VER=$(echo ${OS_TEMP[3]} | cut -d'.' -f1)
+            OS_REL=${OS_NAME}${OS_VER}
+        elif [ -e /etc/fedora-release ]
+        then
+            echo "Getting OS release name from /etc/fedora-release"
+            OS_TEMP=( $(cut /etc/fedora-release -d' ' -f1-) )
+            OS_NAME=$(echo ${OS_TEMP[0]} | tr '[:upper:]' '[:lower:]')
+            OS_VER=$(echo ${OS_TEMP[2]} | cut -d'.' -f1)
+            OS_REL=${OS_NAME}${OS_VER}
+        elif [ -e /etc/redhat-release ]
+        then
+            echo "Getting OS release name from /etc/redhat-release"
+            OS_TEMP=( $(cut /etc/redhat-release -d' ' -f1-) )
+            OS_NAME=$(echo ${OS_TEMP[0]}${OS_TEMP[1]} | tr '[:upper:]' '[:lower:]')
+            OS_VER=$(echo ${OS_TEMP[6]} | cut -d'.' -f1)
+            OS_REL=${OS_NAME}${OS_VER}
+        else
+            echo "Getting OS release name from lsb_release"
+            OS_NAME=$(lsb_release -si | tr '[:upper:]' '[:lower:]')
+            OS_VER=$(lsb_release -sr | cut -d'.' -f1)
+            OS_REL=$(lsb_release -sc)
+        fi
+        # Get wget package
+        if [ ${OS_NAME} == "centos" ]
+        then
+            yum clean expire-cache
+            yum -y install wget
+        elif [ ${OS_NAME} == "fedora" ]
+        then
+            yum clean expire-cache
+            yum -y install wget
+        else
+            apt-get update
+            apt-get -y install wget
+        fi
+        # Determine the current package version identifier.  This uses wget
+        # to find the first open FTP URL.
+        echo "Determining package version identifier"
+        PACKAGE_VERSION=$(date +"%y.%m.%d")
+        for VERSION_SUFFIX in " " {a..z}
+        do
+            FTP_REMOTE_URL=ftp://$FTP_SERVER/$FTP_REMOTE_DIR_BASE/$OS_REL/$PACKAGE_VERSION$VERSION_SUFFIX
+            echo -n "-- Trying URL $FTP_REMOTE_URL..."
+            wget --spider $FTP_REMOTE_URL 2>&1 | grep -q exists
+            RESULT=$?
+            if [ $RESULT -eq 1 ]
+            then
+                echo " [not found]"
+                PACKAGE_VERSION=$(echo $PACKAGE_VERSION$VERSION_SUFFIX)
+                break
+            else
+                echo " [found]"
+            fi
+        done
+        set -e
+        echo "-- Package version identifier -- \"$PACKAGE_VERSION\""
+        FTP_REMOTE_DIR="$FTP_REMOTE_DIR_BASE/$OS_REL/$PACKAGE_VERSION"
+        echo "-- FTP remote directory -- $FTP_REMOTE_DIR"
+        echo "Writing environment file"
+        touch environment_variables.txt
+        echo "FTP_SERVER=$FTP_SERVER" >> environment_variables.txt
+        echo "FTP_REMOTE_DIR=$FTP_REMOTE_DIR" >> environment_variables.txt
+        echo "PKG_REPO_SERVER=$PKG_REPO_SERVER" >> environment_variables.txt
+        echo PKG_TARGET_DISTROS=\"$PKG_TARGET_DISTROS\" >> environment_variables.txt
+        echo "OS_NAME=$OS_NAME" >> environment_variables.txt
+        echo "OS_REL=$OS_REL" >> environment_variables.txt
+        echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> environment_variables.txt
+
+# Defines a common script for building artifacts on Ubuntu systems
+# -- Requires the following environment variables to be defined through 
+#    the environment_variables.txt file:
+#    -- PACKAGE_VERSION: Package version identifier
+# -- Updates the environment_variables.txt file from the setup stage
+#    with new information.
+# -- Defines the following environment variables through this artifact:
+#    -- FTP_SERVER: Host name for the FTP server
+#    -- FTP_REMOTE_DIR: Path to the folder on the FTP server for this version
+#    -- PKG_REPO_SERVER: Host name for the machine hosting the package repository
+#    -- PKG_TARGET_DISTROS: List of distributions to push packages into
+#    -- OS_NAME: Operating system name
+#    -- OS_REL: Operating system release identifier (name + version)
+#    -- PACKAGE_VERSION: Package version identifier
+#    -- BUILD_ARTIFACTS_PKG: List of build artifacts that are packages to
+#       push into an apt repository
+#    -- BUILD_ARTIFACTS_FTP: List of build artifacts that get uploaded
+#       to the FTP server
+# -- The build artifacts list must list the environment_variables.txt 
+#    file and ALL packages and/or tarballs intended for the package
+#    repository and/or FTP server.
+.build-ubuntu:
+    artifacts:
+        name: "$CI_JOB_NAME-$CI_COMMIT_SHORT_SHA"
+        paths:
+            - environment_variables.txt
+            - libcyberradio_[0-9]*.deb
+    script: |
+        install_or_upgrade()
+        {
+            # $1: Package name (does not include version or anything else)
+            dpkg -i --force-all $1_*.deb
+        }
+        set +e
+        echo "Installing dependency packages"
+        apt-get update
+        apt-get -y install g3-makedeb python-dev python3-dev dh-python cmake
+        set -e
+        echo "Reading environment file"
+        cat environment_variables.txt
+        source environment_variables.txt
+        echo "Building packages"
+        makedeb libcyberradio
+        echo "Enumerating build artifacts for package server deployment"
+        BUILD_ARTIFACTS_PKG=$(ls *_[0-9]*.deb)
+        echo "Enumerating all build artifacts for FTP deployment"
+        BUILD_ARTIFACTS_DEPS=
+        BUILD_ARTIFACTS_FTP="$BUILD_ARTIFACTS_PKG"
+        echo "Writing build artifacts to environment file"
+        echo BUILD_ARTIFACTS_PKG=\"$BUILD_ARTIFACTS_PKG\" >> environment_variables.txt
+        echo BUILD_ARTIFACTS_FTP=\"$BUILD_ARTIFACTS_FTP\" >> environment_variables.txt
+
+# Defines a common script for building artifacts on RedHat-based systems
+# -- Requires the following environment variables to be defined through 
+#    the environment_variables.txt file:
+#    -- PACKAGE_VERSION: Package version identifier
+# -- Updates the environment_variables.txt file from the setup stage
+#    with new information.
+# -- Defines the following environment variables through this artifact:
+#    -- FTP_SERVER: Host name for the FTP server
+#    -- FTP_REMOTE_DIR: Path to the folder on the FTP server for this version
+#    -- PKG_REPO_SERVER: Host name for the machine hosting the package repository
+#    -- PKG_TARGET_DISTROS: List of distributions to push packages into
+#    -- OS_NAME: Operating system name
+#    -- OS_REL: Operating system release identifier (name + version)
+#    -- PACKAGE_VERSION: Package version identifier
+#    -- BUILD_ARTIFACTS_PKG: List of build artifacts that are packages to
+#       push into an apt repository
+#    -- BUILD_ARTIFACTS_FTP: List of build artifacts that get uploaded
+#       to the FTP server
+# -- The build artifacts list must list the environment_variables.txt 
+#    file and ALL packages and/or tarballs intended for the package
+#    repository and/or FTP server.
+.build-redhat:
+    artifacts:
+        paths:
+            - environment_variables.txt
+            - python-cyberradiodriver-[0-9]*.rpm
+    script: |
+        install_or_upgrade()
+        {
+            # $1: Package name (does not include version or anything else)
+            set +e
+            # See if the package is installed already
+            rpm -q --quiet $1
+            RESULT=$?
+            # If the package is installed, upgrade it; if not, install it
+            set -e
+            if [[ $RESULT -eq 0 ]]
+            then
+                rpm -U --force --nodeps $1-*.rpm
+            else
+                rpm -i $1-*.rpm
+            fi
+        }
+        set +e
+        echo "Reading environment file"
+        cat environment_variables.txt
+        source environment_variables.txt
+        echo "Installing dependency packages"
+        yum clean expire-cache
+        if [ ${OS_NAME} == "centos" ]
+        then
+            yum -y remove swig
+            yum -y install swig3 cmake3
+        else
+            yum -y install swig cmake
+        fi
+        yum -y install g3-makerpm
+        set -e
+        echo "Building packages"
+        makerpm libcyberradio
+        echo "Enumerating build artifacts for package server deployment"
+        BUILD_ARTIFACTS_PKG=$(ls *-[0-9]*.rpm)
+        echo "Enumerating all build artifacts for FTP deployment"
+        BUILD_ARTIFACTS_DEPS=
+        BUILD_ARTIFACTS_FTP="$BUILD_ARTIFACTS_PKG"
+        echo "Writing build artifacts to environment file"
+        echo BUILD_ARTIFACTS_PKG=\"$BUILD_ARTIFACTS_PKG\" >> environment_variables.txt
+        echo BUILD_ARTIFACTS_FTP=\"$BUILD_ARTIFACTS_FTP\" >> environment_variables.txt
+
+# Build script specialization for Fedora 28
+# -- This inherits the generic RedHat build instructions
+.build-fedora28:
+    extends:
+    - .build-redhat
+
+# Build script specialization for CentOS 7
+# -- This inherits the generic RedHat build instructions
+.build-centos7:
+    extends:
+    - .build-redhat
+
+# Defines a common script for deploying build artifacts to the FTP site
+# -- Requires the following environment variables to be defined through 
+#    the environment_variables.txt file:
+#    -- FTP_SERVER: Host name for the FTP server
+#    -- FTP_REMOTE_DIR: Path to the folder on the FTP server for this version
+#    -- OS_NAME: Operating system name
+#    -- BUILD_ARTIFACTS_FTP: List of build artifacts to upload to the FTP server
+# -- Requires the following build artifacts to be defined in the preceding step:
+#    -- environment_variables.txt
+#    -- Any build artifacts listed in BUILD_ARTIFACTS_FTP
+#
+.deploy-ftp:
+    # Set a resource group on this job so that only one pipeline accesses
+    # the FTP server at any given time
+    resource_group: ftp-server
+    script: |
+        set +e
+        echo "Reading environment file"
+        cat environment_variables.txt
+        source environment_variables.txt
+        if [ ${OS_NAME} == "centos" ]
+        then
+            yum clean expire-cache
+            yum -y install lftp
+        elif [ ${OS_NAME} == "fedora" ]
+        then
+            yum clean expire-cache
+            yum -y install lftp
+        else
+            apt-get update
+            apt-get -y install lftp
+        fi
+        set -e
+        echo "Uploading files to FTP server"
+        lftp -u anonymous, -e "mkdir -p $FTP_REMOTE_DIR; mput -O $FTP_REMOTE_DIR $BUILD_ARTIFACTS_FTP; quit" $FTP_SERVER
+
+# Defines a common script for deploying build artifacts to a yum 
+# package repository
+# -- Requires the following environment variables to be defined through 
+#    the environment_variables.txt file:
+#    -- PKG_REPO_SERVER: Host name for the machine hosting the package repository
+#    -- PKG_TARGET_DISTROS: List of distributions to push packages into
+#    -- BUILD_ARTIFACTS_PKG: List of build artifacts (packages only!) to push
+# -- Requires the following build artifacts to be defined in the preceding step:
+#    -- environment_variables.txt
+#    -- Any build artifacts listed in BUILD_ARTIFACTS_PKG
+#
+.deploy-yum:
+    # Set a resource group on this job so that only one pipeline accesses
+    # the YUM server at any given time
+    resource_group: yum-server
+    script: |
+        set +e
+        echo "Reading environment file"
+        cat environment_variables.txt
+        source environment_variables.txt
+        # Set SSH configuration
+        if [ \! -e $HOME/.ssh/config ]
+        then
+            echo "Making SSH configuration file"
+            mkdir -p $HOME/.ssh
+            touch $HOME/.ssh/config
+            echo "StrictHostKeyChecking no" >> $HOME/.ssh/config
+        fi
+        # Copy SSH credentials
+        echo "Copying SSH credentials to $PKG_REPO_SERVER"
+        ssh-copy-id -f jenkins_slave@$PKG_REPO_SERVER
+        set -e
+        # Create an incoming folder for packages on the yum repo server
+        REMOTE_PKG_FOLDER=/home/jenkins_slave/yum-incoming/$CI_PROJECT_NAME-$CI_PIPELINE_ID-$OS_REL
+        echo "Creating incoming package folder $REMOTE_PKG_FOLDER on $PKG_REPO_SERVER"
+        ssh jenkins_slave@$PKG_REPO_SERVER "mkdir -p $REMOTE_PKG_FOLDER"
+        # Secure-copy built packages to incoming folder
+        echo "Copying built packages"
+        scp $BUILD_ARTIFACTS_PKG jenkins_slave@$PKG_REPO_SERVER:$REMOTE_PKG_FOLDER
+        # Secure execute repository update
+        echo "Updating yum repository on $PKG_REPO_SERVER"
+        ssh jenkins_slave@$PKG_REPO_SERVER "jenkins-update-yum $REMOTE_PKG_FOLDER $PKG_TARGET_DISTROS"
+        # Clean up the incoming folder
+        echo "Cleaning up incoming folder"
+        ssh jenkins_slave@$PKG_REPO_SERVER "rm -rf $REMOTE_PKG_FOLDER"
+
+# Defines a common script for deploying build artifacts to an apt 
+# package repository
+# -- Requires the following environment variables to be defined through 
+#    the environment_variables.txt file:
+#    -- PKG_REPO_SERVER: Host name for the machine hosting the package repository
+#    -- PKG_TARGET_DISTROS: List of distributions to push packages into
+#    -- BUILD_ARTIFACTS_PKG: List of build artifacts (packages only!) to push
+# -- Requires the following build artifacts to be defined in the preceding step:
+#    -- environment_variables.txt
+#    -- Any build artifacts listed in BUILD_ARTIFACTS_PKG
+#
+.deploy-apt:
+    # Set a resource group on this job so that only one pipeline accesses
+    # the APT server at any given time
+    resource_group: apt-server
+    script: |
+        echo "Reading environment file"
+        cat environment_variables.txt
+        source environment_variables.txt
+        # Copy SSH ID to apt repo server
+        ssh-copy-id -f jenkins_slave@$PKG_REPO_SERVER
+        # Create an incoming folder for packages on the apt repo server
+        REMOTE_PKG_FOLDER=/home/jenkins_slave/aptly-incoming/$CI_PROJECT_NAME-$CI_PIPELINE_ID-$OS_REL
+        echo "Creating incoming package folder $REMOTE_PKG_FOLDER on $PKG_REPO_SERVER"
+        ssh jenkins_slave@$PKG_REPO_SERVER "mkdir -p $REMOTE_PKG_FOLDER"
+        # Secure-copy built packages to incoming folder
+        echo "Copying built packages"
+        scp $BUILD_ARTIFACTS_PKG jenkins_slave@$PKG_REPO_SERVER:$REMOTE_PKG_FOLDER
+        # Secure execute repository update
+        echo "Updating apt repository on $PKG_REPO_SERVER"
+        ssh jenkins_slave@$PKG_REPO_SERVER "jenkins-update-aptly $REMOTE_PKG_FOLDER $PKG_TARGET_DISTROS"
+        # Clean up the incoming folder
+        echo "Cleaning up incoming folder"
+        ssh jenkins_slave@$PKG_REPO_SERVER "rm -rf $REMOTE_PKG_FOLDER"
+
+#####################################################
+# UBUNTU XENIAL
+#####################################################
+
+# Ubuntu Xenial - Setup build environment
+# -- See .setup-build-environment for details on what gets included in
+#    the environment_variables.txt file.
+setup-ubuntu-xenial:
+    extends:
+    - .ubuntu-xenial
+    - .setup-build-environment
+    stage: stage-setup
+
+# Ubuntu Xenial - Build software
+# -- See .build-ubuntu for details on what is needed to build.
+#    
+build-ubuntu-xenial:
+    extends:
+    - .ubuntu-xenial
+    - .build-ubuntu
+    stage: stage-build
+    dependencies:
+        - setup-ubuntu-xenial
+    
+# Ubuntu Xenial - Deploy to apt package repository
+# -- See .deploy-apt for details on what the environment_variables.txt 
+#    file needs to make this job work.
+deploy-ubuntu-xenial-apt:
+    extends:
+    - .ubuntu-xenial
+    - .deploy-apt
+    stage: stage-deploy
+    dependencies:
+        - build-ubuntu-xenial
+
+# Ubuntu Xenial - Deploy to FTP server
+# -- See .deploy-ftp for details on what the environment_variables.txt 
+#    file needs to make this job work.
+deploy-ubuntu-xenial-ftp:
+    extends:
+    - .ubuntu-xenial
+    - .deploy-ftp
+    stage: stage-deploy
+    dependencies:
+        - build-ubuntu-xenial
+
+#####################################################
+# UBUNTU BIONIC
+#####################################################
+
+# Ubuntu Bionic - Setup build environment
+# -- See .setup-build-environment for details on what gets included in
+#    the environment_variables.txt file.
+setup-ubuntu-bionic:
+    extends:
+    - .ubuntu-bionic
+    - .setup-build-environment
+    stage: stage-setup
+
+# Ubuntu Bionic - Build software
+# -- See .build-ubuntu for details on what is needed to build.
+#    
+build-ubuntu-bionic:
+    extends:
+    - .ubuntu-bionic
+    - .build-ubuntu
+    stage: stage-build
+    dependencies:
+        - setup-ubuntu-bionic
+    
+# Ubuntu Bionic - Deploy to apt package repository
+# -- See .deploy-apt for details on what the environment_variables.txt 
+#    file needs to make this job work.
+deploy-ubuntu-bionic-apt:
+    extends:
+    - .ubuntu-bionic
+    - .deploy-apt
+    stage: stage-deploy
+    dependencies:
+        - build-ubuntu-bionic
+
+# Ubuntu Bionic - Deploy to FTP server
+# -- See .deploy-ftp for details on what the environment_variables.txt 
+#    file needs to make this job work.
+deploy-ubuntu-bionic-ftp:
+    extends:
+    - .ubuntu-bionic
+    - .deploy-ftp
+    stage: stage-deploy
+    dependencies:
+        - build-ubuntu-bionic
+
+#####################################################
+# CENTOS 7
+#####################################################
+
+# CentOS 7 - Setup build environment
+# -- See .setup-build-environment for details on what gets included in
+#    the environment_variables.txt file.
+setup-centos7:
+    extends:
+    - .centos7
+    - .setup-build-environment
+    stage: stage-setup
+
+# CentOS 7 - Build software
+# -- See .build-centos7 for details on what is needed to build.
+#    
+build-centos7:
+    extends:
+    - .centos7
+    - .build-centos7
+    stage: stage-build
+    dependencies:
+        - setup-centos7
+
+# CentOS 7 - Deploy to yum package repository
+# -- See .deploy-yum for details on what the environment_variables.txt 
+#    file needs to make this job work.
+deploy-centos7-yum:
+    extends:
+    - .centos7
+    - .deploy-yum
+    stage: stage-deploy
+    dependencies:
+        - build-centos7
+
+# CentOS 7 - Deploy to FTP server
+# -- See .deploy-ftp for details on what the environment_variables.txt 
+#    file needs to make this job work.
+deploy-centos7-ftp:
+    extends:
+    - .centos7
+    - .deploy-ftp
+    stage: stage-deploy
+    dependencies:
+        - build-centos7
+
+#####################################################
+# FEDORA 28
+#####################################################
+
+# Fedora 28 - Setup build environment
+# -- See .setup-build-environment for details on what gets included in
+#    the environment_variables.txt file.
+setup-fedora28:
+    extends:
+    - .fedora28
+    - .setup-build-environment
+    stage: stage-setup
+
+# Fedora 28 - Build software
+# -- See .build-fedora28 for details on what is needed to build.
+#    
+build-fedora28:
+    extends:
+    - .fedora28
+    - .build-fedora28
+    stage: stage-build
+    dependencies:
+        - setup-fedora28
+
+# Fedora 28 - Deploy to yum package repository
+# -- See .deploy-yum for details on what the environment_variables.txt 
+#    file needs to make this job work.
+deploy-fedora28-yum:
+    extends:
+    - .fedora28
+    - .deploy-yum
+    stage: stage-deploy
+    dependencies:
+        - build-fedora28
+
+# Fedora 28 - Deploy to FTP server
+# -- See .deploy-ftp for details on what the environment_variables.txt 
+#    file needs to make this job work.
+deploy-fedora28-ftp:
+    extends:
+    - .fedora28
+    - .deploy-ftp
+    stage: stage-deploy
+    dependencies:
+        - build-fedora28
