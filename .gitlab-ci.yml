@@ -277,7 +277,9 @@ stages:
     artifacts:
         paths:
             - environment_variables.txt
-            - python-cyberradiodriver-[0-9]*.rpm
+            - libcyberradio-[0-9]*.rpm
+            - libcyberradio-devel-[0-9]*.rpm
+            - libcyberradio-doc-[0-9]*.rpm
     script: |
         install_or_upgrade()
         {
