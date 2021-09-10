@@ -31,6 +31,9 @@ To build the package:
   `libcyberradio` directory and this README file)
 * Run either `makedeb` or `makerpm` as appropriate to build the package
     * Debian
-> `makedeb libcyberradio`
+
+    > `makedeb libcyberradio`
+
     * Red Hat
-> `makerpm libcyberradio`
+
+    > `makerpm libcyberradio`
