@@ -102,11 +102,11 @@ FIND_PACKAGE(Doxygen)
 ########################################################################
 SET(LIBCYBERRADIO_INC_SUBDIR       LibCyberRadio)
 SET(LIBCYBERRADIO_INCLUDE_DIR      include/${LIBCYBERRADIO_INC_SUBDIR})
-IF(UNIX AND EXISTS "/usr/lib64")
+IF(UNIX AND NOT EXISTS "/etc/debian_version" AND EXISTS "/usr/lib64")
     SET(LIBCYBERRADIO_LIBRARY_DIR      lib64) # CentOS 64-bit fix
 ELSE()
     SET(LIBCYBERRADIO_LIBRARY_DIR      lib)
-ENDIF(UNIX AND EXISTS "/usr/lib64")
+ENDIF(UNIX AND NOT EXISTS "/etc/debian_version" AND EXISTS "/usr/lib64")
 SET(LIBCYBERRADIO_BINARY_DIR       bin)
 SET(LIBCYBERRADIO_DATA_DIR         share)
 SET(LIBCYBERRADIO_PKG_DATA_DIR     ${LIBCYBERRADIO_DATA_DIR}/${PROJECT_NAME})
