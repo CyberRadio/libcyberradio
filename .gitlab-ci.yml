@@ -42,34 +42,58 @@ include:
 # Common
 #####################################################
 
-# Setup (All)
-# -------------------------------------------------------------------
-# Use the following variables to tailor the setup configuration for a 
-# given project:
-# * PKG_REPO_SERVER: Apt/yum repository server
-#   -- default: asterix.mamd.g3ti.local
-# * PKG_TARGET_DISTROS: Target distributions for apt/yum deployment
-#   -- NOTE: The default for this depends on the attached OS configura-
-#      tion.  If you set this, make sure that it makes sense for the 
-#      OS that you are building against. 
-#   -- default: xenial (for Ubuntu 16 configuration)
-# * FTP_SERVER: FTP server
-#   -- default: asterix.mamd.g3ti.local
-# * FTP_REMOTE_DIR_BASE: FTP remote directory base
-#   -- NOTE: This should be unique for each project!
-#   -- default: jenkins_pub
-# * BUILD_PYTHON2: Build Python packages against Python 2?
-#   -- NOTE: The attached OS configuration sets this as appropriate 
-#      for the given OS.  Be careful if you override this setting.
-# * BUILD_PYTHON3: Build Python packages against Python 3?
-#   -- NOTE: The attached OS configuration sets this as appropriate 
-#      for the given OS.  Be careful if you override this setting.
-# * PKG_MANAGER: Package management program
-#   -- NOTE: The attached OS configuration sets this as appropriate 
-#      for the given OS.  Be careful if you override this setting.
-# * PKG_DOWNLOAD: Package download command
-#   -- NOTE: The attached OS configuration sets this as appropriate 
-#      for the given OS.  Be careful if you override this setting.
+##
+# Abstract job that sets up the build environment for this project.
+#
+# To generate a concrete setup job for a particular OS:
+# -- Derive it from the appropriate OS-specific configuration job
+# -- Derive it from this job
+# -- Override any attributes of the job (tags, variables, etc.) as 
+#    you need
+#
+# The OS-specific configuration job will provide the following 
+# variables, but you may need to modify them for your own needs: 
+# -- FTP_SERVER: Host name for the FTP server
+# -- FTP_REMOTE_DIR_BASE: Path to the base folder on the FTP server for 
+#    this project
+# -- PKG_REPO_SERVER: Host name for the machine hosting the package 
+#    repository
+# -- PKG_TARGET_DISTROS: List of distributions to push packages into
+# -- BUILD_PYTHON2: Build Python packages against Python 2?
+# -- BUILD_PYTHON3: Build Python packages against Python 3?
+# -- PKG_MANAGER: Package management program
+# -- PKG_DOWNLOAD: Package download command
+# -- IS_GNURADIO_PROJECT: Is this project dependent on GNU Radio?
+# -- GNURADIO_MIN_VERSION: Minimum version of GNU Radio required for the 
+#    build 
+# -- GNURADIO_MAX_VERSION: Maximum version of GNU Radio required for the
+#    build 
+# -- DOCKER_REGISTRY: Location for the Docker registry that we will push 
+#    any Docker images into.  This is a string of the form 
+#    [server's FQDN]:[server HTTPS port].
+# -- ADDITIONAL_REPOS: Additional package repositories.  This is a 
+#    multi-line YAML string in JSON format.  The JSON construct is a 
+#    list of dictionaries, one for each additional repository.
+#
+# And, for your own setup project, you will need to provide the following
+# variables:
+# -- BUILD_DEPS_NONPY: List of non-Python packages needed for the build
+# -- BUILD_DEPS_PY2: List of Python 2 packages needed for the build (for 
+#    projects whose builds rely on Python 2)
+# -- BUILD_DEPS_PY3: List of Python 3 packages needed for the build (for 
+#    projects whose builds rely on Python 3)
+# -- TARBALL_DEPS: For projects that build tarballs as artifacts, 
+#    packages that this step needs to download and package with the
+#    tarball(s)
+#
+# The output of this job is a build artifact (environment_variables.txt) 
+# that defines the environment for all downstream build steps.  It captures
+# all of the variables above, and also generates a few more:
+# -- FTP_REMOTE_DIR: Path to the folder on the FTP server for this version
+# -- OS_NAME: Operating system name ("ubuntu", "centos", etc.)
+# -- OS_REL: Operating system release identifier (name + version)
+# -- OS_CODENAME: Operating system code name (Debian only)
+# -- PACKAGE_VERSION: Package version identifier
 #
 .setup-build-environment-ours:
     extends:
@@ -78,68 +102,80 @@ include:
         # FTP remote directory base
         FTP_REMOTE_DIR_BASE: jenkins_pub/libcyberradio
 
-# Build (Debian and Red Hat)
-# -------------------------------------------------------------------
-# Use the following variables to tailor the build configuration for a 
-# given project:
-# * BUILD_DEPS: Build dependencies; that is, packages that the build 
-#   step needs to install before trying to build the software
-#   -- default: [empty string]
-# * TARBALL_DEPS: Tarball dependencies; that is, for projects that 
-#   build tarballs as artifacts, packages that this step needs to 
-#   download and package with the tarball(s)
-#   -- default: [empty string]
+##
+# Abstract job that builds this project on Debian.
 #
-# When you construct the build script, base it on the following functions:
-# * section_banner -- Prints a section banner with the given label
-# * exit_if_error [code] -- Exits if the code is non-zero
-# * install_or_upgrade [files] -- Installs/upgrades packages from
-#   the given file(s)
-# * build_package [pkg] [dir] -- Builds a deb package from a source 
-#   directory
-# * build_and_install_package [pkg] [dir] -- Builds a package from 
-#   a source directory and installs it into the build environment
-# * build_python_packages [pkg] [dir] -- Builds packages from a 
-#   Python source directory.  This function uses BUILD_PYTHON2 and 
-#   BUILD_PYTHON3 to decide what Python versions to build against.
-# * build_and_install_python_packages [pkg] [dir] -- Builds packages 
-#   from a Python source directory and installs them into the build
-#   environment.  This function uses BUILD_PYTHON2 and BUILD_PYTHON3 to 
-#   decide what Python versions to build against.
-# * is_package_version_lt [ver] [tar] -- Is a package version string
-#   less than a given target version?
-# * is_package_version_gt [ver] [tar] -- Is a package version string
-#   greater than a given target version?
-# * is_package_version_eq [ver] [tar] -- Is a package version string
-#   equal to a given target version?
-# * is_package_version_le [ver] [tar] -- Is a package version string
-#   less than or equal to a given target version?
-# * is_package_version_ge [ver] [tar] -- Is a package version string
-#   greater than or equal to a given target version?
-
+# Concrete build jobs derived from this one need the corresponding 
+# concrete setup job defined as an upstream dependency.
+# 
+# Helper functions available for the build script:
+# -- section_banner -- Prints a section banner with the given label
+# -- exit_if_error [code] -- Exits if the code is non-zero
+# -- install_or_upgrade [pkg list] -- Installs/upgrades packages from
+#    the given file(s)
+# -- build_packages [dir] [pkg list] -- Builds deb/rpm packages from
+#    a source directory
+# -- build_packages_local [pkg list] -- Builds deb/rpm packages from
+#    source code that is not in a containing folder
+# -- build_and_install_packages [dir] [pkg list] -- Builds deb/rpm packages 
+#    from a source directory and installs them into the build environment
+# -- build_and_install_packages_local [pkg list] -- Builds deb/rpm packages 
+#    from source code that is not in a containing folder and installs them 
+#    into the build environment
+# -- build_packages_python [dir] [pkg list] -- Builds packages from a 
+#    Python source directory.  This function uses BUILD_PYTHON2 and 
+#    BUILD_PYTHON3 to decide what Python versions to build against.
+# -- build_packages_python_local [pkg list] -- Builds packages from Python
+#    source not in a containing folder.  This function uses BUILD_PYTHON2 and 
+#    BUILD_PYTHON3 to decide what Python versions to build against.
+# -- build_and_install_packages_python [dir] [pkg list] -- Builds packages 
+#    from a Python source directory and installs them into the build
+#    environment.  This function uses BUILD_PYTHON2 and BUILD_PYTHON3 to 
+#    decide what Python versions to build against.
+# -- build_and_install_packages_python_local [pkg list] -- Builds packages 
+#    from Python source not in a containing folder and installs them into 
+#    the build environment.  This function uses BUILD_PYTHON2 and 
+#    BUILD_PYTHON3 to decide what Python versions to build against.
+# -- build_tarball [name] [files] -- Builds a tarball from the given files.
+# -- is_package_version_lt [ver] [tar] -- Is a package version string
+#    less than a given target version?  (0=no, 1=yes)
+# -- is_package_version_gt [ver] [tar] -- Is a package version string
+#    greater than a given target version?  (0=no, 1=yes)
+# -- is_package_version_eq [ver] [tar] -- Is a package version string
+#    equal to a given target version?  (0=no, 1=yes)
+# -- is_package_version_le [ver] [tar] -- Is a package version string
+#    less than or equal to a given target version?  (0=no, 1=yes)
+# -- is_package_version_ge [ver] [tar] -- Is a package version string
+#    greater than or equal to a given target version?  (0=no, 1=yes)
+# -- find_package_version_between [pkg] [min] [max] -- Finds the latest
+#    version of a package between the minimum (inclusive) and the 
+#    maximum (exclusive).
+#
+# Whem this job ends, it modifies the environment variables file
+# with new variables:
+# -- BUILD_ARTIFACTS_PKG: List of build artifacts that are packages to
+#    push into an apt/yum repository
+# -- BUILD_ARTIFACTS_FTP: List of build artifacts that get uploaded
+#    to the FTP server
+#
 .build-debian-ours:
     extends:
     - .build-debian
-    variables:
-        BUILD_DEPS: "g3-makedeb dh-python"
-        TARBALL_DEPS: ""
     script: |-
         section_banner "Building Packages"
-        build_package libcyberradio libcyberradio
+        build_packages libcyberradio libcyberradio
 
+##
+# Abstract job that builds this project on Red Hat.
+#
+# This job works the same way as the Debian job.
+#
 .build-redhat-ours:
     extends:
     - .build-redhat
-    variables:
-        BUILD_DEPS: "g3-makerpm"
-        TARBALL_DEPS: ""
     script: |-
         section_banner "Building Packages"
-        build_package libcyberradio libcyberradio
-        # This build_package step also creates -devel and -doc packages,
-        # so move those into GITLAB, too
-        mv libcyberradio-devel-[0-9]*.rpm GITLAB
-        mv libcyberradio-doc-[0-9]*.rpm GITLAB
+        build_packages libcyberradio libcyberradio libcyberradio-devel libcyberradio-doc
 
 #####################################################
 # Ubuntu 16
