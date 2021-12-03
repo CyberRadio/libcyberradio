@@ -62,6 +62,7 @@ namespace LibCyberRadio
                 initConfigurationDict();
                 _connModesSupported.push_back("udp");
                 _defaultDeviceInfo = 19091;
+                _transport.setJson(true);
 #if 0                
                 // Allocate tuner components
                 for (int tuner = _tunerIndexBase;

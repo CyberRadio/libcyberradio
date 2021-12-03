@@ -88,6 +88,11 @@ namespace LibCyberRadio
                  */
                 virtual bool isConnected() const;
                 /**
+                 * \brief Allows user to set JSON
+                 * \param json True if Radio Uses JSON
+                 */
+                void setJson( bool json );
+                /**
                  * \brief Sends a command to the radio over the transport.
                  * \param cmdString The command to send.
                  * \param clearRx Whether or not to clear the receive buffer before

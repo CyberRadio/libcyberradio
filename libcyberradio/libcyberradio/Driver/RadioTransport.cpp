@@ -94,6 +94,13 @@ namespace LibCyberRadio
             return *this;
         }
 
+        void RadioTransport::setJson( bool json )
+        {
+            this->debug("[setJson] %s\n", json);
+            _isJson = json;
+        }
+
+
         bool RadioTransport::connect(
                 const std::string &mode,
                 const std::string &host_or_dev,
@@ -108,7 +115,6 @@ namespace LibCyberRadio
             }
             else if (mode == "udp")
             {
-                printf("?\n");
                 ret = connectUdp(host_or_dev, port_or_baudrate);
             }
             else if (mode == "tcp")
