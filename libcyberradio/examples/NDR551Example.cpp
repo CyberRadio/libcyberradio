@@ -96,6 +96,16 @@ class App : public LibCyberRadio::App
                 LibCyberRadio::BasicStringList recv = handler->sendCommand(output,1.0);
                 std::cout << "DATA RETURNED ----- " << std::endl;
                 std::cout << recv.at(0) << std::endl;
+
+                handler->setTunerFrequency(0, 1000e6);
+
+                LibCyberRadio::Driver::WbddcRateSet rates =  handler->getWbddcRateSet();
+
+                for(auto it = rates.cbegin(); it != rates.cend(); ++it)
+                {
+                    std::cout << "Filter Index: " << it->first << " -- Rate: " << it->second << "\n";
+                }
+
                 std::cout << "Disconnecting radio handler..." << std::endl;
                 handler->disconnect();
             }

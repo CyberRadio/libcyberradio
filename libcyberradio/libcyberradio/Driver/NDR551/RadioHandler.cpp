@@ -11,9 +11,9 @@
 #include "LibCyberRadio/Driver/NDR551/RadioHandler.h"
 //#include "LibCyberRadio/Driver/NDR551/DataPort.h"
 //#include "LibCyberRadio/Driver/NDR551/NbddcComponent.h"
-//#include "LibCyberRadio/Driver/NDR551/TunerComponent.h"
+#include "LibCyberRadio/Driver/NDR551/TunerComponent.h"
 #include "LibCyberRadio/Driver/NDR551/VitaIfSpec.h"
-//#include "LibCyberRadio/Driver/NDR551/WbddcComponent.h"
+#include "LibCyberRadio/Driver/NDR551/WbddcComponent.h"
 //#include "LibCyberRadio/Driver/NDR551/WbddcGroupComponent.h"
 //#include "LibCyberRadio/Driver/NDR551/NbddcGroupComponent.h"
 #include "LibCyberRadio/Common/Pythonesque.h"
@@ -63,7 +63,7 @@ namespace LibCyberRadio
                 _connModesSupported.push_back("udp");
                 _defaultDeviceInfo = 19091;
                 _transport.setJson(true);
-#if 0                
+                
                 // Allocate tuner components
                 for (int tuner = _tunerIndexBase;
                         tuner < (_tunerIndexBase + _numTuner); tuner++)
@@ -76,7 +76,7 @@ namespace LibCyberRadio
                             /* double frequency */ 800e6,
                             /* double attenuation */ 0.0,
                             /* int filter */ 0);
-                }
+                }               
                 // Allocate WBDDC components
                 for (int wbddc = _wbddcIndexBase;
                         wbddc < (_wbddcIndexBase + _numWbddc); wbddc++)
@@ -91,6 +91,7 @@ namespace LibCyberRadio
                             /* int vitaEnable */ 0,
                             /* int streamId */ 0);
                 }
+#if 0                 
                 // Allocate NBDDC components
                 for (int nbddc = _nbddcIndexBase;
                         nbddc < (_nbddcIndexBase + _numNbddc); nbddc++)
