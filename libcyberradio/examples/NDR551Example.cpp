@@ -8,6 +8,7 @@
 
 #include "LibCyberRadio/Common/App.h"
 #include "LibCyberRadio/Driver/Driver.h"
+#include <jsoncpp/json/json.h>
 #include <unistd.h>
 #include <iostream>
 
@@ -31,7 +32,7 @@ class App : public LibCyberRadio::App
             _host("ndr551")
         {
             description = "NDR551 Data Streaming Example";
-            version = "18.06.19";
+            version = "21.12.03";
         }
 
         /**
@@ -85,30 +86,18 @@ class App : public LibCyberRadio::App
             if ( (handler != NULL) && handler->isConnected() )
             {
                 std::cout << "-- Connect SUCCESS" << std::endl;
-#if 0                
-                handler->setTenGigFlowControlStatus(true);
-                if ( setupBroadcastOnDataPorts(handler.get(), 11001) == false )
-                    ret = 1;
-                if ( ret == 0 )
-                {
-                    if ( setupChannel(handler.get(), _channel, _dataPort,
-                                      _dipIndex, _frequency, _attenuation) == false )
-                        ret = 1;
-                }
-                if ( ret == 0 )
-                {
-                    std::cout << "Collecting data for " << _dwellTime
-                              << " seconds..." << std::endl;
-                    sleep(_dwellTime);
-                    std::cout << "-- Complete" << std::endl;
-                    std::cout << "Disabling WBDDC..." << std::endl;
-                    handler->disableWbddc(_channel);
-                    LibCyberRadio::Driver::ConfigurationDict cfg = handler->getConfiguration();
-                    dumpConfig(cfg);
-#endif                    
+                Json::Value root(Json::objectValue);
+                root["msg"] = 1;
+                root["cmd"] = "qstatus";
+                Json::Value params(Json::objectValue);
+                root["params"] = params;
+                Json::FastWriter fastWriter;
+                std::string output = fastWriter.write(root);
+                LibCyberRadio::BasicStringList recv = handler->sendCommand(output,1.0);
+                std::cout << "DATA RETURNED ----- " << std::endl;
+                std::cout << recv.at(0) << std::endl;
                 std::cout << "Disconnecting radio handler..." << std::endl;
                 handler->disconnect();
-                //}
             }
             else
             {

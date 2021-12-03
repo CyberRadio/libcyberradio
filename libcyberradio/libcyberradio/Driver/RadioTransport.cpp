@@ -530,29 +530,10 @@ namespace LibCyberRadio
             {
                 this->debug("[receiveJsonUdp] Parsing JSON Error\n");
             }
-            //if( mDebug ){
-            //    Json::StreamWriterBuilder builder;
-            //    const std::string json_file = Json::writeString(builder, root);
-            //    if( mDebug ){
-            //        printf("%s\n",json_file.c_str());
-            //    }
-            //}
-            // Get the Num Values
-            //std::cout << root.toStyledString() << std::endl;
             Json::Value result = root["result"];
-            // // Split the response into a list of non-empty strings
-            // // -- Remove carriage returns and prompt character
-            // std::string tmp = Pythonesque::Replace(Pythonesque::Replace(oss.str(), "\r", ""), ">", "");
-            // // -- Split on newlines
-            // BasicStringList tmpList = Pythonesque::Split(tmp, "\n");
-            // // -- Compile the non-empty strings into a list
-            // for (BasicStringList::iterator it = tmpList.begin(); it != tmpList.end(); it++)
-            // {
-            //     tmp = Pythonesque::Rstrip(*it);
-            //     if ( !tmp.empty() )
-            //         ret.push_back(tmp);
-            // }
-            // this->debug("[receiveJsonUdp] Returning %u elements\n", ret.size());
+            Json::FastWriter fastWriter;
+            std::__cxx11::string output = fastWriter.write(result);
+            ret.push_back(output);
             return ret;
         }
 
