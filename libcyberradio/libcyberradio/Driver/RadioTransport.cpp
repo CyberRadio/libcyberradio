@@ -263,7 +263,6 @@ namespace LibCyberRadio
                 int port
             )
         {
-            _debug = true;
             this->debug("[connectUdp] Called; host=\"%s\", port=%d\n", host.c_str(), port);
             
             _udpSocket = socket(AF_INET, SOCK_DGRAM, 0);
@@ -406,7 +405,7 @@ namespace LibCyberRadio
                 bool clearRx
             )
         {
-           this->debug("[sendCommandUdp] Called; cmd=%s",
+           this->debug("[sendCommandUdp] Called; cmd=%s\n",
                     this->rawString(cmdString).c_str());
             bool ret = false;
             int bytes = send(_udpSocket, cmdString.c_str(), cmdString.length(), 0);

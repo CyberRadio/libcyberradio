@@ -86,6 +86,8 @@ class App : public LibCyberRadio::App
             if ( (handler != NULL) && handler->isConnected() )
             {
                 std::cout << "-- Connect SUCCESS" << std::endl;
+
+#ifdef BASIC_JSON_EXAMPLE                
                 Json::Value root(Json::objectValue);
                 root["msg"] = 1;
                 root["cmd"] = "qstatus";
@@ -96,14 +98,23 @@ class App : public LibCyberRadio::App
                 LibCyberRadio::BasicStringList recv = handler->sendCommand(output,1.0);
                 std::cout << "DATA RETURNED ----- " << std::endl;
                 std::cout << recv.at(0) << std::endl;
+#endif                
+                setupBroadcastOnDataPorts(handler.get(), 4991);
 
                 handler->setTunerFrequency(0, 1000e6);
-
-                //handler->queryConfiguration();
-
-                std::cout << handler->getDataPortSourceIP(0) << std::endl;
-
+                handler->enableTuner(0, true);
                 handler->setDataPortSourceIP(0, "10.1.10.100");
+                handler->setDataPortDestMACAddress(0,0,"FF:FF:FF:FF:FF:FF");
+                handler->setDataPortDestIPAddress(0, 0, "10.1.10.1");
+                handler->setDataPortDestDestPort(0,0, 4991);
+                handler->setWbddcDataPort(0,1);
+                handler->setWbddcSource(0, 1);
+                handler->setWbddcUdpDestination(0,0);
+                handler->setWbddcRateIndex(0,40);
+                handler->enableWbddc(0, true);
+                handler->enableWbddc(0, false);
+
+                dumpConfig(handler->getWbddcConfiguration(0));
 
                 LibCyberRadio::Driver::WbddcRateSet rates =  handler->getWbddcRateSet();
 

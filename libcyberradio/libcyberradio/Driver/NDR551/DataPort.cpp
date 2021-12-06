@@ -85,8 +85,9 @@ namespace LibCyberRadio
                 _sourcePort = boost::lexical_cast<uint16_t>(returnVal["result"]["port"].asUInt());
                 for(int i = _dipEntryIndexBase; i < _numDipEntries; i++ )
                 {
-                    this->executeDestIPQuery(_index, i, _macAddresses[i], 
-                                             _ipAddresses[i], _sourcePorts[i],
+                    this->executeDestIPQuery(_index, i, _ipAddresses[i],
+                                             _macAddresses[i], 
+                                             _sourcePorts[i],
                                              _destPorts[i]);
                 }
                 updateConfigurationDict();
@@ -108,7 +109,7 @@ namespace LibCyberRadio
                 Json::Value returnVal; 
                 std::string t = rsp.at(0);
                 bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
-                ret = returnVal["result"]["success"].asBool();
+                ret = returnVal["success"].asBool();
                 if(ret){
                     ipAddr = boost::lexical_cast<std::__cxx11::string>(returnVal["result"]["ip"].asString());
                 } else {
@@ -133,7 +134,7 @@ namespace LibCyberRadio
                 Json::Value returnVal; 
                 std::string t = rsp.at(0);
                 bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
-                ret = returnVal["result"]["success"].asBool();
+                ret = returnVal["success"].asBool();
                 return ret;
             }
             // Default implementation uses the NDR308 pattern
@@ -166,7 +167,7 @@ namespace LibCyberRadio
                     Json::Value returnVal; 
                     std::string t = rsp.at(0);
                     bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
-                    ret = returnVal["result"]["success"].asBool();
+                    ret = returnVal["success"].asBool();
                     if(ret)
                     {
                         ipAddr = boost::lexical_cast<std::__cxx11::string>(returnVal["result"]["ip"].asString());
@@ -186,6 +187,25 @@ namespace LibCyberRadio
                             unsigned int& destPort)
             {
                 bool ret = false;
+                Json::Value command;
+                Json::Value params;
+                command["cmd"] = "e10g";
+                command["msg"] = _parent->getMessageId();
+                command["params"] = Json::objectValue;
+                command["params"]["link"] = index;
+                command["params"]["dest"] = dipIndex;
+                command["params"]["ip"] = ipAddr.c_str();
+                command["params"]["port"] = destPort;
+                command["params"]["mac"] = macAddr.c_str();
+                command["params"]["arp"] = false;
+                Json::FastWriter fastWriter;
+                std::string output = fastWriter.write(command);
+                BasicStringList rsp = _parent->sendCommand(output);
+                Json::Reader reader;
+                Json::Value returnVal; 
+                std::string t = rsp.at(0);
+                bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
+                ret = returnVal["success"].asBool();
                 return ret;
             }
 

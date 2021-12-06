@@ -81,7 +81,8 @@ namespace LibCyberRadio
                                         
                     bool executeFreqCommand(int index, double& freq) override;
                     void queryConfiguration();
-
+                    bool executeEnableCommand(int index, bool& enabled) override;
+                    bool executeAttenCommand(int index, double& atten) override;
                     
 
                 protected:

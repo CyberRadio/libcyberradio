@@ -190,6 +190,112 @@ namespace LibCyberRadio
                 return ret;
             }
 
+            bool WbddcComponent::executeDataPortCommand(int index, int& dataPort)
+            {
+                bool ret = false;
+                if ( (_parent != NULL) && (_parent->isConnected()) )
+                {
+                    Json::Value root(Json::objectValue);
+                    root["msg"] = m551Parent->getMessageId();
+                    root["cmd"] = "wbddc";
+                    Json::Value params(Json::objectValue);
+                    params["id"] = index;
+                    params["link"] = dataPort;
+                    root["params"] = params;
+                    Json::FastWriter fastWriter;
+                    std::string output = fastWriter.write(root);
+                    LibCyberRadio::BasicStringList recv = _parent->sendCommand(output,1.0);
+                    Json::Reader reader;
+                    Json::Value returnVal; 
+                    std::string t = recv.at(0);
+                    bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
+                    ret = returnVal["success"].asBool();
+                }
+                return ret;
+            }
+
+            // Default implementation returns false, since it is based on
+            // the NDR308, which does not support selectable-source WBDDCs.
+            bool WbddcComponent::executeSourceCommand(int index, int& source)
+            {
+                bool ret = false;
+                if ( (_parent != NULL) && (_parent->isConnected()) )
+                {
+                    Json::Value root(Json::objectValue);
+                    root["msg"] = m551Parent->getMessageId();
+                    root["cmd"] = "wbddc";
+                    Json::Value params(Json::objectValue);
+                    params["id"] = index;
+                    params["rfch"] = std::to_string(source);
+                    root["params"] = params;
+                    Json::FastWriter fastWriter;
+                    std::string output = fastWriter.write(root);
+                    LibCyberRadio::BasicStringList recv = _parent->sendCommand(output,1.0);
+                    Json::Reader reader;
+                    Json::Value returnVal; 
+                    std::string t = recv.at(0);
+                    bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
+                    ret = returnVal["success"].asBool();
+                }
+                return ret;
+            }
+            // Default implementation returns false, since it is based on
+            // the NDR308, which does not support tunable WBDDCs.
+            bool WbddcComponent::executeFreqCommand(int index, double& freq)
+            {
+                bool ret = false;
+                if ( (_parent != NULL) && (_parent->isConnected()) )
+                {
+                    Json::Value root(Json::objectValue);
+                    root["msg"] = m551Parent->getMessageId();
+                    root["cmd"] = "wbddc";
+                    Json::Value params(Json::objectValue);
+                    params["id"] = index;
+                    params["offset"] = freq;
+                    root["params"] = params;
+                    Json::FastWriter fastWriter;
+                    std::string output = fastWriter.write(root);
+                    LibCyberRadio::BasicStringList recv = _parent->sendCommand(output,1.0);
+                    Json::Reader reader;
+                    Json::Value returnVal; 
+                    std::string t = recv.at(0);
+                    bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
+                    ret = returnVal["success"].asBool();
+                }
+                return ret;
+            }
+
+            // Default implementation uses the NDR308 syntax.
+            // WBDDC <index>, <rate index>, <udp dest>, <enable>, <vita enable>, <stream id>
+            bool WbddcComponent::executeWbddcCommand(int index, int& rateIndex,
+                    int& udpDestination, bool& enabled, int& vitaEnable,
+                    unsigned int& streamId)
+            {
+                bool ret = false;
+                if ( (_parent != NULL) && (_parent->isConnected()) )
+                {
+                    Json::Value root(Json::objectValue);
+                    root["msg"] = m551Parent->getMessageId();
+                    root["cmd"] = "wbddc";
+                    Json::Value params(Json::objectValue);
+                    params["id"] = index;
+                    params["filter"] = rateIndex;
+                    params["dest"] = udpDestination;
+                    params["enable"] = enabled;
+                    params["vita"] = streamId;
+                    root["params"] = params;
+                    Json::FastWriter fastWriter;
+                    std::string output = fastWriter.write(root);
+                    LibCyberRadio::BasicStringList recv = _parent->sendCommand(output,1.0);
+                    Json::Reader reader;
+                    Json::Value returnVal; 
+                    std::string t = recv.at(0);
+                    bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
+                    ret = returnVal["success"].asBool();
+                }
+                return ret;
+            }
+
         } /* namespace NDR551 */
 
     } // namespace Driver
