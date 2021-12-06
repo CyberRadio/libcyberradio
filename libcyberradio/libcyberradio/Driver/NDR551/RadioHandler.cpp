@@ -9,7 +9,7 @@
  ***************************************************************************/
 
 #include "LibCyberRadio/Driver/NDR551/RadioHandler.h"
-//#include "LibCyberRadio/Driver/NDR551/DataPort.h"
+#include "LibCyberRadio/Driver/NDR551/DataPort.h"
 //#include "LibCyberRadio/Driver/NDR551/NbddcComponent.h"
 #include "LibCyberRadio/Driver/NDR551/TunerComponent.h"
 #include "LibCyberRadio/Driver/NDR551/VitaIfSpec.h"
@@ -126,6 +126,7 @@ namespace LibCyberRadio
                             /* RadioHandler* parent */ this,
                             /* bool debug */ _debug);
                 }
+#endif                
                 // Allocate data ports
                 for (int dataPort = _dataPortIndexBase;
                         dataPort < (_dataPortIndexBase + _numDataPorts); dataPort++)
@@ -135,8 +136,7 @@ namespace LibCyberRadio
                             /* RadioHandler* parent */ this,
                             /* bool debug */ _debug,
                     /* const std::string& sourceIP */ "0.0.0.0");
-                }
-#endif                
+                }                
             }
 
             RadioHandler::~RadioHandler()
@@ -175,6 +175,22 @@ namespace LibCyberRadio
                 ::LibCyberRadio::Driver::RadioHandler::sendCommand(output,1.0);
                 //::LibCyberRadio::Driver::RadioHandler::queryConfiguration();
                 this->debug("[NDR551::RadioHandler::queryConfiguration] Returning\n");
+
+                for ( TunerComponentDict::iterator it = _tuners.begin();
+                    it != _tuners.end(); it++)
+                {
+                    it->second->queryConfiguration();
+                }
+                for ( WbddcComponentDict::iterator it = _wbddcs.begin();
+                        it != _wbddcs.end(); it++)
+                {
+                    it->second->queryConfiguration();
+                }
+                for ( DataPortDict::iterator it = _dataPorts.begin();
+                        it != _dataPorts.end(); it++)
+                {
+                    it->second->queryConfiguration();   
+                }
             }
 
             bool RadioHandler::queryVersionInfo()
@@ -324,6 +340,15 @@ namespace LibCyberRadio
             bool RadioHandler::executeQueryHREV(std::string& hardwareInfo)
             {
                 return ::LibCyberRadio::Driver::RadioHandler::executeQueryHREV(hardwareInfo);
+            }
+
+            uint32_t RadioHandler::getMessageId( void )
+            {
+                auto time = std::chrono::system_clock::now();
+                auto now_sec = std::chrono::time_point_cast<std::chrono::seconds>(time);
+                auto epoch = now_sec.time_since_epoch();
+                auto v = std::chrono::duration_cast<std::chrono::seconds>(epoch);
+                return (uint32_t)v.count();
             }
 
         } /* namespace NDR551 */

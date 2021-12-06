@@ -86,6 +86,29 @@ namespace LibCyberRadio
                      * \returns A reference to the assigned object.
                      */
                     virtual WbddcComponent& operator=(const WbddcComponent& other);
+                    /**
+                     * \brief Setup Config Dict
+                     */
+                    void initConfigurationDict() override;
+                    /**
+                     * \brief Execute a JSON wbddc Query
+                     * \param index DDC index
+                     * \param rateIndex pointer to data to set.
+                     * \param udpDestination pointer to data to set.
+                     * \param enabled pointer to data to set.
+                     * \param vitaEnable pointer to data to set.
+                     * \param streamId pointer to data to set.
+                     * \returns True on success
+                     */
+                    bool executeWbddcQuery(int index, int& rateIndex,
+                        int& udpDestination, bool& enabled, int& vitaEnable,
+                        unsigned int& streamId);
+                    
+                    void queryConfiguration() override;
+
+                private:
+                    ::LibCyberRadio::Driver::RadioHandler* m551Parent;
+
 
             }; // class WbddcComponent
 

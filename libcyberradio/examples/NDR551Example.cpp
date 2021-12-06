@@ -99,6 +99,12 @@ class App : public LibCyberRadio::App
 
                 handler->setTunerFrequency(0, 1000e6);
 
+                //handler->queryConfiguration();
+
+                std::cout << handler->getDataPortSourceIP(0) << std::endl;
+
+                handler->setDataPortSourceIP(0, "10.1.10.100");
+
                 LibCyberRadio::Driver::WbddcRateSet rates =  handler->getWbddcRateSet();
 
                 for(auto it = rates.cbegin(); it != rates.cend(); ++it)

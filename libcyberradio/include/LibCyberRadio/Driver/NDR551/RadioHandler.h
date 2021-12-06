@@ -12,7 +12,7 @@
 #define INCLUDED_LIBCYBERRADIO_DRIVER_NDR551_RADIOHANDLER_H
 
 #include "LibCyberRadio/Driver/RadioHandler.h"
-
+#include <chrono>
 
 /**
  * \brief Provides programming elements for controlling CyberRadio Solutions products.
@@ -184,6 +184,10 @@ namespace LibCyberRadio
                     virtual RadioHandler& operator=(const RadioHandler& other);
                     // OVERRIDE
                     virtual void queryConfiguration();
+                    /**
+                     * \brief Returns a Time for the msg parameter
+                     */
+                    uint32_t getMessageId( void );
 
                 protected:
                     // OVERRIDE

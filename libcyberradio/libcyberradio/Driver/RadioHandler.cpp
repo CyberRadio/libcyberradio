@@ -20,7 +20,6 @@
 #include <ctime>
 #include <arpa/inet.h>
 
-
 namespace LibCyberRadio
 {
 
@@ -3413,6 +3412,11 @@ namespace LibCyberRadio
             ret = degs + mins / 60.0;
             ret = ret * sgn;
             return ret;
+        }
+
+        uint32_t RadioHandler::getMessageId( void )
+        {
+            return 0;
         }
 
     } /* namespace Driver */

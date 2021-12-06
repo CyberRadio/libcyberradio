@@ -80,6 +80,10 @@ namespace LibCyberRadio
                     virtual TunerComponent& operator=(const TunerComponent& other);
                                         
                     bool executeFreqCommand(int index, double& freq) override;
+                    void queryConfiguration();
+
+                    
+
                 protected:
                     void initConfigurationDict() override;
 

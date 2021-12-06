@@ -85,21 +85,45 @@ namespace LibCyberRadio
                     Json::Value command;
                     Json::Value params;
                     command["cmd"] = "tuner";
-                    command["msg"] = 1;
+                    command["msg"] = _parent->getMessageId();
                     command["params"] = Json::objectValue;
                     command["params"]["id"] = index;
                     command["params"]["freq"] = freq;
                     Json::FastWriter fastWriter;
                     std::string output = fastWriter.write(command);
                     BasicStringList rsp = _parent->sendCommand(output);
-                    //_parent->sendCommand(oss.str(), 2.0);
-                    //if ( _parent->getLastCommandErrorInfo() == "" )
-                    //{
-                    //    freq = (int)(freq / _freqUnits) * _freqUnits;
-                    //    ret = true;
-                    //}
+                    Json::Reader reader;
+                    Json::Value returnVal; 
+                    std::string t = rsp.at(0);
+                    bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
+                    ret = true;
+                    ///Json::Value result = returnVal["result"];
+                    //ret = boost::lexical_cast<bool>(result["success"]);
                 }
                 return ret;
+            }
+
+            void TunerComponent::queryConfiguration()
+            {
+                this->debug("[TunerComponent::queryConfiguration] Called\n");
+                Json::Value command;
+                Json::Value params;
+                command["cmd"] = "qtuner";
+                command["msg"] = _parent->getMessageId();
+                command["params"] = Json::objectValue;
+                command["params"]["id"] = _index;
+                Json::FastWriter fastWriter;
+                std::string output = fastWriter.write(command);
+                BasicStringList rsp = _parent->sendCommand(output);
+                Json::Reader reader;
+                Json::Value returnVal; 
+                std::string t = rsp.at(0);
+                bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
+                _enabled = boost::lexical_cast<bool>(returnVal["enable"].asBool());
+                _frequency = boost::lexical_cast<double>(returnVal["freq"].asDouble());
+                _attenuation = boost::lexical_cast<double>(returnVal["atten"].asDouble());
+                updateConfigurationDict();
+                this->debug("[NDR551] [TunerComponent::queryConfiguration] Returning\n");
             }
 
 
