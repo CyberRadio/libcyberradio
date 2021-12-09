@@ -150,3 +150,29 @@ INSTALL(TARGETS ${ndr551example_executable}
 INSTALL(FILES ${ndr551example_sources}
         DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
         )
+
+########################################################################
+# NDR551 Example
+#
+# NOTE: Only the source code is installed for this example. Building
+#    the example introduces a dependency on GNU Radio that we do not
+#    want, as nothing else in the library relies on it.
+#
+########################################################################
+LIST(APPEND ndr358example_sources
+NDR358Example.cpp)
+SET(ndr358example_executable NDR358Example)
+ADD_EXECUTABLE(${ndr358example_executable} ${ndr358example_sources})
+TARGET_LINK_LIBRARIES(${ndr358example_executable}
+                 cyberradio 
+                 gnuradio-digital
+                 )
+LINK_DIRECTORIES(
+${CMAKE_BINARY_DIR}/libcyberradio}
+)
+INSTALL(TARGETS ${ndr358example_executable}
+   RUNTIME DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
+   )
+INSTALL(FILES ${ndr358example_sources}
+   DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
+   )

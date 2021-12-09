@@ -81,7 +81,7 @@ class App : public LibCyberRadio::App
             int ret = 0;
             std::cout << "Connecting radio handler..." << std::endl;
             std::shared_ptr<LibCyberRadio::Driver::RadioHandler> handler =
-                    LibCyberRadio::Driver::getRadioObject("ndr551", _host,
+                    LibCyberRadio::Driver::getRadioObject("ndr358", _host,
                                                           -1, _verbose);
             if ( (handler != NULL) && handler->isConnected() )
             {
@@ -115,8 +115,14 @@ class App : public LibCyberRadio::App
                 handler->setWbddcRateIndex(0,40);
                 handler->enableWbddc(0, true);
                 handler->enableWbddc(0, false);
+                handler->setNbddcRateIndex(0,15);
+                handler->setNbddcUdpDestination(0, 0);
+                handler->setNbddcVitaEnable(0, true);
+
+                std::cout << "The NDR358 Has: " << handler->getNumTuner() << " Tuners" << std::endl;
                 dumpConfig(handler->getTunerConfiguration(0));
                 dumpConfig(handler->getWbddcConfiguration(0));
+                dumpConfig(handler->getNbddcConfiguration(0));
 
                 LibCyberRadio::Driver::WbddcRateSet rates =  handler->getWbddcRateSet();
 

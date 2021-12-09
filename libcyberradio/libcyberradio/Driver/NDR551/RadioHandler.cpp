@@ -10,7 +10,7 @@
 
 #include "LibCyberRadio/Driver/NDR551/RadioHandler.h"
 #include "LibCyberRadio/Driver/NDR551/DataPort.h"
-//#include "LibCyberRadio/Driver/NDR551/NbddcComponent.h"
+#include "LibCyberRadio/Driver/NDR551/NbddcComponent.h"
 #include "LibCyberRadio/Driver/NDR551/TunerComponent.h"
 #include "LibCyberRadio/Driver/NDR551/VitaIfSpec.h"
 #include "LibCyberRadio/Driver/NDR551/WbddcComponent.h"
@@ -91,7 +91,7 @@ namespace LibCyberRadio
                             /* int vitaEnable */ 0,
                             /* int streamId */ 0);
                 }
-#if 0                 
+               
                 // Allocate NBDDC components
                 for (int nbddc = _nbddcIndexBase;
                         nbddc < (_nbddcIndexBase + _numNbddc); nbddc++)
@@ -100,14 +100,15 @@ namespace LibCyberRadio
                             /* int index */ nbddc,
                             /* RadioHandler* parent */ this,
                             /* bool debug */ _debug,
-                            /* int dataPort */ 1,
+                            /* int dataPort */ (int)((nbddc & 0x10) >> 4),
                             /* int rateIndex */ 0,
                             /* int udpDestination */ 0,
                             /* int vitaEnable */ 0,
                             /* int streamId */ 0,
                             /* double frequency */ 0.0,
-                            /* int source */ 1);
+                            /* int source */ (int)((nbddc & 0x10) >> 4));
                 }
+#if 0                
                 // Allocate WBDDC group components
                 for (int group = _wbddcGroupIndexBase;
                         group < (_wbddcGroupIndexBase + _numWbddcGroups); group++)

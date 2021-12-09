@@ -66,7 +66,10 @@ LIST(APPEND libcyberradio_sources
        Driver/NDR551/VitaIfSpec.cpp
        Driver/NDR551/TunerComponent.cpp
        Driver/NDR551/WbddcComponent.cpp
+       Driver/NDR551/NbddcComponent.cpp
        Driver/NDR551/DataPort.cpp
+
+       Driver/NDR358/RadioHandler.cpp
        
        Driver/ConfigString.cpp
        Driver/Configurable.cpp
