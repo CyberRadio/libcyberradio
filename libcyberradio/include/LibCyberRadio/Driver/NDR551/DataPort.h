@@ -14,6 +14,7 @@
 #include "LibCyberRadio/Driver/DataPort.h"
 #include <jsoncpp/json/json.h>
 #include <boost/lexical_cast.hpp>
+#include <string>
 
 /**
  * \brief Provides programming elements for controlling CyberRadio Solutions products.
@@ -134,7 +135,7 @@ namespace LibCyberRadio
                             unsigned int& sourcePort,
                             unsigned int& destPort);
 
-                    std::__cxx11::string _sourceMacAddr;
+                    std::string _sourceMacAddr;
                     uint16_t _sourcePort;
 
             }; /* class DataPort */

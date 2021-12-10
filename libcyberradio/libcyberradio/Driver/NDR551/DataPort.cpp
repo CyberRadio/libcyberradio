@@ -80,8 +80,8 @@ namespace LibCyberRadio
                 Json::Value returnVal; 
                 std::string t = rsp.at(0);
                 bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
-                _sourceIP = boost::lexical_cast<std::__cxx11::string>(returnVal["result"]["ip"].asString());
-                _sourceMacAddr = boost::lexical_cast<std::__cxx11::string>(returnVal["result"]["mac"].asString());
+                _sourceIP = boost::lexical_cast<std::string>(returnVal["result"]["ip"].asString());
+                _sourceMacAddr = boost::lexical_cast<std::string>(returnVal["result"]["mac"].asString());
                 _sourcePort = boost::lexical_cast<uint16_t>(returnVal["result"]["port"].asUInt());
                 for(int i = _dipEntryIndexBase; i < _numDipEntries; i++ )
                 {
@@ -111,7 +111,7 @@ namespace LibCyberRadio
                 bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
                 ret = returnVal["success"].asBool();
                 if(ret){
-                    ipAddr = boost::lexical_cast<std::__cxx11::string>(returnVal["result"]["ip"].asString());
+                    ipAddr = boost::lexical_cast<std::string>(returnVal["result"]["ip"].asString());
                 } else {
                     ipAddr = "0.0.0.0";
                 }
@@ -170,8 +170,8 @@ namespace LibCyberRadio
                     ret = returnVal["success"].asBool();
                     if(ret)
                     {
-                        ipAddr = boost::lexical_cast<std::__cxx11::string>(returnVal["result"]["ip"].asString());
-                        macAddr = boost::lexical_cast<std::__cxx11::string>(returnVal["result"]["mac"].asString());
+                        ipAddr = boost::lexical_cast<std::string>(returnVal["result"]["ip"].asString());
+                        macAddr = boost::lexical_cast<std::string>(returnVal["result"]["mac"].asString());
                         //sourcePort = boost::lexical_cast<uint16_t>(returnVal["result"]["port"].asUInt());
                         sourcePort = 0;
                         destPort = boost::lexical_cast<uint16_t>(returnVal["result"]["port"].asUInt());
