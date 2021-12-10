@@ -139,7 +139,6 @@ SET(ndr551example_executable NDR551Example)
 ADD_EXECUTABLE(${ndr551example_executable} ${ndr551example_sources})
 TARGET_LINK_LIBRARIES(${ndr551example_executable}
                       cyberradio 
-                      gnuradio-digital
                       )
 LINK_DIRECTORIES(
     ${CMAKE_BINARY_DIR}/libcyberradio}
@@ -165,7 +164,6 @@ SET(ndr358example_executable NDR358Example)
 ADD_EXECUTABLE(${ndr358example_executable} ${ndr358example_sources})
 TARGET_LINK_LIBRARIES(${ndr358example_executable}
                  cyberradio 
-                 gnuradio-digital
                  )
 LINK_DIRECTORIES(
 ${CMAKE_BINARY_DIR}/libcyberradio}
