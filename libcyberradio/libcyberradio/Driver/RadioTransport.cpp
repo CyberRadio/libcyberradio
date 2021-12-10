@@ -530,7 +530,7 @@ namespace LibCyberRadio
                 this->debug("[receiveJsonUdp] Parsing JSON Error\n");
             }
             Json::FastWriter fastWriter;
-            std::__cxx11::string output = fastWriter.write(root);
+            std::string output = fastWriter.write(root);
             ret.push_back(output);
             return ret;
         }
