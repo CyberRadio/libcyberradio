@@ -1,3 +1,5 @@
+[![libcyberradio build](https://github.com/CyberRadio/libcyberradio/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/CyberRadio/libcyberradio/actions/workflows/c-cpp.yml)
+
 # libcyberradio Shared Library
 
 ### Description
