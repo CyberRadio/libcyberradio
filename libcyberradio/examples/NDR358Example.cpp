@@ -127,12 +127,19 @@ class App : public LibCyberRadio::App
                 dumpConfig(handler->getWbddcConfiguration(0));
                 dumpConfig(handler->getNbddcConfiguration(0));
 
-                LibCyberRadio::Driver::WbddcRateSet rates =  handler->getWbddcRateSet();
+                LibCyberRadio::Driver::WbddcRateSet wbddc_rates =  handler->getWbddcRateSet();
 
-                for(auto it = rates.cbegin(); it != rates.cend(); ++it)
+                LibCyberRadio::Driver::WbddcRateSet nbddc_rates =  handler->getNbddcRateSet();
+
+                for(auto it = wbddc_rates.cbegin(); it != wbddc_rates.cend(); ++it)
                 {
                     std::cout << "Filter Index: " << it->first << " -- Rate: " << it->second << "\n";
                 }
+                for(auto it = nbddc_rates.cbegin(); it != nbddc_rates.cend(); ++it)
+                {
+                    std::cout << "Filter Index: " << it->first << " -- Rate: " << it->second << "\n";
+                }
+
 
                 std::cout << "Disconnecting radio handler..." << std::endl;
                 handler->disconnect();

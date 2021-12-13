@@ -165,7 +165,7 @@ namespace LibCyberRadio
                     Json::Value result = returnVal["result"];
                     rateIndex = boost::lexical_cast<int>(result["filter"].asInt());
                     udpDestination = boost::lexical_cast<int>(result["dest"].asInt());
-                    enabled = boost::lexical_cast<int>(result["enable"].asBool());
+                    enabled = boost::lexical_cast<bool>(result["enable"].asBool());
                     vitaEnable = boost::lexical_cast<int>(result["enable"].asBool());
                     streamId = boost::lexical_cast<unsigned int>(result["vita"].asUInt());
                     
@@ -263,7 +263,7 @@ namespace LibCyberRadio
                     params["id"] = index;
                     params["filter"] = rateIndex;
                     params["dest"] = udpDestination;
-                    params["enable"] = vitaEnable;
+                    params["enable"] = boost::lexical_cast<bool>(vitaEnable);
                     params["vita"] = streamId;
                     params["rfch"] = std::to_string(source);
                     root["params"] = params;
