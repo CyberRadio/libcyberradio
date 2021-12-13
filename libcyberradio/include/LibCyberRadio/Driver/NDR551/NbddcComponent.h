@@ -123,6 +123,18 @@ namespace LibCyberRadio
                         double& frequency,
                         int& source) override;
                     void queryConfiguration() override;
+                    bool executeSourceCommand(int index, int& source) override;
+                    bool executeFreqCommand(int index, double& freq) override;
+                    bool executeNbddcCommand(int index,
+                                             int& rateIndex,
+                                             int& udpDestination,
+                                             bool& enabled,
+                                             int& vitaEnable,
+                                             unsigned int& streamId,
+                                             double& frequency,
+                                             int& source) override;
+
+
                 private:
                     LibCyberRadio::Driver::RadioHandler* m551Parent;
 

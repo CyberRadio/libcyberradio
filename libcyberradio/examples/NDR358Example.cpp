@@ -113,11 +113,14 @@ class App : public LibCyberRadio::App
                 handler->setWbddcSource(0, 1);
                 handler->setWbddcUdpDestination(0,0);
                 handler->setWbddcRateIndex(0,40);
-                handler->enableWbddc(0, true);
-                handler->enableWbddc(0, false);
+                handler->setWbddcVitaEnable(0, true);
+                handler->setWbddcVitaEnable(0, false);
                 handler->setNbddcRateIndex(0,15);
                 handler->setNbddcUdpDestination(0, 0);
                 handler->setNbddcVitaEnable(0, true);
+                handler->setNbddcVitaEnable(0, false);
+                handler->setNbddcSource(0, 0);
+                handler->setNbddcFrequency(0,1e6);
 
                 std::cout << "The NDR358 Has: " << handler->getNumTuner() << " Tuners" << std::endl;
                 dumpConfig(handler->getTunerConfiguration(0));

@@ -281,7 +281,7 @@ namespace LibCyberRadio
                     params["id"] = index;
                     params["filter"] = rateIndex;
                     params["dest"] = udpDestination;
-                    params["enable"] = enabled;
+                    params["enable"] = boost::lexical_cast<bool>(vitaEnable);
                     params["vita"] = streamId;
                     root["params"] = params;
                     Json::FastWriter fastWriter;

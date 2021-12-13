@@ -85,11 +85,14 @@ namespace LibCyberRadio
                             /* int index */ wbddc,
                             /* RadioHandler* parent */ this,
                             /* bool debug */ _debug,
-                            /* int dataPort */ 1,
-                            /* int rateIndex */ 0,
+                            /* int dataPort */ wbddc % 4,
+                            /* int rateIndex */ 40,
                             /* int udpDestination */ 0,
                             /* int vitaEnable */ 0,
                             /* int streamId */ 0);
+                    // The Radio comes up at 0...
+                    // set a sane number
+                    _wbddcs[wbddc]->setRateIndex(40);
                 }
                
                 // Allocate NBDDC components
@@ -348,7 +351,7 @@ namespace LibCyberRadio
                 auto time = std::chrono::system_clock::now();
                 auto now_sec = std::chrono::time_point_cast<std::chrono::seconds>(time);
                 auto epoch = now_sec.time_since_epoch();
-                auto v = std::chrono::duration_cast<std::chrono::seconds>(epoch);
+                auto v = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
                 return (uint32_t)v.count();
             }
 
