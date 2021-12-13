@@ -59,10 +59,11 @@ namespace LibCyberRadio
                         /* VitaIfSpec ifSpec */ NDR551::VitaIfSpec(),
                         /* bool debug */ debug)
             {
-                initConfigurationDict();
+                this->initConfigurationDict();
                 _connModesSupported.push_back("udp");
                 _defaultDeviceInfo = 19091;
                 _transport.setJson(true);
+                this->queryConfiguration();
                 
                 // Allocate tuner components
                 for (int tuner = _tunerIndexBase;
@@ -162,6 +163,15 @@ namespace LibCyberRadio
                 return *this;
             }
 
+            // Default implementation is the NDR308 pattern
+            void RadioHandler::initConfigurationDict()
+            {
+                //this->debug("[RadioHandler::initConfigurationDict] Called\n");
+                _config.clear();
+                _config["referenceMode"] = _referenceMode;
+                //this->debug("[RadioHandler::initConfigurationDict] Returning\n");
+            }
+
             void RadioHandler::queryConfiguration()
             {
                 this->debug("[NDR551::RadioHandler::queryConfiguration] Called\n");
@@ -170,14 +180,17 @@ namespace LibCyberRadio
                 // Call the base-class queryConfiguration() to retrieve identity info
                 // and query configuration for all components
                 Json::Value root(Json::objectValue);
-                root["msg"] = 1;
+                root["msg"] = this->getMessageId();
                 root["cmd"] = "qstatus";
                 Json::Value params(Json::objectValue);
                 root["params"] = params;
                 Json::FastWriter fastWriter;
                 std::string output = fastWriter.write(root);
                 ::LibCyberRadio::Driver::RadioHandler::sendCommand(output,1.0);
-                //::LibCyberRadio::Driver::RadioHandler::queryConfiguration();
+                if ( _config.hasKey("referenceMode") )
+                {
+                    this->executeReferenceModeQuery(_referenceMode);
+                }
                 this->debug("[NDR551::RadioHandler::queryConfiguration] Returning\n");
 
                 for ( TunerComponentDict::iterator it = _tuners.begin();
@@ -203,7 +216,7 @@ namespace LibCyberRadio
                 // First, call the base-class version
                 bool ret = true;
                 Json::Value root(Json::objectValue);
-                root["msg"] = 1;
+                root["msg"] = this->getMessageId();
                 root["cmd"] = "qstatus";
                 Json::Value params(Json::objectValue);
                 root["params"] = params;
@@ -354,6 +367,42 @@ namespace LibCyberRadio
                 auto v = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
                 return (uint32_t)v.count();
             }
+            bool RadioHandler::executeReferenceModeQuery(int& refMode)
+            {
+                this->debug("[NDR551::RadioHandler::queryVersionInfo] Called\n");
+                // First, call the base-class version
+                bool ret = true;
+                Json::Value root(Json::objectValue);
+                root["msg"] = this->getMessageId();
+                root["cmd"] = "qref";
+                Json::Value params(Json::objectValue);
+                root["params"] = params;
+                Json::FastWriter fastWriter;
+                std::string output = fastWriter.write(root);
+                LibCyberRadio::BasicStringList rsp = ::LibCyberRadio::Driver::RadioHandler::sendCommand(output,1.0);
+                Json::Reader reader;
+                Json::Value returnVal; 
+                std::string t = rsp.at(0);
+                printf("%s\n",t.c_str());
+                bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
+                refMode = boost::lexical_cast<int>(returnVal["cfg10m"].asInt());
+                return ret;
+            }
+
+            bool RadioHandler::executeReferenceModeCommand(int& refMode)
+            {
+                this->debug("[NDR551::RadioHandler::queryVersionInfo] Called\n");
+                // First, call the base-class version
+                bool ret = true;
+                Json::Value root(Json::objectValue);
+                root["msg"] = this->getMessageId();
+                root["cmd"] = "ref";
+                Json::Value params(Json::objectValue);
+                root["params"] = params;
+                Json::FastWriter fastWriter;
+                std::string output = fastWriter.write(root);
+            }
+
 
         } /* namespace NDR551 */
 

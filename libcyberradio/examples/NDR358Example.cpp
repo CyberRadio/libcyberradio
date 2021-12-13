@@ -103,6 +103,20 @@ class App : public LibCyberRadio::App
 
                 dumpConfig(handler->getConfiguration());
 
+                LibCyberRadio::BasicStringStringDict versionInfo = handler->getVersionInfo();
+                //for( LibCyberRadio::BasicStringStringDict::const_iterator it = versionInfo.begin(); it <= versionInfo.end(); ++it)
+                //{
+                //    std::cout << it->first <<std::endl;
+                //}
+                std::cout << "Serial Number : " << versionInfo["serialNumber"] << std::endl;
+                std::cout << "Model         : " << versionInfo["model"] << std::endl;
+                std::cout << "Software Ver  : " << versionInfo["softwareVersion"] << std::endl;
+                std::cout << "Firmware Ver  : " << versionInfo["firmwareVersion"] << std::endl;
+                std::cout << "Unit Revision : " << versionInfo["unitRevision"] << std::endl;
+                std::cout << "HW Revision   : " << versionInfo["hardwareVersion"] << std::endl;
+
+                //handler->setReferenceMode(1);
+
                 handler->setTunerFrequency(0, 1000e6);
                 handler->enableTuner(0, true);
                 handler->setDataPortSourceIP(0, "10.1.10.100");

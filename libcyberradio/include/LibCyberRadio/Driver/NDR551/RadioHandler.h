@@ -202,6 +202,19 @@ namespace LibCyberRadio
                             std::string& firmwareDate);
                     // OVERRIDE
                     virtual bool executeQueryHREV(std::string& hardwareInfo);
+                    /**
+                     * \brief Initializes the configuration dictionary, defining the allowed
+                     *    keys.
+                     *
+                     * Derived classes should use this method to define which settings
+                     *    are configurable through a configuration dictionary.
+                     *
+                     * \note Derived classes must also call this method explicitly in
+                     *    order to initialize their configuration dictionary.
+                     */
+                    virtual void initConfigurationDict();
+                    virtual bool executeReferenceModeQuery(int& refMode);
+                    virtual bool executeReferenceModeCommand(int& refMode);
 
 
             }; /* class RadioHandler */
