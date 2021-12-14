@@ -8,6 +8,7 @@
 
 #include "LibCyberRadio/Common/App.h"
 #include "LibCyberRadio/Driver/Driver.h"
+#include "LibCyberRadio/Common/VitaIqSource.h"
 #include <jsoncpp/json/json.h>
 #include <unistd.h>
 #include <iostream>
@@ -123,18 +124,20 @@ class App : public LibCyberRadio::App
                 handler->setDataPortDestMACAddress(0,0,"FF:FF:FF:FF:FF:FF");
                 handler->setDataPortDestIPAddress(0, 0, "10.1.10.1");
                 handler->setDataPortDestDestPort(0,0, 4991);
-                handler->setWbddcDataPort(0,1);
-                handler->setWbddcSource(0, 1);
+                handler->setWbddcRateIndex(0,40);
+                handler->setWbddcDataPort(0,0);
+                handler->setWbddcSource(0, 0);
                 handler->setWbddcUdpDestination(0,0);
                 handler->setWbddcRateIndex(0,40);
                 handler->setWbddcVitaEnable(0, true);
-                handler->setWbddcVitaEnable(0, false);
+                //handler->setWbddcVitaEnable(0, false);
                 handler->setNbddcRateIndex(0,15);
                 handler->setNbddcUdpDestination(0, 0);
-                handler->setNbddcVitaEnable(0, true);
-                handler->setNbddcVitaEnable(0, false);
+                
+                //handler->setNbddcVitaEnable(0, false);
                 handler->setNbddcSource(0, 0);
                 handler->setNbddcFrequency(0,1e6);
+                //handler->setNbddcVitaEnable(0, true);
 
                 std::cout << "The NDR358 Has: " << handler->getNumTuner() << " Tuners" << std::endl;
                 dumpConfig(handler->getTunerConfiguration(0));
@@ -153,16 +156,38 @@ class App : public LibCyberRadio::App
                 {
                     std::cout << "Filter Index: " << it->first << " -- Rate: " << it->second << "\n";
                 }
-
-
-                std::cout << "Disconnecting radio handler..." << std::endl;
-                handler->disconnect();
             }
             else
             {
                 std::cout << "-- Connect FAILED" << std::endl;
                 ret = 1;
             }
+            
+            /* Setup for Vita Recv */
+            LibCyberRadio::VitaIqSource *vitaSource = 
+                    new LibCyberRadio::VitaIqSource("NDR358IQ", 
+                            551, 
+                            handler->getVitaPayloadSize(), 
+                            handler->getVitaHeaderSize(),
+                            handler->getVitaTailSize(), 
+                            true, false, "0.0.0.0", 4991, _verbose);
+            LibCyberRadio::Vita49PacketVector packets;
+            int n_recv = 0;
+            n_recv += vitaSource->getPackets(1000, packets);
+            std::cout << "RX: " << n_recv << std::endl;
+
+            std::cout << packets.size() << std::endl;
+
+            for(auto it = packets.begin(); it < packets.end(); ++it)
+            {
+                std::cout << "Packet Counter: " << it->packetCount << std::endl;
+            }
+            handler->setNbddcVitaEnable(0, false);
+            handler->setWbddcVitaEnable(0, false);
+
+            std::cout << "Disconnecting radio handler..." << std::endl;
+            handler->disconnect();
+
             std::cout << "DONE" << std::endl;
             return ret;
         }

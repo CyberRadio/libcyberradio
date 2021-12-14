@@ -86,6 +86,7 @@ namespace LibCyberRadio
             timestampIntType = (int) ((rawDataWord(currentWord) & 0x00C00000) >> 22);
             timestampFracType = (int) ((rawDataWord(currentWord) & 0x00300000) >> 20);
             packetCount = (int) ((rawDataWord(currentWord) & 0x000F0000) >> 16);
+            std::cout << "Packet " << packetCount << std::endl;
             packetSize = (int) ((rawDataWord(currentWord) & 0x0000FFFF));
             currentWord++;
             streamId = rawDataWord(currentWord);
@@ -114,21 +115,21 @@ namespace LibCyberRadio
                 timestampFracTmp = timestampFracTmp << 32;
                 timestampFracTmp = timestampFracTmp + rawDataWord(currentWord + 1);
                 timestampFrac = timestampFracTmp;
-                std::cout << "TFRAC "
-                << " msw=" << rawDataWord(currentWord)
-                << " lsw=" << rawDataWord(currentWord + 1)
-                << " comb=" << timestampFrac
-                << std::endl;
+                // std::cout << "TFRAC "
+                // << " msw=" << rawDataWord(currentWord)
+                // << " lsw=" << rawDataWord(currentWord + 1)
+                // << " comb=" << timestampFrac
+                // << std::endl;
                 currentWord += 2;
             }
             //Skip context, for now
-            std::cout << "DDC Payload Header "
-            << " Word1=" << rawDataWord(currentWord)
-            << " Word2=" << rawDataWord(currentWord + 1)
-            << " Word3=" << rawDataWord(currentWord + 2)
-            << " Word4=" << rawDataWord(currentWord + 3)
-            << " Word5=" << rawDataWord(currentWord + 4)
-            << std::endl;
+            // std::cout << "DDC Payload Header "
+            // << " Word1=" << rawDataWord(currentWord)
+            // << " Word2=" << rawDataWord(currentWord + 1)
+            // << " Word3=" << rawDataWord(currentWord + 2)
+            // << " Word4=" << rawDataWord(currentWord + 3)
+            // << " Word5=" << rawDataWord(currentWord + 4)
+            // << std::endl;
             source = (int) ((rawDataWord(currentWord) & 0xF0000000) >> 28);
             tunerBw = (int) ((rawDataWord(currentWord) & 0x03000000) >> 24);
             atten = (int) ((rawDataWord(currentWord) & 0x003F0000) >> 16);
@@ -140,18 +141,18 @@ namespace LibCyberRadio
             agcGain = (int) ((rawDataWord(currentWord + 4) & 0x0FFF0000) >> 16);
             validDataCount = (int) (rawDataWord(currentWord + 4) & 0x000007FF);
 
-            std::cout << "DDC Payload Header Values"
-            << " source =" << source
-            << " TunerBw =" << tunerBw
-            << " atten =" << atten
-            << " TunedFreq =" << tunedFreq
-            << " ddcFreqOffset =" << ddcFreqOffset
-            << " filter =" << filter
-            << " demod =" << demod
-            << " ovs =" << ovs
-            << " agcGain =" << agcGain
-            << " validDataCount =" << validDataCount
-            << std::endl;
+            // std::cout << "DDC Payload Header Values"
+            // << " source =" << source
+            // << " TunerBw =" << tunerBw
+            // << " atten =" << atten
+            // << " TunedFreq =" << tunedFreq
+            // << " ddcFreqOffset =" << ddcFreqOffset
+            // << " filter =" << filter
+            // << " demod =" << demod
+            // << " ovs =" << ovs
+            // << " agcGain =" << agcGain
+            // << " validDataCount =" << validDataCount
+            // << std::endl;
 
             currentWord += 5;
         } else if (vitaType > 0)
