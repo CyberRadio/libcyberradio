@@ -86,7 +86,6 @@ namespace LibCyberRadio
             timestampIntType = (int) ((rawDataWord(currentWord) & 0x00C00000) >> 22);
             timestampFracType = (int) ((rawDataWord(currentWord) & 0x00300000) >> 20);
             packetCount = (int) ((rawDataWord(currentWord) & 0x000F0000) >> 16);
-            std::cout << "Packet " << packetCount << std::endl;
             packetSize = (int) ((rawDataWord(currentWord) & 0x0000FFFF));
             currentWord++;
             streamId = rawDataWord(currentWord);
