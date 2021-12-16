@@ -21,7 +21,7 @@
 /**
  * Debug time format.  This is a time format string compatible with strftime().
  */
-#define DEBUG_TIME_FMT "%Y-%m-%d %H:%M:%S"
+#define DEBUG_TIME_FMT "%H:%M:%S"
 
 
 /*!
@@ -150,6 +150,7 @@ namespace LibCyberRadio
             std::string _debugName;
             FILE* _debugFp;
             std::string _debugTimeFmt;
+            char* _debugTimestamp;
             size_t _debugTimestampSize;
     };
 

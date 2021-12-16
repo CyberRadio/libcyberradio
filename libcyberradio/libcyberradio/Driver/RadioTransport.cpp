@@ -94,6 +94,13 @@ namespace LibCyberRadio
             return *this;
         }
 
+        void RadioTransport::setJson( bool json )
+        {
+            this->debug("[setJson] %s\n", json);
+            _isJson = json;
+        }
+
+
         bool RadioTransport::connect(
                 const std::string &mode,
                 const std::string &host_or_dev,
@@ -256,7 +263,34 @@ namespace LibCyberRadio
                 int port
             )
         {
-            bool ret = false;
+            this->debug("[connectUdp] Called; host=\"%s\", port=%d\n", host.c_str(), port);
+            
+            _udpSocket = socket(AF_INET, SOCK_DGRAM, 0);
+            this->debug("[connectUdp] Socket created; FD=%d\n", _udpSocket);
+            if (_udpSocket > 0)
+            {
+                struct hostent *hent = gethostbyname(host.c_str());
+                char buf[128];
+                memset(buf, 0, sizeof(buf));
+                inet_ntop(AF_INET, hent->h_addr_list[0], buf, sizeof(buf));
+                this->debug("[connectUdp] Host IP address: %s\n", buf);
+                struct sockaddr_in addr;
+                memset(&addr, 0, sizeof(struct sockaddr_in));
+                addr.sin_family = AF_INET;
+                memcpy(&(addr.sin_addr.s_addr), hent->h_addr_list[0], hent->h_length);
+                addr.sin_port = htons(port);
+                this->debug("[connectUdp] Connecting\n");
+                int ok = ::connect(_udpSocket, (const sockaddr*)&addr, sizeof(struct sockaddr_in));
+                this->debug("[connectUdp] -- ok = %d\n", ok);
+                if (ok != 0)
+                    _udpSocket = 0;
+            }
+            if (_udpSocket <= 0)
+            {
+                _udpSocket = 0;
+                translateErrno();
+            }
+            bool ret = (_udpSocket > 0);
             return ret;
         }
 
@@ -371,6 +405,20 @@ namespace LibCyberRadio
                 bool clearRx
             )
         {
+           this->debug("[sendCommandUdp] Called; cmd=%s\n",
+                    this->rawString(cmdString).c_str());
+            bool ret = false;
+            int bytes = send(_udpSocket, cmdString.c_str(), cmdString.length(), 0);
+            this->debug("[sendCommandUdp] -- Bytes sent: %d\n", bytes);
+            if (bytes > 0)
+            {
+                ret = true;
+            }
+            else
+            {
+                translateErrno();
+            }
+            return ret;
         }
 
         bool RadioTransport::sendCommandHttps(
@@ -445,10 +493,48 @@ namespace LibCyberRadio
             )
         {
             std::deque<std::string> ret;
-            if (_httpsSession != NULL)
+            if (_httpsSession != NULL) {
                 ret = receiveJsonHttps(timeout);
+            } else {
+                ret = receiveJsonUdp(timeout);
+            }
             return ret;
         }
+
+        BasicStringList RadioTransport::receiveJsonUdp(
+                double timeout
+            )
+        {
+            this->debug("[receiveJsonUdp] Called; timeout=%0.1f\n", timeout);
+            BasicStringList ret;
+            std::ostringstream oss;
+            fd_set ins;
+            struct timeval tv;
+            tv.tv_sec = (long)timeout;
+            tv.tv_usec = (long)(1000000 * (timeout - (long)timeout));
+
+            char buf[1024];
+            // data available
+            memset(buf, 0, sizeof(buf));
+            recv(_udpSocket, buf, sizeof(buf), 0);
+            this->debug("[receiveJsonUdp] Received chunk: \"%s\"\n", buf);
+            oss << buf;
+            this->debug("[receiveJsonUdp] Received: \"%s\"\n",
+                    this->rawString(oss.str()).c_str());
+            Json::Reader reader;
+            Json::Value root; 
+            std::string t = buf;
+            bool parsingSuccessful = reader.parse( t.c_str(), root );     //parse process
+            if ( !parsingSuccessful )
+            {
+                this->debug("[receiveJsonUdp] Parsing JSON Error\n");
+            }
+            Json::FastWriter fastWriter;
+            std::string output = fastWriter.write(root);
+            ret.push_back(output);
+            return ret;
+        }
+
 
         BasicStringList RadioTransport::receiveJsonHttps(
                 double timeout
@@ -593,7 +679,7 @@ namespace LibCyberRadio
         {
             char buf[256];
             memset(buf, 0, sizeof(buf));
-            strerror_r(errno, buf, sizeof(buf));
+            this->debug(strerror_r(errno, buf, sizeof(buf)));
             _lastCmdErrInfo = buf;
         }
 

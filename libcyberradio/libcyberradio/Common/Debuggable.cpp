@@ -35,12 +35,15 @@ namespace LibCyberRadio
         _debugName(debug_name),
         _debugFp(debug_fp),
         _debugTimeFmt(debug_timefmt),
+        _debugTimestamp(NULL),
         _debugTimestampSize(80)
     {
+        _debugTimestamp = new char[_debugTimestampSize];
     }
 
     Debuggable::~Debuggable()
     {
+        delete _debugTimestamp;
     }
 
     Debuggable::Debuggable(const Debuggable& other) :
@@ -48,6 +51,7 @@ namespace LibCyberRadio
         _debugName(other._debugName),
         _debugFp(other._debugFp),
         _debugTimeFmt(other._debugTimeFmt),
+        _debugTimestamp(other._debugTimestamp),
         _debugTimestampSize(other._debugTimestampSize)
     {
     }
@@ -61,6 +65,7 @@ namespace LibCyberRadio
             _debugName = other._debugName;
             _debugFp = other._debugFp;
             _debugTimeFmt = other._debugTimeFmt;
+            _debugTimestamp = other._debugTimestamp;
             _debugTimestampSize = other._debugTimestampSize;
         }
         return *this;
@@ -98,13 +103,12 @@ namespace LibCyberRadio
             if (_debugTimeFmt.length() > 0)
             {
                 time_t now = time(NULL);
-                char debugTimestamp[_debugTimestampSize];
-                memset(debugTimestamp, 0, _debugTimestampSize);
-                strftime(debugTimestamp,
+                memset(_debugTimestamp, 0, _debugTimestampSize);
+                strftime(_debugTimestamp,
                         _debugTimestampSize,
                         _debugTimeFmt.c_str(),
                         localtime(&now));
-                ret += fprintf(_debugFp, "[%s]", debugTimestamp);
+                ret += fprintf(_debugFp, "[%s]", _debugTimestamp);
             }
             if (_debugName.length() > 0)
                 ret += fprintf(_debugFp, "[%s] ", _debugName.c_str());

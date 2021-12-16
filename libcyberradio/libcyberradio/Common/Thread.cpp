@@ -64,7 +64,9 @@ namespace LibCyberRadio
 
     void Thread::sleep(double secs)
     {
-        boost::this_thread::sleep_for(boost::chrono::microseconds((int)(secs * 1000000)));
+        uint64_t u_ms = (uint64_t)secs * 1000;
+        boost::chrono::microseconds ms(u_ms);
+        boost::this_thread::sleep_for(boost::chrono::microseconds(ms));
     }
 
     bool Thread::isRunning() const

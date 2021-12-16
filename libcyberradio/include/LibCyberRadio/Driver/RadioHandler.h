@@ -1789,6 +1789,10 @@ namespace LibCyberRadio
                  * \returns Default device info [integer]
                  */
                 virtual int getDefaultDeviceInfo() const;
+                /**
+                 * \brief Get a json Message ID
+                 */
+                virtual uint32_t getMessageId( void );
 
             protected:
                 /**
@@ -1943,6 +1947,7 @@ namespace LibCyberRadio
                 virtual bool executeCalibFrequencyCommand(double& freq);
                 // Converts an NMEA 0183-formatted coordinate string to decimal degrees.
                 virtual double getDecimalDegreesFromNmea(const std::string& coord);
+                
 
 
             protected:
