@@ -403,7 +403,6 @@ namespace LibCyberRadio
                 std::string output = fastWriter.write(root);
             }
 
-
         } /* namespace NDR551 */
 
     } /* namespace Driver */

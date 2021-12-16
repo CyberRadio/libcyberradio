@@ -81,12 +81,16 @@ namespace LibCyberRadio
                                         
                     bool executeFreqCommand(int index, double& freq) override;
                     void queryConfiguration();
+                    bool executeCommand( void );
                     bool executeEnableCommand(int index, bool& enabled) override;
                     bool executeAttenCommand(int index, double& atten) override;
-                    
+                    void updateConfigurationDict() override;
+                    bool setConfiguration(ConfigurationDict& cfg) override;
 
                 protected:
                     void initConfigurationDict() override;
+                    unsigned int _if;
+                    std::string _mode;
 
 
             }; /* class TunerComponent */

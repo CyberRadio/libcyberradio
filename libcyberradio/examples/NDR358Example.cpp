@@ -178,10 +178,10 @@ class App : public LibCyberRadio::App
 
             std::cout << packets.size() << std::endl;
 
-            for(auto it = packets.begin(); it < packets.end(); ++it)
-            {
-                std::cout << "Packet Counter: " << it->packetCount << std::endl;
-            }
+            //for(auto it = packets.begin(); it < packets.end(); ++it)
+            //{
+            //    std::cout << "Packet Counter: " << it->packetCount << std::endl;
+            //}
             handler->setNbddcVitaEnable(0, false);
             handler->setWbddcVitaEnable(0, false);
 

@@ -105,7 +105,34 @@ namespace LibCyberRadio
                 _config["streamId"] = "";
                 _config["frequency"] = "";
                 _config["source"] = "";
+                _config["mode"] = "";
                 //this->debug("[NbddcComponent::initConfigurationDict] Returning\n");
+            }
+
+            void NbddcComponent::updateConfigurationDict()
+            {
+                this->debug("[NbddcComponent::updateConfigurationDict] Called\n");
+                RadioComponent::updateConfigurationDict();
+                if ( _config.hasKey("rateIndex") )
+                    setConfigurationValueToInt("rateIndex", _rateIndex);
+                if ( _config.hasKey("udpDestination") )
+                    setConfigurationValueToInt("udpDestination", _udpDestination);
+                if ( _config.hasKey("vitaEnable") )
+                    setConfigurationValueToInt("vitaEnable", _vitaEnable);
+                if ( _config.hasKey("streamId") )
+                    setConfigurationValueToUInt("streamId", _streamId);
+                if ( _config.hasKey("frequency") )
+                    setConfigurationValueToDbl("frequency", _frequency);
+                if ( _config.hasKey("source") )
+                    setConfigurationValueToInt("source", _source);
+                if ( _config.hasKey("mode") ){
+                    setConfigurationValue("mode", _mode);
+                }
+                if ( _selectableDataPort && _config.hasKey("dataPort") )
+                {
+                    setConfigurationValueToInt("dataPort", _dataPort);
+                }
+                this->debug("[NbddcComponent::updateConfigurationDict] Returning\n");
             }
 
             void NbddcComponent::queryConfiguration()
@@ -130,6 +157,7 @@ namespace LibCyberRadio
                 _udpDestination = boost::lexical_cast<int>(returnVal["dest"].asInt());
                 _rateIndex = boost::lexical_cast<int>(returnVal["filter"].asInt());
                 _streamId = boost::lexical_cast<int>(returnVal["vita"].asUInt());
+                _mode = boost::lexical_cast<std::string>(returnVal["mode"].asString());
                 updateConfigurationDict();
                 this->debug("[NbddcComponent::queryConfiguration] Returning\n");
             }
@@ -157,7 +185,6 @@ namespace LibCyberRadio
                     Json::FastWriter fastWriter;
                     std::string output = fastWriter.write(root);
                     LibCyberRadio::BasicStringList recv = _parent->sendCommand(output,1.0);
-                    //this->debug("DATA RETURNED ----- %s\n", recv.at(0));
                     Json::Reader reader;
                     Json::Value returnVal; 
                     std::string t = recv.at(0);
@@ -168,24 +195,6 @@ namespace LibCyberRadio
                     enabled = boost::lexical_cast<bool>(result["enable"].asBool());
                     vitaEnable = boost::lexical_cast<int>(result["enable"].asBool());
                     streamId = boost::lexical_cast<unsigned int>(result["vita"].asUInt());
-                    
-                    //std::ostringstream oss;
-                    //oss << "WBDDC? " << index << "\n";
-                    //BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
-                    //if ( _parent->getLastCommandErrorInfo() == "" )
-                    //{
-                    //    BasicStringList vec = Pythonesque::Split(
-                    //            Pythonesque::Replace(rsp.front(), "WBDDC ", ""),
-                    //            ", ");
-                    //    // vec[0] = Index
-                    //    // vec[1] = Rate index
-                    //    rateIndex = boost::lexical_cast<int>(vec[1]);
-                    //    udpDestination = boost::lexical_cast<int>(vec[2]);
-                    //    enabled = (boost::lexical_cast<int>(vec[3]) == 1);
-                    //    vitaEnable = boost::lexical_cast<int>(vec[4]);
-                    //    streamId = boost::lexical_cast<unsigned int>(vec[5]);
-                    //    ret = true;
-                    //}
                 }
                 return ret;
             }

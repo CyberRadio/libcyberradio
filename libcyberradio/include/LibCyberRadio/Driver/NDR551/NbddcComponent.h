@@ -133,7 +133,9 @@ namespace LibCyberRadio
                                              unsigned int& streamId,
                                              double& frequency,
                                              int& source) override;
-
+                    void updateConfigurationDict() override;
+                protected:
+                    std::string _mode;
 
                 private:
                     LibCyberRadio::Driver::RadioHandler* m551Parent;
