@@ -157,7 +157,6 @@ namespace LibCyberRadio
                     Json::FastWriter fastWriter;
                     std::string output = fastWriter.write(root);
                     LibCyberRadio::BasicStringList recv = _parent->sendCommand(output,1.0);
-                    this->debug("DATA RETURNED ----- %s\n", recv.at(0));
                     Json::Reader reader;
                     Json::Value returnVal; 
                     std::string t = recv.at(0);
@@ -168,24 +167,6 @@ namespace LibCyberRadio
                     enabled = boost::lexical_cast<int>(result["enable"].asBool());
                     vitaEnable = boost::lexical_cast<int>(result["enable"].asBool());
                     streamId = boost::lexical_cast<unsigned int>(result["vita"].asUInt());
-                    
-                    //std::ostringstream oss;
-                    //oss << "WBDDC? " << index << "\n";
-                    //BasicStringList rsp = _parent->sendCommand(oss.str(), 2.0);
-                    //if ( _parent->getLastCommandErrorInfo() == "" )
-                    //{
-                    //    BasicStringList vec = Pythonesque::Split(
-                    //            Pythonesque::Replace(rsp.front(), "WBDDC ", ""),
-                    //            ", ");
-                    //    // vec[0] = Index
-                    //    // vec[1] = Rate index
-                    //    rateIndex = boost::lexical_cast<int>(vec[1]);
-                    //    udpDestination = boost::lexical_cast<int>(vec[2]);
-                    //    enabled = (boost::lexical_cast<int>(vec[3]) == 1);
-                    //    vitaEnable = boost::lexical_cast<int>(vec[4]);
-                    //    streamId = boost::lexical_cast<unsigned int>(vec[5]);
-                    //    ret = true;
-                    //}
                 }
                 return ret;
             }
