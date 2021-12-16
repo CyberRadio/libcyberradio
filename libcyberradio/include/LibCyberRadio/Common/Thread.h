@@ -12,6 +12,7 @@
 #define INCLUDED_LIBCYBERRADIO_THREAD_H
 
 #include <boost/thread.hpp>
+#include <boost/chrono.hpp>
 #include <string>
 
 /*!
