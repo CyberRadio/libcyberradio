@@ -46,6 +46,34 @@ if(DEFINED PACKAGE_VERSION)
     #message(STATUS "* VERSION_INFO_MAINT_VERSION=${VERSION_INFO_MAINT_VERSION}")
 endif(DEFINED PACKAGE_VERSION)
 
+function(get_linux_lsb_release_information)
+    SET(GREP_ARGS PRETTY_NAME /etc/os-release)
+    execute_process(COMMAND grep ${GREP_ARGS} OUTPUT_VARIABLE OS_NAME OUTPUT_STRIP_TRAILING_WHITESPACE)
+    set(OS_NAME "${OS_NAME}" PARENT_SCOPE)
+endfunction()
+
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    get_linux_lsb_release_information()
+    message(STATUS "Linux: ${OS_NAME}")
+endif()
+
+SET(BOOST_MIN_VERSION "1.65.1" CACHE STRING "boost min version" FORCE)
+if(OS_NAME MATCHES ".Ubuntu")
+    if(OS_NAME MATCHES ".Ubuntu.16.04")
+        SET(BOOST_MIN_VERSION "1.60" CACHE STRING "boost min version" FORCE)
+        message(STATUS "Detected Ubuntu 16.04, setting BOOST_MIN_VERSION: ${BOOST_MIN_VERSION}")
+    elseif( OS_NAME MATCHES ".Ubuntu.18.04" )
+        SET(BOOST_MIN_VERSION "1.65.1" CACHE STRING "boost min version" FORCE)
+        message(STATUS "Detected Ubuntu 18.04, setting BOOST_MIN_VERSION: ${BOOST_MIN_VERSION}")
+    endif()
+elseif(OS_NAME MATCHES ".CentOS")
+    SET(BOOST_MIN_VERSION "1.53" CACHE STRING "boost min version" FORCE)
+    message(STATUS "Detected Centos 7, setting BOOST_MIN_VERSION: ${BOOST_MIN_VERSION}")
+elseif(OS_NAME MATCHES ".Fedora")
+    SET(BOOST_MIN_VERSION "1.65.1" CACHE STRING "boost min version" FORCE)
+    message(STATUS "Detected Fedora 28, setting BOOST_MIN_VERSION: ${BOOST_MIN_VERSION}")
+endif()
+
 ########################################################################
 # Find Required Packages
 ########################################################################
@@ -70,7 +98,8 @@ SET(Boost_ADDITIONAL_VERSIONS
     "1.62.0" "1.62" "1.63.0" "1.63" "1.64.0" "1.64" "1.65" "1.65.1" "1.66.0" "1.66" 
     "1.67.0" "1.67" "1.68.0" "1.68" "1.69.0" "1.69" "1.71.0" "1.71"
 )
-FIND_PACKAGE(Boost "1.65.1" COMPONENTS filesystem system thread chrono)
+message("Looking for boost minimum: ${BOOST_MIN_VERSION}")
+FIND_PACKAGE(Boost ${BOOST_MIN_VERSION} COMPONENTS filesystem system thread chrono)
 IF(NOT Boost_FOUND)
     MESSAGE(FATAL_ERROR "Boost required to build ${PROJECT_NAME}")
 ENDIF()
