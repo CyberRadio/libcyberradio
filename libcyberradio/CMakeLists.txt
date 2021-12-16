@@ -46,6 +46,31 @@ if(DEFINED PACKAGE_VERSION)
     #message(STATUS "* VERSION_INFO_MAINT_VERSION=${VERSION_INFO_MAINT_VERSION}")
 endif(DEFINED PACKAGE_VERSION)
 
+function(get_linux_lsb_release_information)
+    find_program(LSB_RELEASE_EXEC lsb_release)
+    if(NOT LSB_RELEASE_EXEC)
+        message(FATAL_ERROR "Could not detect lsb_release executable, can not gather required information")
+    endif()
+
+    execute_process(COMMAND "${LSB_RELEASE_EXEC}" --short --id OUTPUT_VARIABLE LSB_RELEASE_ID_SHORT OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(COMMAND "${LSB_RELEASE_EXEC}" --short --release OUTPUT_VARIABLE LSB_RELEASE_VERSION_SHORT OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(COMMAND "${LSB_RELEASE_EXEC}" --short --codename OUTPUT_VARIABLE LSB_RELEASE_CODENAME_SHORT OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+    set(LSB_RELEASE_ID_SHORT "${LSB_RELEASE_ID_SHORT}" PARENT_SCOPE)
+    set(LSB_RELEASE_VERSION_SHORT "${LSB_RELEASE_VERSION_SHORT}" PARENT_SCOPE)
+    set(LSB_RELEASE_CODENAME_SHORT "${LSB_RELEASE_CODENAME_SHORT}" PARENT_SCOPE)
+endfunction()
+
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    get_linux_lsb_release_information()
+    message(STATUS "Linux ${LSB_RELEASE_ID_SHORT} ${LSB_RELEASE_VERSION_SHORT} ${LSB_RELEASE_CODENAME_SHORT}")
+endif()
+
+SET(BOOST_MIN_VERSION "1.65.1" CACHE STRING "boost min version" FORCE)
+if(LSB_RELEASE_VERSION_SHORT MATCHES "16.04")
+    SET(BOOST_MIN_VERSION "1.65" CACHE STRING FORCE)
+endif()
+
 ########################################################################
 # Find Required Packages
 ########################################################################
@@ -70,7 +95,8 @@ SET(Boost_ADDITIONAL_VERSIONS
     "1.62.0" "1.62" "1.63.0" "1.63" "1.64.0" "1.64" "1.65" "1.65.1" "1.66.0" "1.66" 
     "1.67.0" "1.67" "1.68.0" "1.68" "1.69.0" "1.69" "1.71.0" "1.71"
 )
-FIND_PACKAGE(Boost "1.65.1" COMPONENTS filesystem system thread chrono)
+message("Looking for boost minimum: ${BOOST_MIN_VERSION}")
+FIND_PACKAGE(Boost ${BOOST_MIN_VERSION} COMPONENTS filesystem system thread chrono)
 IF(NOT Boost_FOUND)
     MESSAGE(FATAL_ERROR "Boost required to build ${PROJECT_NAME}")
 ENDIF()
