@@ -88,6 +88,7 @@ LIST(APPEND libcyberradio_sources
        Driver/VitaIfSpec.cpp
        Driver/WbddcComponent.cpp
        Driver/WbddcGroupComponent.cpp
+
        NDR651/ClientSocket.cpp
        NDR651/DUCSink.cpp
        NDR651/FlowControlClient.cpp
