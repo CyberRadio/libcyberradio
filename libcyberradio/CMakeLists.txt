@@ -7,7 +7,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 # NOTE: Update this default package version string when there is a 
 #    new library release!
 IF("${PACKAGE_VERSION}" STREQUAL "")
-   SET(PACKAGE_VERSION "21.12.02"
+   SET(PACKAGE_VERSION "22.01.06"
        CACHE STRING "Package version number" FORCE)
 ENDIF("${PACKAGE_VERSION}" STREQUAL "")
 
