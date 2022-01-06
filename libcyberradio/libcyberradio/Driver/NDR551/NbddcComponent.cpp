@@ -99,13 +99,33 @@ namespace LibCyberRadio
                 // Call the base-class version
                 RadioComponent::initConfigurationDict();
                 // Define tuner-specific keys
-                _config["rateIndex"] = "";
-                _config["udpDestination"] = "";
-                _config["vitaEnable"] = "";
-                _config["streamId"] = "";
-                _config["frequency"] = "";
-                _config["source"] = "";
-                _config["mode"] = "";
+                _config["rateIndex"] = _rateIndex;
+                _config["udpDestination"] = _udpDestination;
+                _config["vitaEnable"] = _vitaEnable;
+                _config["streamId"] = _streamId;
+                _config["frequency"] = _frequency;
+                _config["source"] = _source;
+                _config["mode"] = _mode;
+                _config["audio"  ] = false;
+                _config["bfo"    ] = 0;
+                _config["cic0"   ] = 0;
+                _config["cic1"   ] = 0;
+                _config["dal"    ] = 0;
+                _config["dao"    ] = 0;
+                _config["dat"    ] = 0;
+                _config["datc"   ] = 0;
+                _config["ddl"    ] = 0;
+                _config["ddo"    ] = 0;
+                _config["ddt"    ] = 0;
+                _config["ddtc"   ] = 0;
+                _config["demod"  ] = "none";
+                _config["dest"   ] = 0;
+                _config["dgv"    ] = 0;
+                _config["dll"    ] = 0;
+                _config["dmdgain"] = 0;
+                _config["dtl"    ] = 0;
+                _config["dul"    ] = 0;
+                _config["ovs"    ] = 0;
                 //this->debug("[NbddcComponent::initConfigurationDict] Returning\n");
             }
 
@@ -150,7 +170,7 @@ namespace LibCyberRadio
                 Json::Reader reader;
                 Json::Value returnVal; 
                 std::string t = rsp.at(0);
-                bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
+                bool parsingSuccessful = reader.parse( t.c_str(), returnVal["result"] );     //parse process
                 _enabled = boost::lexical_cast<bool>(returnVal["enable"].asBool());
                 _frequency = boost::lexical_cast<double>(returnVal["freq"].asDouble());
                 _source = boost::lexical_cast<int>(returnVal["source"].asInt());
@@ -158,8 +178,6 @@ namespace LibCyberRadio
                 _rateIndex = boost::lexical_cast<int>(returnVal["filter"].asInt());
                 _streamId = boost::lexical_cast<int>(returnVal["vita"].asUInt());
                 _mode = boost::lexical_cast<std::string>(returnVal["mode"].asString());
-                updateConfigurationDict();
-                this->debug("[NbddcComponent::queryConfiguration] Returning\n");
             }
 
             // Default implementation uses the NDR308 syntax.
