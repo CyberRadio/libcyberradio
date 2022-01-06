@@ -105,15 +105,12 @@ namespace LibCyberRadio
                         unsigned int& streamId);
                     
                     void queryConfiguration() override;
-<<<<<<< HEAD
-=======
                     /**
                      * \brief Sets the configuration dictionary for this component.
                      * \param cfg The component configuration dictionary.
                      * \returns True if successful, false otherwise.
                      */
                     virtual bool setConfiguration(ConfigurationDict& cfg) override;
->>>>>>> origin/master
 
                     bool executeDataPortCommand(int index, int& dataPort) override;
                     bool executeSourceCommand(int index, int& source) override;
@@ -124,9 +121,6 @@ namespace LibCyberRadio
 
                 private:
                     ::LibCyberRadio::Driver::RadioHandler* m551Parent;
-<<<<<<< HEAD
-
-=======
                 protected:
                     /**
                      * \brief Updates the configuration dictionary from component settings.
@@ -149,7 +143,6 @@ namespace LibCyberRadio
                     int32_t  _dat;
                     int32_t  _ddt;
                     std::string _mode;
->>>>>>> origin/master
 
             }; // class WbddcComponent
 

@@ -305,6 +305,10 @@ namespace LibCyberRadio
             ** \param index The DDC index
             */
             bool WbddcComponent::executeWbddcQuery(int index, int& rateIndex,
+                    int& udpDestination, bool& enabled, int& vitaEnable,
+                    unsigned int& streamId)
+            {
+                bool ret = false;
                 if ( (_parent != NULL) && (_parent->isConnected()) )
                 {
                     Json::Value root(Json::objectValue);

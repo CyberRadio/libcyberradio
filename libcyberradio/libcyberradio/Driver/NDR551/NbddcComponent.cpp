@@ -185,6 +185,7 @@ namespace LibCyberRadio
             bool NbddcComponent::executeNbddcQuery(int index,
                         int& rateIndex,
                         int& udpDestination,
+                        bool& enabled,
                         int& vitaEnable,
                         unsigned int& streamId,
                         double& frequency,
