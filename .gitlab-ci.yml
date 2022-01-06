@@ -1,0 +1,408 @@
+#############################################################################
+# Gitlab CI/CD Configuration File
+#############################################################################
+# Author: Dave Askew (based on the work of Brandon Smith)
+#############################################################################
+
+# Build stages
+# -------------------------------------------------------------------
+# -- NOTE: We can define a stage here that does not have an attached
+#    job. -- DA
+#
+stages:
+  - Setup
+  - Build
+  - Deploy
+
+# Include Gitlab CI/CD Common
+# -------------------------------------------------------------------
+# This section imports CI/CD job templates from a common repository.  
+# This effort should benefit us in a number of ways:
+# * Reduce cut-and-paste errors between projects
+# * Improve configuration readability
+# * Make configuration maintenance easier 
+# * Make it easier to expand a configuration to cover a new OS
+#
+include:
+  - project: 'CyberRadioDriver/development/gitlab-cicd-common'
+    file:
+      - '/config/ubuntu16.yml'
+      - '/config/ubuntu18.yml'
+      - '/config/ubuntu20.yml'
+      - '/config/centos7.yml'
+      - '/config/fedora28.yml'
+      - '/scripts/setup/environment.yml'
+      - '/scripts/build/debian.yml'
+      - '/scripts/build/redhat.yml'
+      - '/scripts/deploy/apt.yml'
+      - '/scripts/deploy/yum.yml'
+      - '/scripts/deploy/ftp.yml'
+
+#####################################################
+# Common
+#####################################################
+
+##
+# Abstract job that sets up the build environment for this project.
+#
+# To generate a concrete setup job for a particular OS:
+# -- Derive it from the appropriate OS-specific configuration job
+# -- Derive it from this job
+# -- Override any attributes of the job (tags, variables, etc.) as 
+#    you need
+#
+# The OS-specific configuration job will provide the following 
+# variables, but you may need to modify them for your own needs: 
+# -- FTP_SERVER: Host name for the FTP server
+# -- FTP_REMOTE_DIR_BASE: Path to the base folder on the FTP server for 
+#    this project
+# -- PKG_REPO_SERVER: Host name for the machine hosting the package 
+#    repository
+# -- PKG_TARGET_DISTROS: List of distributions to push packages into
+# -- BUILD_PYTHON2: Build Python packages against Python 2?
+# -- BUILD_PYTHON3: Build Python packages against Python 3?
+# -- PKG_MANAGER: Package management program
+# -- PKG_DOWNLOAD: Package download command
+# -- IS_GNURADIO_PROJECT: Is this project dependent on GNU Radio?
+# -- GNURADIO_MIN_VERSION: Minimum version of GNU Radio required for the 
+#    build 
+# -- GNURADIO_MAX_VERSION: Maximum version of GNU Radio required for the
+#    build 
+# -- DOCKER_REGISTRY: Location for the Docker registry that we will push 
+#    any Docker images into.  This is a string of the form 
+#    [server's FQDN]:[server HTTPS port].
+# -- ADDITIONAL_REPOS: Additional package repositories.  This is a 
+#    multi-line YAML string in JSON format.  The JSON construct is a 
+#    list of dictionaries, one for each additional repository.
+#
+# And, for your own setup project, you will need to provide the following
+# variables:
+# -- BUILD_DEPS_NONPY: List of non-Python packages needed for the build
+# -- BUILD_DEPS_PY2: List of Python 2 packages needed for the build (for 
+#    projects whose builds rely on Python 2)
+# -- BUILD_DEPS_PY3: List of Python 3 packages needed for the build (for 
+#    projects whose builds rely on Python 3)
+# -- TARBALL_DEPS: For projects that build tarballs as artifacts, 
+#    packages that this step needs to download and package with the
+#    tarball(s)
+#
+# The output of this job is a build artifact (environment_variables.txt) 
+# that defines the environment for all downstream build steps.  It captures
+# all of the variables above, and also generates a few more:
+# -- FTP_REMOTE_DIR: Path to the folder on the FTP server for this version
+# -- OS_NAME: Operating system name ("ubuntu", "centos", etc.)
+# -- OS_REL: Operating system release identifier (name + version)
+# -- OS_CODENAME: Operating system code name (Debian only)
+# -- PACKAGE_VERSION: Package version identifier
+#
+.setup-build-environment-ours:
+    extends:
+    - .setup-build-environment
+    variables:
+        # FTP remote directory base
+        FTP_REMOTE_DIR_BASE: jenkins_pub/libcyberradio
+
+##
+# Abstract job that builds this project on Debian.
+#
+# Concrete build jobs derived from this one need the corresponding 
+# concrete setup job defined as an upstream dependency.
+# 
+# Helper functions available for the build script:
+# -- section_banner -- Prints a section banner with the given label
+# -- exit_if_error [code] -- Exits if the code is non-zero
+# -- install_or_upgrade [pkg list] -- Installs/upgrades packages from
+#    the given file(s)
+# -- build_packages [dir] [pkg list] -- Builds deb/rpm packages from
+#    a source directory
+# -- build_packages_local [pkg list] -- Builds deb/rpm packages from
+#    source code that is not in a containing folder
+# -- build_and_install_packages [dir] [pkg list] -- Builds deb/rpm packages 
+#    from a source directory and installs them into the build environment
+# -- build_and_install_packages_local [pkg list] -- Builds deb/rpm packages 
+#    from source code that is not in a containing folder and installs them 
+#    into the build environment
+# -- build_packages_python [dir] [pkg list] -- Builds packages from a 
+#    Python source directory.  This function uses BUILD_PYTHON2 and 
+#    BUILD_PYTHON3 to decide what Python versions to build against.
+# -- build_packages_python_local [pkg list] -- Builds packages from Python
+#    source not in a containing folder.  This function uses BUILD_PYTHON2 and 
+#    BUILD_PYTHON3 to decide what Python versions to build against.
+# -- build_and_install_packages_python [dir] [pkg list] -- Builds packages 
+#    from a Python source directory and installs them into the build
+#    environment.  This function uses BUILD_PYTHON2 and BUILD_PYTHON3 to 
+#    decide what Python versions to build against.
+# -- build_and_install_packages_python_local [pkg list] -- Builds packages 
+#    from Python source not in a containing folder and installs them into 
+#    the build environment.  This function uses BUILD_PYTHON2 and 
+#    BUILD_PYTHON3 to decide what Python versions to build against.
+# -- build_tarball [name] [files] -- Builds a tarball from the given files.
+# -- is_package_version_lt [ver] [tar] -- Is a package version string
+#    less than a given target version?  (0=no, 1=yes)
+# -- is_package_version_gt [ver] [tar] -- Is a package version string
+#    greater than a given target version?  (0=no, 1=yes)
+# -- is_package_version_eq [ver] [tar] -- Is a package version string
+#    equal to a given target version?  (0=no, 1=yes)
+# -- is_package_version_le [ver] [tar] -- Is a package version string
+#    less than or equal to a given target version?  (0=no, 1=yes)
+# -- is_package_version_ge [ver] [tar] -- Is a package version string
+#    greater than or equal to a given target version?  (0=no, 1=yes)
+# -- find_package_version_between [pkg] [min] [max] -- Finds the latest
+#    version of a package between the minimum (inclusive) and the 
+#    maximum (exclusive).
+#
+# Whem this job ends, it modifies the environment variables file
+# with new variables:
+# -- BUILD_ARTIFACTS_PKG: List of build artifacts that are packages to
+#    push into an apt/yum repository
+# -- BUILD_ARTIFACTS_FTP: List of build artifacts that get uploaded
+#    to the FTP server
+#
+.build-debian-ours:
+    extends:
+    - .build-debian
+    script: |-
+        section_banner "Building Packages"
+        build_packages libcyberradio libcyberradio
+
+##
+# Abstract job that builds this project on Red Hat.
+#
+# This job works the same way as the Debian job.
+#
+.build-redhat-ours:
+    extends:
+    - .build-redhat
+    script: |-
+        section_banner "Building Packages"
+        build_packages libcyberradio libcyberradio libcyberradio-devel libcyberradio-doc
+
+#####################################################
+# Ubuntu 16
+#####################################################
+
+# Setup (U16)
+# -------------------------------------------------------------------
+#
+setup-u16:
+    stage: Setup
+    extends:
+    - .ubuntu-16
+    - .setup-build-environment-ours
+
+# Build (U16)
+# -------------------------------------------------------------------
+#
+build-u16:
+    stage: Build
+    extends:
+    - .ubuntu-16
+    - .build-debian-ours
+    dependencies:
+    - setup-u16
+
+# Deploy FTP (U16)
+# -------------------------------------------------------------------
+#
+deploy-ftp-u16:
+    stage: Deploy
+    extends:
+    - .ubuntu-16
+    - .deploy-ftp
+    dependencies:
+    - build-u16
+
+# Deploy APT (U16)
+# -------------------------------------------------------------------
+#
+deploy-apt-u16:
+    stage: Deploy
+    extends:
+    - .ubuntu-16
+    - .deploy-apt
+    dependencies:
+    - build-u16
+
+#####################################################
+# Ubuntu 18
+#####################################################
+
+# Setup (U18)
+# -------------------------------------------------------------------
+#
+setup-u18:
+    stage: Setup
+    extends:
+    - .ubuntu-18
+    - .setup-build-environment-ours
+
+# Build (U18)
+# -------------------------------------------------------------------
+#
+build-u18:
+    stage: Build
+    extends:
+    - .ubuntu-18
+    - .build-debian-ours
+    dependencies:
+    - setup-u18
+
+# Deploy FTP (U18)
+# -------------------------------------------------------------------
+#
+deploy-ftp-u18:
+    stage: Deploy
+    extends:
+    - .ubuntu-18
+    - .deploy-ftp
+    dependencies:
+    - build-u18
+
+# Deploy APT (U18)
+# -------------------------------------------------------------------
+#
+deploy-apt-u18:
+    stage: Deploy
+    extends:
+    - .ubuntu-18
+    - .deploy-apt
+    dependencies:
+    - build-u18
+
+#####################################################
+# Ubuntu 20
+#####################################################
+
+# Setup (U20)
+# -------------------------------------------------------------------
+#
+setup-u20:
+    stage: Setup
+    extends:
+    - .ubuntu-20
+    - .setup-build-environment-ours
+
+# Build (U20)
+# -------------------------------------------------------------------
+#
+build-u20:
+    stage: Build
+    extends:
+    - .ubuntu-20
+    - .build-debian-ours
+    dependencies:
+    - setup-u20
+
+# Deploy FTP (U20)
+# -------------------------------------------------------------------
+#
+deploy-ftp-u20:
+    stage: Deploy
+    extends:
+    - .ubuntu-20
+    - .deploy-ftp
+    dependencies:
+    - build-u20
+
+# Deploy APT (U20)
+# -------------------------------------------------------------------
+#
+deploy-apt-u20:
+    stage: Deploy
+    extends:
+    - .ubuntu-20
+    - .deploy-apt
+    dependencies:
+    - build-u20
+
+#####################################################
+# CentOS 7
+#####################################################
+
+# Setup (C7)
+# -------------------------------------------------------------------
+#
+setup-c7:
+    stage: Setup
+    extends:
+    - .centos7
+    - .setup-build-environment-ours
+
+# Build (C7)
+# -------------------------------------------------------------------
+#
+build-c7:
+    stage: Build
+    extends:
+    - .centos7
+    - .build-redhat-ours
+    dependencies:
+    - setup-c7
+
+# Deploy FTP (C7)
+# -------------------------------------------------------------------
+#
+deploy-ftp-c7:
+    stage: Deploy
+    extends:
+    - .centos7
+    - .deploy-ftp
+    dependencies:
+    - build-c7
+
+# Deploy YUM (C7)
+# -------------------------------------------------------------------
+#
+deploy-yum-c7:
+    stage: Deploy
+    extends:
+    - .centos7
+    - .deploy-yum
+    dependencies:
+    - build-c7
+
+#####################################################
+# Fedora 28
+#####################################################
+
+# Setup (F28)
+# -------------------------------------------------------------------
+#
+setup-f28:
+    stage: Setup
+    extends:
+    - .fedora28
+    - .setup-build-environment-ours
+
+# Build (F28)
+# -------------------------------------------------------------------
+#
+build-f28:
+    stage: Build
+    extends:
+    - .fedora28
+    - .build-redhat-ours
+    dependencies:
+    - setup-f28
+
+# Deploy FTP (F28)
+# -------------------------------------------------------------------
+#
+deploy-ftp-f28:
+    stage: Deploy
+    extends:
+    - .fedora28
+    - .deploy-ftp
+    dependencies:
+    - build-f28
+
+# Deploy YUM (F28)
+# -------------------------------------------------------------------
+#
+deploy-yum-f28:
+    stage: Deploy
+    extends:
+    - .fedora28
+    - .deploy-yum
+    dependencies:
+    - build-f28

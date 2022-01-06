@@ -137,9 +137,18 @@ class App : public LibCyberRadio::App
                 //handler->setNbddcVitaEnable(0, false);
                 handler->setNbddcSource(0, 0);
                 handler->setNbddcFrequency(0,1e6);
+
                 //handler->setNbddcVitaEnable(0, true);
 
                 std::cout << "The NDR358 Has: " << handler->getNumTuner() << " Tuners" << std::endl;
+
+                handler->getWbddcDataPort(0);
+                LibCyberRadio::Driver::ConfigurationDict cfg = handler->getWbddcConfiguration(0);
+                cfg["mode"] = "manual";
+                cfg["dal"] = 0;
+                bool r = handler->setWbddcConfiguration(0, cfg);
+                std::cout << r << std::endl;
+
                 dumpConfig(handler->getTunerConfiguration(0));
                 dumpConfig(handler->getWbddcConfiguration(0));
                 dumpConfig(handler->getNbddcConfiguration(0));
