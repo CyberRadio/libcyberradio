@@ -100,7 +100,7 @@ class App : public LibCyberRadio::App
                 std::cout << "DATA RETURNED ----- " << std::endl;
                 std::cout << recv.at(0) << std::endl;
 #endif                
-                setupBroadcastOnDataPorts(handler.get(), 4991);
+                //setupBroadcastOnDataPorts(handler.get(), 4991);
 
                 dumpConfig(handler->getConfiguration());
 

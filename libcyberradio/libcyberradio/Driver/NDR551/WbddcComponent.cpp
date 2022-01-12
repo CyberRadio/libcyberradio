@@ -256,7 +256,6 @@ namespace LibCyberRadio
 
             void WbddcComponent::queryConfiguration()
             {
-                printf("[WbddcComponent::queryConfiguration] Called\n");
                 this->debug("[WbddcComponent::queryConfiguration] Called\n");
                 Json::Value command;
                 Json::Value params;
@@ -271,9 +270,6 @@ namespace LibCyberRadio
                 Json::Value returnVal; 
                 std::string t = rsp.at(0);
                 bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
-
-                std::cout << returnVal["result"].toStyledString() << std::endl;
-
                 _enabled = boost::lexical_cast<bool>(returnVal["result"]["enable"].asBool());
                 _frequency = boost::lexical_cast<double>(returnVal["result"]["offset"].asDouble());
                 _source = boost::lexical_cast<int>(returnVal["result"]["rfch"].asString());
@@ -371,6 +367,7 @@ namespace LibCyberRadio
                     root["cmd"] = "wbddc";
                     Json::Value params(Json::objectValue);
                     params["id"] = index;
+                    
                     params["rfch"] = std::to_string(source);
                     root["params"] = params;
                     Json::FastWriter fastWriter;
@@ -437,6 +434,62 @@ namespace LibCyberRadio
                     std::string t = recv.at(0);
                     bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
                     ret = returnVal["success"].asBool();
+                }
+                return ret;
+            }
+
+            bool WbddcComponent::setRateIndex(int index)
+            {
+                bool ret = false;
+                if ( _config.hasKey("filter") )
+                {
+                    int adjRateIndex = index;
+                    int adjUdpDest = _udpDestination;
+                    int adjVita = _vitaEnable;
+                    unsigned int adjStream = _streamId;
+                    bool adjEnabled = _enabled;
+                    ret = executeWbddcCommand(_index, adjRateIndex, adjUdpDest, adjEnabled, adjVita, adjStream);
+                    if ( ret )
+                    {
+                        _rateIndex = adjRateIndex;
+                        updateConfigurationDict();
+                    }
+                }
+                return ret;
+            }
+
+            bool WbddcComponent::setSource(int source)
+            {
+                bool ret = false;
+                if ( _config.hasKey("rfch") )
+                {
+                    int adjSource = source;
+                    ret = executeSourceCommand(_index, adjSource);
+                    if ( ret )
+                    {
+                        _source = adjSource;
+                        updateConfigurationDict();
+                    }
+                }
+                return ret;
+            }
+
+            bool WbddcComponent::setUdpDestination(int dest)
+            {
+                bool ret = false;
+                if ( _config.hasKey("dest") )
+                {
+                    int adjRateIndex = _rateIndex;
+                    int adjUdpDest = dest;
+                    int adjVita = _vitaEnable;
+                    unsigned int adjStream = _streamId;
+                    bool adjEnabled = _enabled;
+                    ret = executeWbddcCommand(_index, adjRateIndex, adjUdpDest, adjEnabled, adjVita, adjStream);
+                    if ( ret )
+                    {
+                        _udpDestination = adjUdpDest;
+                        updateConfigurationDict();
+                    }
                 }
                 return ret;
             }
