@@ -118,6 +118,9 @@ namespace LibCyberRadio
                     bool executeWbddcCommand(int index, int& rateIndex,
                                              int& udpDestination, bool& enabled, int& vitaEnable,
                                              unsigned int& streamId) override;
+                    bool setRateIndex(int index) override;
+                    bool setSource(int source) override;
+                    bool setUdpDestination(int dest) override;
 
                 private:
                     ::LibCyberRadio::Driver::RadioHandler* m551Parent;

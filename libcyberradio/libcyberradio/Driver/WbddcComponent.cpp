@@ -324,7 +324,7 @@ namespace LibCyberRadio
             bool ret = false;
             if ( _selectableSource && _config.hasKey("source") )
             {
-                int adjSource = _source;
+                int adjSource = source;
                 ret = executeSourceCommand(_index, adjSource);
                 if ( ret )
                 {
