@@ -270,30 +270,32 @@ namespace LibCyberRadio
                 Json::Value returnVal; 
                 std::string t = rsp.at(0);
                 bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
-                _enabled = boost::lexical_cast<bool>(returnVal["result"]["enable"].asBool());
-                _frequency = boost::lexical_cast<double>(returnVal["result"]["offset"].asDouble());
-                _source = boost::lexical_cast<int>(returnVal["result"]["rfch"].asString());
-                _dataPort = boost::lexical_cast<int>(returnVal["result"]["link"].asInt());
-                _udpDestination = boost::lexical_cast<int>(returnVal["result"]["dest"].asInt());
-                _rateIndex = boost::lexical_cast<int>(returnVal["result"]["filter"].asInt());
-                _streamId = boost::lexical_cast<int>(returnVal["result"]["vita"].asUInt());
-                _ovs = boost::lexical_cast<int>(returnVal["result"]["ovs"].asInt());
-                _decimation = boost::lexical_cast<int>(returnVal["result"]["decimation"].asInt());
-                _type = boost::lexical_cast<std::string>(returnVal["result"]["type"].asString());
-                _mode = boost::lexical_cast<std::string>(returnVal["result"]["mode"].asString());
-                _dgv = boost::lexical_cast<int>(returnVal["result"]["dgv"].asInt());
-                _dul = boost::lexical_cast<int>(returnVal["result"]["dul"].asInt());
-                _dll = boost::lexical_cast<int>(returnVal["result"]["dll"].asInt());
-                _dtl = boost::lexical_cast<int>(returnVal["result"]["dtl"].asInt());
-                _dal = boost::lexical_cast<int>(returnVal["result"]["dal"].asInt());
-                _ddl = boost::lexical_cast<int>(returnVal["result"]["ddl"].asInt());
-                _dao = boost::lexical_cast<int>(returnVal["result"]["dao"].asInt());
-                _ddo = boost::lexical_cast<int>(returnVal["result"]["ddo"].asInt());
-                _datc = boost::lexical_cast<int>(returnVal["result"]["datc"].asInt());
-                _ddtc = boost::lexical_cast<int>(returnVal["result"]["ddtc"].asInt());
-                _dat = boost::lexical_cast<int>(returnVal["result"]["dat"].asInt());
-                _ddt = boost::lexical_cast<int>(returnVal["result"]["ddt"].asInt());
-                updateConfigurationDict();
+                if( parsingSuccessful && returnVal.isMember("result") ) { 
+                    _enabled = boost::lexical_cast<bool>(returnVal["result"]["enable"].asBool());
+                    _frequency = boost::lexical_cast<double>(returnVal["result"]["offset"].asDouble());
+                    _source = boost::lexical_cast<int>(returnVal["result"]["rfch"].asString());
+                    _dataPort = boost::lexical_cast<int>(returnVal["result"]["link"].asInt());
+                    _udpDestination = boost::lexical_cast<int>(returnVal["result"]["dest"].asInt());
+                    _rateIndex = boost::lexical_cast<int>(returnVal["result"]["filter"].asInt());
+                    _streamId = boost::lexical_cast<int>(returnVal["result"]["vita"].asUInt());
+                    _ovs = boost::lexical_cast<int>(returnVal["result"]["ovs"].asInt());
+                    _decimation = boost::lexical_cast<int>(returnVal["result"]["decimation"].asInt());
+                    _type = boost::lexical_cast<std::string>(returnVal["result"]["type"].asString());
+                    _mode = boost::lexical_cast<std::string>(returnVal["result"]["mode"].asString());
+                    _dgv = boost::lexical_cast<int>(returnVal["result"]["dgv"].asInt());
+                    _dul = boost::lexical_cast<int>(returnVal["result"]["dul"].asInt());
+                    _dll = boost::lexical_cast<int>(returnVal["result"]["dll"].asInt());
+                    _dtl = boost::lexical_cast<int>(returnVal["result"]["dtl"].asInt());
+                    _dal = boost::lexical_cast<int>(returnVal["result"]["dal"].asInt());
+                    _ddl = boost::lexical_cast<int>(returnVal["result"]["ddl"].asInt());
+                    _dao = boost::lexical_cast<int>(returnVal["result"]["dao"].asInt());
+                    _ddo = boost::lexical_cast<int>(returnVal["result"]["ddo"].asInt());
+                    _datc = boost::lexical_cast<int>(returnVal["result"]["datc"].asInt());
+                    _ddtc = boost::lexical_cast<int>(returnVal["result"]["ddtc"].asInt());
+                    _dat = boost::lexical_cast<int>(returnVal["result"]["dat"].asInt());
+                    _ddt = boost::lexical_cast<int>(returnVal["result"]["ddt"].asInt());
+                    updateConfigurationDict();
+                }
                 this->debug("[WbddcComponent::queryConfiguration] Returning\n");
             }
 

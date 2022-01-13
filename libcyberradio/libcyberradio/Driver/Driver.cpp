@@ -146,6 +146,20 @@ namespace LibCyberRadio
             return sptr;
         }
 
+        std::vector<std::string> getSupportedDevices( void )
+        {
+            std::vector<std::string> suppDevs = {
+                "ndr551",
+                "ndr358",
+                "ndr308",
+                "ndr318",
+                "ndr324",
+                "ndr651"
+            };
+            return suppDevs;
+
+        }
+
     } // namespace Driver
 
 } // namespace LibCyberRadio

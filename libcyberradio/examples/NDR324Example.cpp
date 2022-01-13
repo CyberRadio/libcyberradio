@@ -84,6 +84,8 @@ class App : public LibCyberRadio::App
             std::shared_ptr<LibCyberRadio::Driver::RadioHandler> handler =
                     LibCyberRadio::Driver::getRadioObject("ndr324", _host,
                                                           -1, _verbose);
+        }
+#if 0        
             if ( (handler != NULL) && handler->isConnected() )
             {
                 std::cout << "-- Connect SUCCESS" << std::endl;
@@ -200,7 +202,7 @@ class App : public LibCyberRadio::App
             std::cout << "DONE" << std::endl;
             return ret;
         }
-
+#endif
         /**
          * \brief Dumps a configuration dictionary to standard output.
          * \param cfg Configuration dictionary.

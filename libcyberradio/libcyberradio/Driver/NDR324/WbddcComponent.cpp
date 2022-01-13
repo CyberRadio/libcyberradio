@@ -269,7 +269,7 @@ namespace LibCyberRadio
                 bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
                 _enabled = boost::lexical_cast<bool>(returnVal["result"]["enable"].asBool());
                 _frequency = boost::lexical_cast<double>(returnVal["result"]["offset"].asDouble());
-                _source = boost::lexical_cast<int>(returnVal["result"]["rfch"].asString());
+                _source = boost::lexical_cast<int>(returnVal["result"]["rfch"].asInt());
                 _dataPort = boost::lexical_cast<int>(returnVal["result"]["link"].asInt());
                 _udpDestination = boost::lexical_cast<int>(returnVal["result"]["dest"].asInt());
                 _rateIndex = boost::lexical_cast<int>(returnVal["result"]["filter"].asInt());
@@ -365,7 +365,7 @@ namespace LibCyberRadio
                     Json::Value params(Json::objectValue);
                     params["id"] = index;
                     
-                    params["rfch"] = std::to_string(source);
+                    params["rfch"] = source;
                     root["params"] = params;
                     Json::FastWriter fastWriter;
                     std::string output = fastWriter.write(root);
@@ -425,6 +425,7 @@ namespace LibCyberRadio
                     root["params"] = params;
                     Json::FastWriter fastWriter;
                     std::string output = fastWriter.write(root);
+                    this->debug("CMD: %s\n", output.c_str());
                     LibCyberRadio::BasicStringList recv = _parent->sendCommand(output,1.0);
                     Json::Reader reader;
                     Json::Value returnVal; 
@@ -437,6 +438,7 @@ namespace LibCyberRadio
 
             bool WbddcComponent::setRateIndex(int index)
             {
+                this->debug("Index: %d\n", index);
                 bool ret = false;
                 if ( _config.hasKey("filter") )
                 {
@@ -445,6 +447,7 @@ namespace LibCyberRadio
                     int adjVita = _vitaEnable;
                     unsigned int adjStream = _streamId;
                     bool adjEnabled = _enabled;
+                    this->debug("Index: %d\n", index);
                     ret = executeWbddcCommand(_index, adjRateIndex, adjUdpDest, adjEnabled, adjVita, adjStream);
                     if ( ret )
                     {

@@ -11,7 +11,7 @@
 #include "LibCyberRadio/Driver/NDR324/RadioHandler.h"
 #include "LibCyberRadio/Driver/NDR551/DataPort.h"
 #include "LibCyberRadio/Driver/NDR551/NbddcComponent.h"
-#include "LibCyberRadio/Driver/NDR551/TunerComponent.h"
+#include "LibCyberRadio/Driver/NDR324/TunerComponent.h"
 #include "LibCyberRadio/Driver/NDR324/VitaIfSpec.h"
 #include "LibCyberRadio/Driver/NDR324/WbddcComponent.h"
 //#include "LibCyberRadio/Driver/NDR551/WbddcGroupComponent.h"
@@ -72,7 +72,7 @@ namespace LibCyberRadio
                         tuner < (_tunerIndexBase + _numTuner); tuner++)
                 {
 
-                    _tuners[tuner] = new NDR551::TunerComponent(
+                    _tuners[tuner] = new NDR324::TunerComponent(
                             /* int index */ tuner,
                             /* RadioHandler* parent */ this,
                             /* bool debug */ _debug,

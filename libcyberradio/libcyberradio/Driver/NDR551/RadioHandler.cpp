@@ -63,7 +63,9 @@ namespace LibCyberRadio
                 _connModesSupported.push_back("udp");
                 _defaultDeviceInfo = 19091;
                 _transport.setJson(true);
-                this->queryConfiguration();
+                if(this->isConnected()){
+                    this->queryConfiguration();
+                }
                 
                 // Allocate tuner components
                 for (int tuner = _tunerIndexBase;

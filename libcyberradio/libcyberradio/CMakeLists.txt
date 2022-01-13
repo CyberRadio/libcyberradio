@@ -73,6 +73,7 @@ LIST(APPEND libcyberradio_sources
        Driver/NDR324/RadioHandler.cpp
        Driver/NDR324/VitaIfSpec.cpp
        Driver/NDR324/WbddcComponent.cpp
+       Driver/NDR324/TunerComponent.cpp
        
        Driver/ConfigString.cpp
        Driver/Configurable.cpp

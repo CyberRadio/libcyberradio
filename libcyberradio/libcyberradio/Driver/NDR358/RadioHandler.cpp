@@ -224,18 +224,22 @@ namespace LibCyberRadio
                 std::string t = rsp.at(0);
                 bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
                 if( parsingSuccessful ){
-                    std::string result = returnVal["result"].asString();
-                    LibCyberRadio::BasicStringList l = Pythonesque::Split(Pythonesque::Lstrip(result), "\n"); //Pythonesque::Split(Pythonesque::Replace(result," ", ""), "\n");
-                    for(int i = 0; i < l.size(); i++)
-                    {
-                        std::string temp = l.at(i);
-                        temp = Pythonesque::Replace(temp," ", "").c_str();
-                        BasicStringList J = Pythonesque::Split(temp, ":");
-                        const char *unitsn = "UnitSN";                        
-                        if ( std::strstr(temp.c_str(), unitsn) != nullptr )
-                        {   
-                            _versionInfo["serialNumber"] = J.at(1).c_str();
+                    if ( returnVal["result"].isString() ) {
+                        std::string result = returnVal["result"].asString();
+                        LibCyberRadio::BasicStringList l = Pythonesque::Split(Pythonesque::Lstrip(result), "\n"); //Pythonesque::Split(Pythonesque::Replace(result," ", ""), "\n");
+                        for(int i = 0; i < l.size(); i++)
+                        {
+                            std::string temp = l.at(i);
+                            temp = Pythonesque::Replace(temp," ", "").c_str();
+                            BasicStringList J = Pythonesque::Split(temp, ":");
+                            const char *unitsn = "UnitSN";                        
+                            if ( std::strstr(temp.c_str(), unitsn) != nullptr )
+                            {   
+                                _versionInfo["serialNumber"] = J.at(1).c_str();
+                            }
                         }
+                    } else {
+                        _versionInfo["serialNumber"] = "SNxxxx";
                     }
                 }
             }
