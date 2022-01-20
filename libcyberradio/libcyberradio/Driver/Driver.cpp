@@ -16,6 +16,7 @@
 #include "LibCyberRadio/Driver/NDR810/RadioHandler.h"
 #include "LibCyberRadio/Driver/NDR551/RadioHandler.h"
 #include "LibCyberRadio/Driver/NDR358/RadioHandler.h"
+#include "LibCyberRadio/Driver/NDR324/RadioHandler.h"
 #include "LibCyberRadio/Common/Pythonesque.h"
 #include "LibCyberRadio/Common/BasicList.h"
 #include "LibCyberRadio/Common/Debuggable.h"
@@ -114,6 +115,13 @@ namespace LibCyberRadio
                         (RadioHandler*)new NDR358::RadioHandler(debug)
                        );
             }
+            else if ( adjNameString == "ndr324" )
+            {
+                dbg.debug("-- FOUND ndr324\n");
+                sptr = std::shared_ptr<RadioHandler>(
+                        (RadioHandler*)new NDR324::RadioHandler(debug)
+                       );
+            }
             else
             {
                 dbg.debug("-- CANNOT FIND %s\n", adjNameString.c_str());
@@ -136,6 +144,20 @@ namespace LibCyberRadio
             // Return the pointer to the radio handler (or NULL)
             //dbg.debug("Returning %08p\n", sptr.get());
             return sptr;
+        }
+
+        std::vector<std::string> getSupportedDevices( void )
+        {
+            std::vector<std::string> suppDevs = {
+                "ndr551",
+                "ndr358",
+                "ndr308",
+                "ndr318",
+                "ndr324",
+                "ndr651"
+            };
+            return suppDevs;
+
         }
 
     } // namespace Driver

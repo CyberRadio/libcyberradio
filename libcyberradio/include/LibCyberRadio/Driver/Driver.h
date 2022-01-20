@@ -13,7 +13,7 @@
 
 #include "LibCyberRadio/Driver/RadioHandler.h"
 #include <memory>
-
+#include <vector>
 
 /**
  * \brief Provides programming elements for controlling CyberRadio Solutions products.
@@ -65,6 +65,7 @@ namespace LibCyberRadio
                     int devicePort = -1,
                     bool debug = false
                 );
+        std::vector<std::string> getSupportedDevices( void );
 
     } // namespace Driver
 

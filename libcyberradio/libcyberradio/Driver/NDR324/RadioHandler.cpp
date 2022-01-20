@@ -8,12 +8,12 @@
  *
  ***************************************************************************/
 
-#include "LibCyberRadio/Driver/NDR358/RadioHandler.h"
+#include "LibCyberRadio/Driver/NDR324/RadioHandler.h"
 #include "LibCyberRadio/Driver/NDR551/DataPort.h"
 #include "LibCyberRadio/Driver/NDR551/NbddcComponent.h"
-#include "LibCyberRadio/Driver/NDR551/TunerComponent.h"
-#include "LibCyberRadio/Driver/NDR551/VitaIfSpec.h"
-#include "LibCyberRadio/Driver/NDR551/WbddcComponent.h"
+#include "LibCyberRadio/Driver/NDR324/TunerComponent.h"
+#include "LibCyberRadio/Driver/NDR324/VitaIfSpec.h"
+#include "LibCyberRadio/Driver/NDR324/WbddcComponent.h"
 //#include "LibCyberRadio/Driver/NDR551/WbddcGroupComponent.h"
 //#include "LibCyberRadio/Driver/NDR551/NbddcGroupComponent.h"
 #include "LibCyberRadio/Common/Pythonesque.h"
@@ -30,17 +30,17 @@ namespace LibCyberRadio
 
     namespace Driver
     {
-        namespace NDR358
+        namespace NDR324
         {
 
             RadioHandler::RadioHandler(bool debug) :
                     ::LibCyberRadio::Driver::RadioHandler(
-                            /* const std::string& name */ "NDR358",
-                            /* int numTuner */ 8,
+                            /* const std::string& name */ "NDR324",
+                            /* int numTuner */ 4,
                             /* int tunerIndexBase */ 0,
-                            /* int numWbddc */ 8,
+                            /* int numWbddc */ 4,
                             /* int wbddcIndexBase */ 0,
-                            /* int numNbddc */ 64,
+                            /* int numNbddc */ 0,
                             /* int nbddcIndexBase */ 0,
                             /* int numTunerBoards */ 1,
                             /* int maxTunerBw */ 6000,
@@ -48,17 +48,17 @@ namespace LibCyberRadio
                             /* int transmitterIndexBase */ 0,
                             /* int numDuc */ 0,
                             /* int ducIndexBase */ 0,
-                            /* int numWbddcGroups */ 4,
+                            /* int numWbddcGroups */ 0,
                             /* int wbddcGroupIndexBase */ 1,
-                            /* int numNbddcGroups */ 8,
+                            /* int numNbddcGroups */ 0,
                             /* int nbddcGroupIndexBase */ 1,
                             /* int numDdcGroups */ 0,
                             /* int ddcGroupIndexBase */ 1,
                             /* int numDataPorts */ 4,
                             /* int dataPortIndexBase */ 0,
                             /* int numSimpleIpSetups */ 0,
-                            /* double adcRate */ 128.036,
-                            /* VitaIfSpec ifSpec */ NDR551::VitaIfSpec(),
+                            /* double adcRate */ 1351.68e6,
+                            /* VitaIfSpec ifSpec */ NDR324::VitaIfSpec(),
                             /* bool debug */ debug)
             {
                 initConfigurationDict();
@@ -72,7 +72,7 @@ namespace LibCyberRadio
                         tuner < (_tunerIndexBase + _numTuner); tuner++)
                 {
 
-                    _tuners[tuner] = new NDR551::TunerComponent(
+                    _tuners[tuner] = new NDR324::TunerComponent(
                             /* int index */ tuner,
                             /* RadioHandler* parent */ this,
                             /* bool debug */ _debug,
@@ -84,7 +84,7 @@ namespace LibCyberRadio
                 for (int wbddc = _wbddcIndexBase;
                         wbddc < (_wbddcIndexBase + _numWbddc); wbddc++)
                 {
-                    _wbddcs[wbddc] = new NDR551::WbddcComponent(
+                    _wbddcs[wbddc] = new NDR324::WbddcComponent(
                             /* int index */ wbddc,
                             /* RadioHandler* parent */ this,
                             /* bool debug */ _debug,
@@ -93,7 +93,8 @@ namespace LibCyberRadio
                             /* int udpDestination */ 0,
                             /* int vitaEnable */ 0,
                             /* int streamId */ 0);
-                }               
+                } 
+#if 0                               
                 // Allocate NBDDC components
                 for (int nbddc = _nbddcIndexBase;
                         nbddc < (_nbddcIndexBase + _numNbddc); nbddc++)
@@ -110,7 +111,7 @@ namespace LibCyberRadio
                             /* double frequency */ 0.0,
                             /* int source */ 1);
                 }
-#if 0                        
+                       
                 // Allocate WBDDC group components
                 for (int group = _wbddcGroupIndexBase;
                         group < (_wbddcGroupIndexBase + _numWbddcGroups); group++)
@@ -171,7 +172,7 @@ namespace LibCyberRadio
 
             void RadioHandler::queryConfiguration()
             {
-                    this->debug("[NDR358]::RadioHandler::queryConfiguration] Called\n");
+                    this->debug("[NDR324]::RadioHandler::queryConfiguration] Called\n");
                     // Purge the banner sent over when a connection is made.
                     //BasicStringList rsp = _transport.receive(_defaultTimeout);
                     // Call the base-class queryConfiguration() to retrieve identity info
@@ -188,7 +189,7 @@ namespace LibCyberRadio
                     {
                         this->executeReferenceModeQuery(_referenceMode);
                     }
-                    this->debug("[NDR358::RadioHandler::queryConfiguration] Returning\n");
+                    this->debug("[NDR324::RadioHandler::queryConfiguration] Returning\n");
 
                     for ( TunerComponentDict::iterator it = _tuners.begin();
                             it != _tuners.end(); it++)
@@ -208,7 +209,7 @@ namespace LibCyberRadio
                     this->queryVersionInfo();
             }
 
-            bool RadioHandler::query358Specifics()
+            bool RadioHandler::query324Specifics()
             {
                 Json::Value root(Json::objectValue);
                 root["msg"] = this->getMessageId();
@@ -224,22 +225,18 @@ namespace LibCyberRadio
                 std::string t = rsp.at(0);
                 bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
                 if( parsingSuccessful ){
-                    if ( returnVal["result"].isString() ) {
-                        std::string result = returnVal["result"].asString();
-                        LibCyberRadio::BasicStringList l = Pythonesque::Split(Pythonesque::Lstrip(result), "\n"); //Pythonesque::Split(Pythonesque::Replace(result," ", ""), "\n");
-                        for(int i = 0; i < l.size(); i++)
-                        {
-                            std::string temp = l.at(i);
-                            temp = Pythonesque::Replace(temp," ", "").c_str();
-                            BasicStringList J = Pythonesque::Split(temp, ":");
-                            const char *unitsn = "UnitSN";                        
-                            if ( std::strstr(temp.c_str(), unitsn) != nullptr )
-                            {   
-                                _versionInfo["serialNumber"] = J.at(1).c_str();
-                            }
+                    std::string result = returnVal["result"].asString();
+                    LibCyberRadio::BasicStringList l = Pythonesque::Split(Pythonesque::Lstrip(result), "\n"); //Pythonesque::Split(Pythonesque::Replace(result," ", ""), "\n");
+                    for(int i = 0; i < l.size(); i++)
+                    {
+                        std::string temp = l.at(i);
+                        temp = Pythonesque::Replace(temp," ", "").c_str();
+                        BasicStringList J = Pythonesque::Split(temp, ":");
+                        const char *unitsn = "UnitSN";                        
+                        if ( std::strstr(temp.c_str(), unitsn) != nullptr )
+                        {   
+                            _versionInfo["serialNumber"] = J.at(1).c_str();
                         }
-                    } else {
-                        _versionInfo["serialNumber"] = "SNxxxx";
                     }
                 }
                 return true;
@@ -268,13 +265,14 @@ namespace LibCyberRadio
                     _versionInfo["firmwareVersion"] = returnVal["result"]["fw"].asString();
                     _versionInfo["unitRevision"] = returnVal["result"]["unit"].asString();
                     _versionInfo["hardwareVersion"] = returnVal["result"]["unit"].asString();
+                    _versionInfo["serialNumber"] = returnVal["result"]["sn"].asString();
                 }
-                this->query358Specifics();               
-                this->debug("[NDR358::RadioHandler::queryVersionInfo] Returning %s\n", debugBool(ret));
+                //this->query324Specifics();               
+                this->debug("[NDR324::RadioHandler::queryVersionInfo] Returning %s\n", debugBool(ret));
                 return ret;
             }
 
-            // NOTE: The default implementation is the NDR358 implementation,
+            // NOTE: The default implementation is the NDR324 implementation,
             // but this just makes it explicit in the code.
             bool RadioHandler::executeQueryIDN(std::string& model,
                     std::string& serialNumber)
@@ -282,7 +280,7 @@ namespace LibCyberRadio
                     return ::LibCyberRadio::Driver::RadioHandler::executeQueryIDN(model, serialNumber);
             }
 
-            // NOTE: The default implementation is the NDR358 implementation,
+            // NOTE: The default implementation is the NDR324 implementation,
             // but this just makes it explicit in the code.
             bool RadioHandler::executeQueryVER(std::string& softwareVersion,
                     std::string& firmwareVersion,
@@ -296,7 +294,7 @@ namespace LibCyberRadio
                             firmwareDate);
             }
 
-            // NOTE: The default implementation is the NDR358 implementation,
+            // NOTE: The default implementation is the NDR324 implementation,
             // but this just makes it explicit in the code.
             bool RadioHandler::executeQueryHREV(std::string& hardwareInfo)
             {
@@ -310,7 +308,7 @@ namespace LibCyberRadio
 
             bool RadioHandler::executeReferenceModeQuery(int& refMode)
             {
-                this->debug("[NDR358::RadioHandler::queryVersionInfo] Called\n");
+                this->debug("[NDR324::RadioHandler::queryVersionInfo] Called\n");
                 // First, call the base-class version
                 bool ret = false;
                 Json::Value root(Json::objectValue);
@@ -334,7 +332,7 @@ namespace LibCyberRadio
 
             bool RadioHandler::executeReferenceModeCommand(int& refMode)
             {
-                this->debug("[NDR358::RadioHandler::queryVersionInfo] Called\n");
+                this->debug("[NDR324::RadioHandler::queryVersionInfo] Called\n");
                 // First, call the base-class version
                 bool ret = false;
                 Json::Value root(Json::objectValue);
@@ -357,7 +355,7 @@ namespace LibCyberRadio
             }
 
 
-        } /* namespace NDR358 */
+        } /* namespace NDR324 */
 
     } /* namespace Driver */
 
