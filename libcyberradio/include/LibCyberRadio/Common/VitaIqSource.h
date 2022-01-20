@@ -98,6 +98,15 @@ namespace LibCyberRadio
              */
             virtual int getPacketSize() const;
             /*!
+             * \brief Gets VITA 49 or I/Q data packets.
+             *
+             * \param noutput_items Number of samples requested.
+             * \param output_items Vector of output samples of complext data samples.
+             *
+             * \return The number of output samples actually retrieved.
+             */
+            virtual int getPacketsPayloadData(int noutput_items, void * buff);
+            /*!
              * \brief Gets the byte-swapping state.
              *
              * \return True if the packet is byte-swapped, false otherwise.

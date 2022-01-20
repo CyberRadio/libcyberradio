@@ -14,7 +14,7 @@
 #endif
 
 #include "LibCyberRadio/Common/VitaIqSource.h"
-
+#include <iostream>
 
 namespace LibCyberRadio
 {
@@ -44,6 +44,7 @@ namespace LibCyberRadio
         // Determine packet size
         d_packet_size = (vita_type == 0 ? payload_size : vita_header_size + payload_size + vita_tail_size);
         // Create UDP port for collecting data
+        this->debug(" -- Packet Size: %d\n", d_packet_size);
         connect_udp_port();
     }
 
@@ -98,6 +99,45 @@ namespace LibCyberRadio
                                 (unsigned char*)(d_udp_port->recv_buffer),
                                 d_packet_size) );
                     }
+                    // Increment the items processed counter
+                    noutput_items_processed++;
+                    // Reset the UDP port buffer
+                    d_udp_port->clear_buffer();
+                    // Set the got data on loop flag
+                    got_data_on_loop = true;
+                }
+            } while ( got_data_on_loop && (noutput_items_processed < noutput_items) );
+            d_udp_port_mtx.unlock();
+        }
+        return noutput_items_processed;
+    }
+
+    int VitaIqSource::getPacketsPayloadData(int noutput_items, void * buffer)
+    {
+        int noutput_items_processed = 0;
+        bool got_data_on_loop = false;
+        // Check to see if the UDP port is available for reading
+        if ( d_udp_port_mtx.try_lock() )
+        {
+            // Get as many packets as we can, up to the maximum number requested.
+            do
+            {
+                got_data_on_loop = false;
+                // Get data from UDP port if it's available
+                d_udp_port->read_data();
+                if ( d_udp_port->is_packet_ready() )
+                {
+                    Vita49Packet temp = Vita49Packet(
+                            d_vita_type,
+                            d_payload_size,
+                            d_vita_header_size,
+                            d_vita_tail_size,
+                            d_byte_swapped,
+                            d_iq_swapped,
+                            (unsigned char*)(d_udp_port->recv_buffer),
+                            d_packet_size);
+                    //std::cout << temp.timestampFrac << std::endl;
+                    std::memcpy(buffer, temp.sampleData, d_payload_size);
                     // Increment the items processed counter
                     noutput_items_processed++;
                     // Reset the UDP port buffer

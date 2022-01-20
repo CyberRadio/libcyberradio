@@ -1,6 +1,6 @@
 /***************************************************************************
  * \file WbddcComponent.h
- * \brief Defines the WBDDC interface for the NDR551.
+ * \brief Defines the WBDDC interface for the NDR324.
  * \author DA
  * \author NH
  * \author MN
@@ -8,8 +8,8 @@
  *
  ***************************************************************************/
 
-#ifndef INCLUDED_LIBCYBERRADIO_DRIVER_NDR551_WBDDCCOMPONENT_H
-#define INCLUDED_LIBCYBERRADIO_DRIVER_NDR551_WBDDCCOMPONENT_H
+#ifndef INCLUDED_LIBCYBERRADIO_DRIVER_NDR324_WBDDCCOMPONENT_H
+#define INCLUDED_LIBCYBERRADIO_DRIVER_NDR324_WBDDCCOMPONENT_H
 
 #include "LibCyberRadio/Driver/WbddcComponent.h"
 #include "LibCyberRadio/Common/BasicDict.h"
@@ -30,13 +30,13 @@ namespace LibCyberRadio
         class RadioHandler;
 
         /**
-         * \brief Provides programming elements for driving NDR551 radios.
+         * \brief Provides programming elements for driving NDR324 radios.
          */
-        namespace NDR551
+        namespace NDR324
         {
 
             /**
-             * \brief WBDDC component class for the NDR551.
+             * \brief WBDDC component class for the NDR324.
              *
              * Configuration dictionary elements:
              * * "enable": Whether or not this DDC is enabled [Boolean/integer/string]
@@ -124,7 +124,7 @@ namespace LibCyberRadio
                     bool setFrequency(double freq) override;
 
                 private:
-                    ::LibCyberRadio::Driver::RadioHandler* m551Parent;
+                    ::LibCyberRadio::Driver::RadioHandler* m324Parent;
                 protected:
                     /**
                      * \brief Updates the configuration dictionary from component settings.
@@ -150,11 +150,11 @@ namespace LibCyberRadio
 
             }; // class WbddcComponent
 
-        } /* namespace NDR551 */
+        } /* namespace NDR324 */
 
     } // namespace Driver
 
 } // namespace LibCyberRadio
 
 
-#endif // INCLUDED_LIBCYBERRADIO_DRIVER_NDR551_WBDDCCOMPONENT_H
+#endif // INCLUDED_LIBCYBERRADIO_DRIVER_NDR324_WBDDCCOMPONENT_H

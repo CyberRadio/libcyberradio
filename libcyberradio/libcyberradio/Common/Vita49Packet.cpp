@@ -64,6 +64,7 @@ namespace LibCyberRadio
         // Calculate packet size
         _totalPacketSize = vitaType == 0 ? payloadSize : vitaHeaderSize +
                 payloadSize + vitaTailSize;
+        //std::cout << "Vita49Packet: PacketSize = " << _totalPacketSize << std::endl;
         // Allocate buffer for raw data
         _rawData = new uint8_t[_totalPacketSize];
         size_t setSize = rawDataLen < _totalPacketSize ? rawDataLen : _totalPacketSize;
@@ -154,7 +155,45 @@ namespace LibCyberRadio
             // << std::endl;
 
             currentWord += 5;
-        } else if (vitaType > 0)
+        }
+        else if ( vitaType == 324)
+        {
+            packetType = (int) ((rawDataWord(currentWord) & 0xF0000000) >> 28);
+            hasClassId = ((rawDataWord(currentWord) & 0x08000000) >> 27) == 1;
+            hasTrailer = ((rawDataWord(currentWord) & 0x04000000) >> 26) == 1;
+            timestampIntType = (int) ((rawDataWord(currentWord) & 0x00C00000) >> 22);
+            timestampFracType = (int) ((rawDataWord(currentWord) & 0x00300000) >> 20);
+            packetCount = (int) ((rawDataWord(currentWord) & 0x000F0000) >> 16);
+            packetSize = (int) ((rawDataWord(currentWord) & 0x0000FFFF));
+            currentWord++; // 1
+            streamId = rawDataWord(currentWord);
+            currentWord++; // 2
+            if (hasClassId)
+            {
+                organizationallyUniqueId = (int) (rawDataWord(currentWord) & 0x0FFFFFFF);
+                currentWord++; // 3
+                informationClassCode = (int) ((rawDataWord(currentWord) & 0xFFFF0000) >> 16);
+                packetClassCode = (int) (rawDataWord(currentWord) & 0x0000FFFF);
+                currentWord++; // 4
+            }
+            // Decode integer-seconds timestamp if the type indicates that one is present
+            if (timestampIntType > 0)
+            {
+                timestampInt = rawDataWord(currentWord);
+                currentWord++; // 5
+            }
+            // Decode fractional-seconds timestamp if the type indicates that one is present
+            if (timestampFracType > 0)
+            {
+                uint64_t timestampFracTmp;
+                timestampFracTmp = (uint64_t)(rawDataWord(currentWord));
+                timestampFracTmp = timestampFracTmp << 32;
+                timestampFracTmp = timestampFracTmp + rawDataWord(currentWord + 1);
+                timestampFrac = timestampFracTmp;
+                currentWord += 2; // 6,7
+            }
+        } 
+        else if (vitaType > 0)
         {
             frameAlignmentWord = (uint32_t)(rawDataWord(0));
             frameCount = (int) ((rawDataWord(1) & 0xFFF00000) >> 20);
@@ -200,7 +239,7 @@ namespace LibCyberRadio
                 // << std::endl;
                 currentWord += 2;
             }
-        }
+        } 
         // Decode I/Q payload data
         // -- Calculate the number of samples in the payload
         samples = payloadSize / sizeof(int16_t) / 2;
@@ -380,7 +419,40 @@ namespace LibCyberRadio
         std::ostringstream oss;
         if ( vitaType == 0 )
         {
-            oss << "I/Q PACKET\n";
+            oss << "VITA 49 PACKET\n"
+                    // << "    raw=" << rawDataHex() << "\n"
+                    << "    type=" << vitaType << "\n"
+                    << "    Frame Details\n"
+                    << "        count=" << VALUE_DEC_HEX(frameCount, 32) << "\n"
+                    << "        size=" << VALUE_DEC_HEX(frameSize, 32) << "\n"
+                    << "        align word=" << VALUE_DEC_HEX(frameAlignmentWord, 32) << "\n";
+            if ( hasTrailer )
+                oss << "        trail word=" << VALUE_DEC_HEX(frameTrailerWord, 32) << "\n";
+            oss << "    Packet Details\n"
+                    << "        type=" << VALUE_DEC_HEX(packetType, 32) << "\n"
+                    << "        count=" << VALUE_DEC_HEX(packetCount, 32) << "\n"
+                    << "        size=" << VALUE_DEC_HEX(packetSize, 32) << "\n"
+                    << "        timestamp types: int=" << VALUE_DEC_HEX(timestampIntType, 32)
+                    << " frac=" << VALUE_DEC_HEX(timestampFracType, 32)
+                    << "\n";
+            if ( (packetType == 1) || (packetType == 3) )
+            {
+                oss << "        stream ID=" << VALUE_DEC_HEX(streamId, 32) << "\n";
+            }
+            if ( hasClassId )
+            {
+                oss << "        class ID: OUI=" << VALUE_DEC_HEX(organizationallyUniqueId, 32)
+                    << " ICC=" << VALUE_DEC_HEX(informationClassCode, 32)
+                    << " PCC=" << VALUE_DEC_HEX(packetClassCode, 32)
+                    << "\n";
+            }
+            if ( timestampIntType > 0 )
+            {
+                oss << "        timestamp: int=" << VALUE_DEC_HEX(timestampInt, 32);
+                if ( timestampFracType > 0 )
+                    oss << " frac=" << VALUE_DEC_HEX(timestampFrac, 64);
+                oss << "\n";
+            }
         } else if ( vitaType == 551 ) {
             oss << "NDR551 Packet\n";
             oss << "    Packet Details\n"
@@ -445,6 +517,11 @@ namespace LibCyberRadio
                     << ": i=" << VALUE_HEX(getSampleI(sample), 16)
                     << " q=" << VALUE_HEX(getSampleQ(sample), 16)
                     << "\n";
+        }
+        
+        if ( hasTrailer )
+        {
+            oss << "Trailer " << VALUE_DEC_HEX(frameTrailerWord, 32) << "\n";
         }
         oss << "[END PACKET]";
         return oss.str();

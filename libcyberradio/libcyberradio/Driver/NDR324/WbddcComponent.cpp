@@ -1,6 +1,6 @@
 /***************************************************************************
  * \file WbddcComponent.cpp
- * \brief Defines the WBDDC interface for the NDR551.
+ * \brief Defines the WBDDC interface for the NDR324.
  * \author DA
  * \author NH
  * \author MN
@@ -8,7 +8,7 @@
  *
  ***************************************************************************/
 
-#include "LibCyberRadio/Driver/NDR551/WbddcComponent.h"
+#include "LibCyberRadio/Driver/NDR324/WbddcComponent.h"
 #include "LibCyberRadio/Driver/RadioHandler.h"
 #include <boost/format.hpp>
 #include <jsoncpp/json/json.h>
@@ -21,7 +21,7 @@ namespace LibCyberRadio
     namespace Driver
     {
 
-        namespace NDR551
+        namespace NDR324
         {
 
             WbddcComponent::WbddcComponent(int index,
@@ -32,9 +32,9 @@ namespace LibCyberRadio
                      int udpDestination,
                      int vitaEnable,
                      int streamId) :
-                m551Parent( parent ),
+                m324Parent( parent ),
                 ::LibCyberRadio::Driver::WbddcComponent(
-                        /* const std::string& name */ (boost::format("NDR551-WBDDC%02d") % \
+                        /* const std::string& name */ (boost::format("NDR324-WBDDC%02d") % \
                                 index).str(),
                         /* int index */ index,
                         /* ::LibCyberRadio::Driver::RadioHandler* parent */ parent,
@@ -55,23 +55,21 @@ namespace LibCyberRadio
                         /* int vitaEnable */ vitaEnable,
                         /* unsigned int streamId */ streamId)
             {
-                this->debug("[NDR551::WbddcComponent] index - %d\n", index);
+                this->debug("[NDR324::WbddcComponent] index - %d\n", index);
                 
                 initConfigurationDict();
                 // Set rate set
-                _rateSet[40] = 128.0e6;
-                _rateSet[39] = 64.0e6;
-                _rateSet[38] = 32.0e6;
-                _rateSet[37] = 32.0e6;
-                _rateSet[36] = 16.0e6;
-                _rateSet[35] = 16.0e6;
-                _rateSet[34] = 16.0e6;
-                _rateSet[33] = 8.0e6;
-                _rateSet[32] = 8.0e6;
+                _rateSet[0] = 225.28e6;
+                _rateSet[1] = 168.96e6;
+                _rateSet[2] = 42.24e6;
+                _rateSet[3] = 21.12e6;
+                _rateSet[4] = 10.56e6;
+                _rateSet[5] = 660e3;
             }
 
             WbddcComponent::~WbddcComponent()
             {
+
             }
 
             WbddcComponent::WbddcComponent(const WbddcComponent& other) :
@@ -132,7 +130,7 @@ namespace LibCyberRadio
             bool WbddcComponent::setConfiguration(ConfigurationDict& cfg)
             {
                 bool ret = false;
-                this->debug("[NDR551WbddcComponent::setConfiguration] Called\n");
+                this->debug("[NDR324WbddcComponent::setConfiguration] Called\n");
                 // Setup the JSON Command.
                 Json::Value command;
                 Json::Value params;
@@ -173,7 +171,7 @@ namespace LibCyberRadio
 
             void WbddcComponent::updateConfigurationDict()
             {
-                this->debug("[NDR551WbddcComponent::updateConfigurationDict] Called\n");
+                this->debug("[NDR324WbddcComponent::updateConfigurationDict] Called\n");
                 RadioComponent::updateConfigurationDict();
                 if ( _config.hasKey("filter") )
                     setConfigurationValueToInt("filter", _rateIndex);
@@ -269,32 +267,30 @@ namespace LibCyberRadio
                 Json::Value returnVal; 
                 std::string t = rsp.at(0);
                 bool parsingSuccessful = reader.parse( t.c_str(), returnVal );     //parse process
-                if( parsingSuccessful && returnVal.isMember("result") ) { 
-                    _enabled = boost::lexical_cast<bool>(returnVal["result"]["enable"].asBool());
-                    _frequency = boost::lexical_cast<double>(returnVal["result"]["offset"].asDouble());
-                    _source = boost::lexical_cast<int>(returnVal["result"]["rfch"].asString());
-                    _dataPort = boost::lexical_cast<int>(returnVal["result"]["link"].asInt());
-                    _udpDestination = boost::lexical_cast<int>(returnVal["result"]["dest"].asInt());
-                    _rateIndex = boost::lexical_cast<int>(returnVal["result"]["filter"].asInt());
-                    _streamId = boost::lexical_cast<int>(returnVal["result"]["vita"].asUInt());
-                    _ovs = boost::lexical_cast<int>(returnVal["result"]["ovs"].asInt());
-                    _decimation = boost::lexical_cast<int>(returnVal["result"]["decimation"].asInt());
-                    _type = boost::lexical_cast<std::string>(returnVal["result"]["type"].asString());
-                    _mode = boost::lexical_cast<std::string>(returnVal["result"]["mode"].asString());
-                    _dgv = boost::lexical_cast<int>(returnVal["result"]["dgv"].asInt());
-                    _dul = boost::lexical_cast<int>(returnVal["result"]["dul"].asInt());
-                    _dll = boost::lexical_cast<int>(returnVal["result"]["dll"].asInt());
-                    _dtl = boost::lexical_cast<int>(returnVal["result"]["dtl"].asInt());
-                    _dal = boost::lexical_cast<int>(returnVal["result"]["dal"].asInt());
-                    _ddl = boost::lexical_cast<int>(returnVal["result"]["ddl"].asInt());
-                    _dao = boost::lexical_cast<int>(returnVal["result"]["dao"].asInt());
-                    _ddo = boost::lexical_cast<int>(returnVal["result"]["ddo"].asInt());
-                    _datc = boost::lexical_cast<int>(returnVal["result"]["datc"].asInt());
-                    _ddtc = boost::lexical_cast<int>(returnVal["result"]["ddtc"].asInt());
-                    _dat = boost::lexical_cast<int>(returnVal["result"]["dat"].asInt());
-                    _ddt = boost::lexical_cast<int>(returnVal["result"]["ddt"].asInt());
-                    updateConfigurationDict();
-                }
+                _enabled = boost::lexical_cast<bool>(returnVal["result"]["enable"].asBool());
+                _frequency = boost::lexical_cast<double>(returnVal["result"]["offset"].asDouble());
+                _source = boost::lexical_cast<int>(returnVal["result"]["rfch"].asInt());
+                _dataPort = boost::lexical_cast<int>(returnVal["result"]["link"].asInt());
+                _udpDestination = boost::lexical_cast<int>(returnVal["result"]["dest"].asInt());
+                _rateIndex = boost::lexical_cast<int>(returnVal["result"]["filter"].asInt());
+                _streamId = boost::lexical_cast<int>(returnVal["result"]["vita"].asUInt());
+                _ovs = boost::lexical_cast<int>(returnVal["result"]["ovs"].asInt());
+                _decimation = boost::lexical_cast<int>(returnVal["result"]["decimation"].asInt());
+                _type = boost::lexical_cast<std::string>(returnVal["result"]["type"].asString());
+                _mode = boost::lexical_cast<std::string>(returnVal["result"]["mode"].asString());
+                _dgv = boost::lexical_cast<int>(returnVal["result"]["dgv"].asInt());
+                _dul = boost::lexical_cast<int>(returnVal["result"]["dul"].asInt());
+                _dll = boost::lexical_cast<int>(returnVal["result"]["dll"].asInt());
+                _dtl = boost::lexical_cast<int>(returnVal["result"]["dtl"].asInt());
+                _dal = boost::lexical_cast<int>(returnVal["result"]["dal"].asInt());
+                _ddl = boost::lexical_cast<int>(returnVal["result"]["ddl"].asInt());
+                _dao = boost::lexical_cast<int>(returnVal["result"]["dao"].asInt());
+                _ddo = boost::lexical_cast<int>(returnVal["result"]["ddo"].asInt());
+                _datc = boost::lexical_cast<int>(returnVal["result"]["datc"].asInt());
+                _ddtc = boost::lexical_cast<int>(returnVal["result"]["ddtc"].asInt());
+                _dat = boost::lexical_cast<int>(returnVal["result"]["dat"].asInt());
+                _ddt = boost::lexical_cast<int>(returnVal["result"]["ddt"].asInt());
+                updateConfigurationDict();
                 this->debug("[WbddcComponent::queryConfiguration] Returning\n");
             }
 
@@ -310,7 +306,8 @@ namespace LibCyberRadio
                 if ( (_parent != NULL) && (_parent->isConnected()) )
                 {
                     Json::Value root(Json::objectValue);
-                    root["msg"] = m551Parent->getMessageId();
+                    root["msg"] = m324Parent->getMessageId();
+                    root["cmd"] = "qwbddc";
                     Json::Value params(Json::objectValue);
                     params["id"] = index;
                     root["params"] = params;
@@ -337,7 +334,7 @@ namespace LibCyberRadio
                 if ( (_parent != NULL) && (_parent->isConnected()) )
                 {
                     Json::Value root(Json::objectValue);
-                    root["msg"] = m551Parent->getMessageId();
+                    root["msg"] = m324Parent->getMessageId();
                     root["cmd"] = "wbddc";
                     Json::Value params(Json::objectValue);
                     params["id"] = index;
@@ -363,12 +360,12 @@ namespace LibCyberRadio
                 if ( (_parent != NULL) && (_parent->isConnected()) )
                 {
                     Json::Value root(Json::objectValue);
-                    root["msg"] = m551Parent->getMessageId();
+                    root["msg"] = m324Parent->getMessageId();
                     root["cmd"] = "wbddc";
                     Json::Value params(Json::objectValue);
                     params["id"] = index;
                     
-                    params["rfch"] = std::to_string(source);
+                    params["rfch"] = source;
                     root["params"] = params;
                     Json::FastWriter fastWriter;
                     std::string output = fastWriter.write(root);
@@ -389,7 +386,7 @@ namespace LibCyberRadio
                 if ( (_parent != NULL) && (_parent->isConnected()) )
                 {
                     Json::Value root(Json::objectValue);
-                    root["msg"] = m551Parent->getMessageId();
+                    root["msg"] = m324Parent->getMessageId();
                     root["cmd"] = "wbddc";
                     Json::Value params(Json::objectValue);
                     params["id"] = index;
@@ -417,7 +414,7 @@ namespace LibCyberRadio
                 if ( (_parent != NULL) && (_parent->isConnected()) )
                 {
                     Json::Value root(Json::objectValue);
-                    root["msg"] = m551Parent->getMessageId();
+                    root["msg"] = m324Parent->getMessageId();
                     root["cmd"] = "wbddc";
                     Json::Value params(Json::objectValue);
                     params["id"] = index;
@@ -428,6 +425,7 @@ namespace LibCyberRadio
                     root["params"] = params;
                     Json::FastWriter fastWriter;
                     std::string output = fastWriter.write(root);
+                    this->debug("CMD: %s\n", output.c_str());
                     LibCyberRadio::BasicStringList recv = _parent->sendCommand(output,1.0);
                     Json::Reader reader;
                     Json::Value returnVal; 
@@ -440,6 +438,7 @@ namespace LibCyberRadio
 
             bool WbddcComponent::setRateIndex(int index)
             {
+                this->debug("Index: %d\n", index);
                 bool ret = false;
                 if ( _config.hasKey("filter") )
                 {
@@ -448,6 +447,7 @@ namespace LibCyberRadio
                     int adjVita = _vitaEnable;
                     unsigned int adjStream = _streamId;
                     bool adjEnabled = _enabled;
+                    this->debug("Index: %d\n", index);
                     ret = executeWbddcCommand(_index, adjRateIndex, adjUdpDest, adjEnabled, adjVita, adjStream);
                     if ( ret )
                     {
@@ -510,7 +510,7 @@ namespace LibCyberRadio
                 return ret;
             }
 
-        } /* namespace NDR551 */
+        } /* namespace NDR324 */
 
     } // namespace Driver
 
