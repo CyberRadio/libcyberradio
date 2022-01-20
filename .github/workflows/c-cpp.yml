@@ -2,9 +2,9 @@ name: libcyberradio build
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build-ubuntu18-04:
