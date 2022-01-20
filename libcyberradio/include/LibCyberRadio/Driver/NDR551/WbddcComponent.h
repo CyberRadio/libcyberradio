@@ -121,6 +121,7 @@ namespace LibCyberRadio
                     bool setRateIndex(int index) override;
                     bool setSource(int source) override;
                     bool setUdpDestination(int dest) override;
+                    bool setFrequency(double freq) override;
 
                 private:
                     ::LibCyberRadio::Driver::RadioHandler* m551Parent;
