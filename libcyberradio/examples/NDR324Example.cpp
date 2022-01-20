@@ -10,8 +10,10 @@
 #include "LibCyberRadio/Driver/Driver.h"
 #include "LibCyberRadio/Common/VitaIqSource.h"
 #include <jsoncpp/json/json.h>
+#include <volk/volk.h>
 #include <unistd.h>
 #include <iostream>
+#include <fstream>
 
 /**
  * \brief Provides application functionality.
@@ -30,7 +32,7 @@ class App : public LibCyberRadio::App
             _frequency(900e6),
             _attenuation(0.0),
             _dwellTime(10),
-            _host("ndr551")
+            _host("192.168.0.10")
         {
             description = "NDR324 Data Streaming Example";
             version = "21.12.03";
@@ -84,8 +86,54 @@ class App : public LibCyberRadio::App
             std::shared_ptr<LibCyberRadio::Driver::RadioHandler> handler =
                     LibCyberRadio::Driver::getRadioObject("ndr324", _host,
                                                           -1, _verbose);
+            std::cout << "-- Vita Header  : " << handler->getVitaHeaderSize() << std::endl;
+            std::cout << "-- Vita Payload : " << handler->getVitaPayloadSize() << std::endl;
+            std::cout << "-- Vita Trailer : " << handler->getVitaTailSize() << std::endl;
+            //handler->setWbddcFrequency(0, 1000000.0);
+            /* Setup for Vita Recv */
+            LibCyberRadio::VitaIqSource *vitaSource = 
+                    new LibCyberRadio::VitaIqSource("NDR358IQ", 
+                            324, 
+                            handler->getVitaPayloadSize(), 
+                            handler->getVitaHeaderSize(),
+                            handler->getVitaTailSize(), 
+                            true, false, "0.0.0.0", 4991, _verbose);
+            
+            int n_recv = 0;
+            //std::ofstream datFile;
+            FILE * fp = fopen("/mnt/ramdisk/dataout.f32c", "wb");
+            //datFile.open("/mnt/ramdisk/dataout.f32c", std::ios::out | std::ios::binary);
+            float * dataSamples = (float *)volk_malloc(2048 * sizeof(float), volk_get_alignment());
+            int16_t * temp = (int16_t *)volk_malloc(4096 * sizeof(int16_t), volk_get_alignment());
+            LibCyberRadio::Vita49PacketVector packets;
+            packets.reserve(1000);
+            //for (int i = 0; i < 100; i++)
+            //{
+                n_recv += vitaSource->getPackets(1000, packets);
+                for( auto it = packets.begin(); it < packets.end(); ++it )
+                {
+                    std::memset(dataSamples, 0, sizeof(float) * 2048);
+                    std::memset(temp, 0, sizeof(int16_t) * 4096);
+                    std::memcpy(temp, it->sampleData, sizeof(int16_t) * 4096);
+                    volk_32u_byteswap((uint32_t *)temp, 8224/4);
+                    volk_16i_s32f_convert_32f(dataSamples, temp, 32768.0, 2*2048);
+                    fwrite(dataSamples, sizeof(float) * 2048, 1, fp);
+                    //datFile.write( reinterpret_cast<const char *>( &dataSamples ), sizeof( float ) * 2048);
+                }
+            //}
+            //datFile.flush();
+            //datFile.close();
+            fflush( fp );
+            fclose( fp );
+            //sleep( 10 );
+            //volk_free( dataSamples );
+            //volk_free( temp );
+            std::cout << "RX: " << n_recv << std::endl;
+
+            std::cout << packets.size() << std::endl;
+            
         }
-#if 0        
+/*******************************************************************************
             if ( (handler != NULL) && handler->isConnected() )
             {
                 std::cout << "-- Connect SUCCESS" << std::endl;
@@ -174,7 +222,7 @@ class App : public LibCyberRadio::App
                 ret = 1;
             }
             
-            /* Setup for Vita Recv */
+            // Setup for Vita Recv 
             LibCyberRadio::VitaIqSource *vitaSource = 
                     new LibCyberRadio::VitaIqSource("NDR358IQ", 
                             551, 
@@ -202,7 +250,7 @@ class App : public LibCyberRadio::App
             std::cout << "DONE" << std::endl;
             return ret;
         }
-#endif
+******************************************************************************/
         /**
          * \brief Dumps a configuration dictionary to standard output.
          * \param cfg Configuration dictionary.

@@ -44,6 +44,7 @@ namespace LibCyberRadio
         // Determine packet size
         d_packet_size = (vita_type == 0 ? payload_size : vita_header_size + payload_size + vita_tail_size);
         // Create UDP port for collecting data
+        this->debug(" -- Packet Size: %d\n", d_packet_size);
         connect_udp_port();
     }
 

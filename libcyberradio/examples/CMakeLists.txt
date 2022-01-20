@@ -175,19 +175,20 @@ INSTALL(FILES ${ndr358example_sources}
    DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
    )
 
-   LIST(APPEND ndr324example_sources
-        NDR324Example.cpp)
-   SET(ndr324example_executable NDR324Example)
-   ADD_EXECUTABLE(${ndr324example_executable} ${ndr324example_sources})
-   TARGET_LINK_LIBRARIES(${ndr324example_executable}
-                    cyberradio 
-                    )
-   LINK_DIRECTORIES(
-   ${CMAKE_BINARY_DIR}/libcyberradio}
-   )
-   INSTALL(TARGETS ${ndr324example_executable}
-      RUNTIME DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
-      )
-   INSTALL(FILES ${ndr324example_sources}
-      DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
-      )
+LIST(APPEND ndr324example_sources NDR324Example.cpp)
+SET(ndr324example_executable NDR324Example)
+ADD_EXECUTABLE(${ndr324example_executable} ${ndr324example_sources})
+find_package(Volk)
+TARGET_LINK_LIBRARIES(${ndr324example_executable}
+                cyberradio
+                volk
+                )
+LINK_DIRECTORIES(
+        ${CMAKE_BINARY_DIR}/libcyberradio}
+)
+INSTALL(TARGETS ${ndr324example_executable}
+        RUNTIME DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
+)
+INSTALL(FILES ${ndr324example_sources}
+DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
+)

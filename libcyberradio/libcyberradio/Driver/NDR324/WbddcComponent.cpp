@@ -458,6 +458,22 @@ namespace LibCyberRadio
                 return ret;
             }
 
+            bool WbddcComponent::setFrequency(double freq)
+            {
+                bool ret = false;
+                if ( _tunable && _config.hasKey("offset") )
+                {
+                    double adjFreq = freq;
+                    ret = executeFreqCommand(_index, adjFreq);
+                    if ( ret )
+                    {
+                        _frequency = adjFreq;
+                        updateConfigurationDict();
+                    }
+                }
+                return ret;
+            }
+
             bool WbddcComponent::setSource(int source)
             {
                 bool ret = false;
