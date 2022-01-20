@@ -12,7 +12,7 @@
 #include "LibCyberRadio/Driver/RadioHandler.h"
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 
 namespace LibCyberRadio
 {

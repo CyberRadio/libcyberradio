@@ -9,7 +9,7 @@
 #include "LibCyberRadio/Common/App.h"
 #include "LibCyberRadio/Driver/Driver.h"
 #include "LibCyberRadio/Common/VitaIqSource.h"
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 #include <unistd.h>
 #include <iostream>
 

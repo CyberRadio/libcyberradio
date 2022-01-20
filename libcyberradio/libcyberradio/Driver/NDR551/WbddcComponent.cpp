@@ -11,7 +11,7 @@
 #include "LibCyberRadio/Driver/NDR551/WbddcComponent.h"
 #include "LibCyberRadio/Driver/RadioHandler.h"
 #include <boost/format.hpp>
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 

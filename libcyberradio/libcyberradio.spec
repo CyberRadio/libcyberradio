@@ -39,10 +39,10 @@ CyberRadio Solutions radios.
 
 %build
 # FEDORA 28 HACK -- jsoncpp-devel on Fedora 28 puts its include files
-# in /usr/include/json rather than /usr/include/jsoncpp/json, so look
+# in /usr/include/json rather than /usr/include/json, so look
 # for jsoncpp paths and replace them accordingly. -- DA
 %if "RPM_PKG_OS" == "fedora"
-grep -rlZ "jsoncpp/json" . | xargs -r -0 sed -i -e 's|jsoncpp/json|json|g'
+grep -rlZ "json" . | xargs -r -0 sed -i -e 's|json|json|g'
 %endif
 # Uncomment the build steps necessary for the project you are building.
 # -- Makefile project: Just the "%{__make}" step

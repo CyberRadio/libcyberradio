@@ -17,7 +17,7 @@
 //#include "LibCyberRadio/Driver/NDR551/WbddcGroupComponent.h"
 //#include "LibCyberRadio/Driver/NDR551/NbddcGroupComponent.h"
 #include "LibCyberRadio/Common/Pythonesque.h"
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 #include <sstream>
 #include <cstdio>
 #include <iostream>

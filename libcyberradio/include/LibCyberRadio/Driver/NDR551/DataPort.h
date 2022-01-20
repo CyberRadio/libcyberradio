@@ -12,7 +12,7 @@
 #define INCLUDED_LIBCYBERRADIO_DRIVER_NDR551_DATAPORT_H
 
 #include "LibCyberRadio/Driver/DataPort.h"
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 #include <boost/lexical_cast.hpp>
 #include <string>
 

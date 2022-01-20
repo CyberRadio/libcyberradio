@@ -16,9 +16,10 @@
 
 FIND_PATH( JSONCPP_INCLUDE_DIR
            NAMES json/json.h json.h
-           HINTS "${JSONCPP_HINTS}/include"
+           HINTS "${JSONCPP_HINTS}/include" "/usr/include/jsoncpp"
            PATHS /usr/include/jsoncpp
 )
+MESSAGE(STATUS "--- JsonCpp Include Dir: ${JSONCPP_INCLUDE_DIR}" )
 
 FIND_LIBRARY( JSONCPP_LIB
               NAMES jsoncpp
