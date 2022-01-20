@@ -242,6 +242,7 @@ namespace LibCyberRadio
                         _versionInfo["serialNumber"] = "SNxxxx";
                     }
                 }
+                return true;
             }
 
             bool RadioHandler::queryVersionInfo()

@@ -403,6 +403,7 @@ namespace LibCyberRadio
                 root["params"] = params;
                 Json::FastWriter fastWriter;
                 std::string output = fastWriter.write(root);
+                return ret;
             }
 
         } /* namespace NDR551 */
