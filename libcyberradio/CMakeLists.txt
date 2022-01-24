@@ -18,6 +18,13 @@ SET(PROJECT_NAME "libcyberradio"
 SET(PROJECT_VERSION ${PACKAGE_VERSION}
     CACHE STRING "Project version number" FORCE)
 
+OPTION(BuildExamples "Examples" ON)
+IF ( BuildExamples )
+    SET(EXAMPLES_ENABLED ON)
+ELSE()
+    SET(EXAMPLES_ENABLED OFF)
+ENDIF( BuildExamples )
+
 # Select the release build type by default to get optimization flags
 IF(NOT CMAKE_BUILD_TYPE)
    SET(CMAKE_BUILD_TYPE "Release")
