@@ -175,10 +175,24 @@ INSTALL(FILES ${ndr358example_sources}
    DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
    )
 
+########################################################################
+# NDR324 Example
+#
+# NOTE: Only the source code is installed for this example. Building
+#    the example introduces a dependency on GNU Radio that we do not
+#    want, as nothing else in the library relies on it.
+#
+########################################################################
 LIST(APPEND ndr324example_sources NDR324Example.cpp)
 SET(ndr324example_executable NDR324Example)
 ADD_EXECUTABLE(${ndr324example_executable} ${ndr324example_sources})
 find_package(Volk)
+IF(VOLK_FOUND)
+    MESSAGE(STATUS "Found Volk")
+ELSE()
+        MESSAGE(FATAL_ERROR "libvolk required to build ${PROJECT_NAME}")
+ENDIF(VOLK_FOUND)
+
 TARGET_LINK_LIBRARIES(${ndr324example_executable}
                 cyberradio
                 volk
@@ -190,5 +204,5 @@ INSTALL(TARGETS ${ndr324example_executable}
         RUNTIME DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
 )
 INSTALL(FILES ${ndr324example_sources}
-DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
+        DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
 )

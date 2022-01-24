@@ -138,6 +138,7 @@ ELSE()
 ENDIF(UNIX AND NOT EXISTS "/etc/debian_version" AND EXISTS "/usr/lib64")
 SET(LIBCYBERRADIO_BINARY_DIR       bin)
 SET(LIBCYBERRADIO_DATA_DIR         share)
+SET(LIBCYBERRADIO_PKGCONF_DIR      ${LIBCYBERRADIO_DATA_DIR}/pkgconfig)
 SET(LIBCYBERRADIO_PKG_DATA_DIR     ${LIBCYBERRADIO_DATA_DIR}/${PROJECT_NAME})
 SET(LIBCYBERRADIO_DOC_DIR          ${LIBCYBERRADIO_DATA_DIR}/doc)
 SET(LIBCYBERRADIO_PKG_DOC_DIR      ${LIBCYBERRADIO_DOC_DIR}/${PROJECT_NAME})
@@ -207,6 +208,53 @@ ADD_CUSTOM_TARGET(uninstall
 ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(libcyberradio)
 ADD_SUBDIRECTORY(examples)
+
+########################################################################
+# Create Pkg Config File
+########################################################################
+foreach(inc ${Boost_INCLUDE_DIRS})
+    list(APPEND CYBERRADIO_PC_CFLAGS "-I${inc}")
+endforeach(inc)
+
+foreach(inc ${PCAP_INCLUDE_DIRS})
+    list(APPEND CYBERRADIO_PC_CFLAGS "-I${inc}")
+endforeach(inc)
+
+foreach(inc ${CURL_INCLUDE_DIRS})
+    list(APPEND CYBERRADIO_PC_CFLAGS "-I${inc}")
+endforeach(inc)
+
+foreach(inc ${JSONCPP_INCLUDE_DIR})
+    list(APPEND CYBERRADIO_PC_CFLAGS "-I${inc}")
+endforeach(inc)
+
+foreach(lib ${Boost_LIBRARY_DIRS})
+    list(APPEND CYBERRADIO_PC_LIBS "-L${lib}")
+endforeach(lib)
+
+foreach(lib ${PCAP_LIBRARY_DIR})
+    list(APPEND CYBERRADIO_PC_LIBS "-L${lib}")
+endforeach(lib)
+
+foreach(lib ${JSONCPP_LIB_DIR})
+    list(APPEND CYBERRADIO_PC_LIBS "-L${lib}")
+endforeach(lib)
+
+#use space-separation format for the pc file
+string(REPLACE ";" " " CYBERRADIO_PC_REQUIRES "${CYBERRADIO_PC_REQUIRES}")
+string(REPLACE ";" " " CYBERRADIO_PC_CFLAGS "${CYBERRADIO_PC_CFLAGS}")
+string(REPLACE ";" " " CYBERRADIO_PC_LIBS "${CYBERRADIO_PC_LIBS}")
+
+configure_file(
+    ${CMAKE_SOURCE_DIR}/CyberRadio.pc.in 
+    ${CMAKE_CURRENT_BINARY_DIR}/CyberRadio.pc 
+    @ONLY
+)
+
+INSTALL(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/CyberRadio.pc
+    DESTINATION ${LIBCYBERRADIO_PKGCONF_DIR}
+)
 
 ########################################################################
 # Doxygen Support
