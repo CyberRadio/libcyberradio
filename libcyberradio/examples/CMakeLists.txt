@@ -1,5 +1,5 @@
 IF( EXAMPLES_ENABLED )
-
+        MESSAGE(STATUS "Examples Enabled, use -DBuildExamples=OFF to disble building Examples") 
         ########################################################################
         # Example Applications
         ########################################################################
@@ -208,6 +208,5 @@ IF( EXAMPLES_ENABLED )
         INSTALL(FILES ${ndr324example_sources}
                 DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
         )
-ELSE()
-        MESSAGE(STATUS "Use -DXMAPLES_ENABLED=TRUE to enable building Examples")        
+               
 ENDIF( EXAMPLES_ENABLED )        

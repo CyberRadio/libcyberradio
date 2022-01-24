@@ -7,7 +7,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 # NOTE: Update this default package version string when there is a 
 #    new library release!
 IF("${PACKAGE_VERSION}" STREQUAL "")
-   SET(PACKAGE_VERSION "22.01.06"
+   SET(PACKAGE_VERSION "22.01.24"
        CACHE STRING "Package version number" FORCE)
 ENDIF("${PACKAGE_VERSION}" STREQUAL "")
 
@@ -18,7 +18,7 @@ SET(PROJECT_NAME "libcyberradio"
 SET(PROJECT_VERSION ${PACKAGE_VERSION}
     CACHE STRING "Project version number" FORCE)
 
-OPTION(BuildExamples "Examples" ON)
+OPTION(BuildExamples "Examples" OFF)
 IF ( BuildExamples )
     SET(EXAMPLES_ENABLED ON)
 ELSE()
