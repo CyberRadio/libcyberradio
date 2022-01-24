@@ -15,6 +15,9 @@ successfully:
 * A C++ compiler with C++11 support (for example, g++ 4.8 or later)
 * CMake 2.6 or later
 * Boost headers and libraries, version 1.47 or later
+* Pcap headers and libraries, version 0.8 or later
+* JsonCpp headers and libraries, version 1.7.2 or later
+* Volk headers and libraries, version 1.2.1 or later
 * Doxygen for automatic documentation generation
 
 

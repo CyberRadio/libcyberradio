@@ -1,0 +1,15 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/@LIBRARY_DIR@
+includedir=${prefix}/@INCLUDE_DIR@
+
+Name: @PROJECT_NAME@
+Description: @CMAKE_PROJECT_DESCRIPTION@
+URL: https://github.com/CyberRadio/libcyberradio
+Version: @PROJECT_VERSION@
+Requires: 
+Requires.private: @CYBERRADIO_PC_REQUIRES@
+Conflicts:
+Cflags: -I${includedir} @CYBERRADIO_PC_CFLAGS@
+Libs: -L${libdir} -luhd -lboost_system
+Libs.private: @CYBERRADIO_PC_LIBS@
