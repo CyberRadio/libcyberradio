@@ -209,5 +209,5 @@ IF( EXAMPLES_ENABLED )
                 DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
         )
 ELSE()
-        MESSAGE(STATUS "Use -DXMAPLES_ENABLED=TRUE to enable building Examples")        
+        MESSAGE(STATUS "Use -DEXMAPLES_ENABLED=TRUE to enable building Examples")        
 ENDIF( EXAMPLES_ENABLED )        
