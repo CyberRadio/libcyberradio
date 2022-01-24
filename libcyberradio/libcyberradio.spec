@@ -112,6 +112,7 @@ CyberRadio Solutions radios.
 #%{python_sitelib}/*
 # -- Projects that generate auxiliary files under /usr/share/<name>
 %{_datadir}/%{name}/*
+%{_datadir}/pkgconfig/CyberRadio.pc
 # -- Projects that generate app shortcuts under /usr/share/applications
 #%{_datadir}/applications/*
 
