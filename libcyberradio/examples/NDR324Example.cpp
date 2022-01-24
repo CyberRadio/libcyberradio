@@ -132,6 +132,7 @@ class App : public LibCyberRadio::App
 
             std::cout << packets.size() << std::endl;
             
+            return 0;
         }
 /*******************************************************************************
             if ( (handler != NULL) && handler->isConnected() )
