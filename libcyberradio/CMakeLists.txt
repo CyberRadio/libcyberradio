@@ -18,7 +18,7 @@ SET(PROJECT_NAME "libcyberradio"
 SET(PROJECT_VERSION ${PACKAGE_VERSION}
     CACHE STRING "Project version number" FORCE)
 
-OPTION(BuildExamples "Examples" ON)
+OPTION(BuildExamples "Examples" OFF)
 IF ( BuildExamples )
     SET(EXAMPLES_ENABLED ON)
 ELSE()
