@@ -11,14 +11,21 @@ IF("${PACKAGE_VERSION}" STREQUAL "")
        CACHE STRING "Package version number" FORCE)
 ENDIF("${PACKAGE_VERSION}" STREQUAL "")
 
+if (POLICY CMP0048)
+  cmake_policy(SET CMP0048 NEW)
+endif (POLICY CMP0048)
+
 # Set the project name and version
-PROJECT(libcyberradio CXX C)
+PROJECT(libcyberradio 
+        VERSION ${PACKAGE_VERSION}
+        LANGUAGES CXX C)
+
 SET(PROJECT_NAME "libcyberradio"
     CACHE STRING "Project name" FORCE)
 SET(PROJECT_VERSION ${PACKAGE_VERSION}
     CACHE STRING "Project version number" FORCE)
 
-OPTION(BuildExamples "Examples" OFF)
+OPTION(BuildExamples "Examples" ON)
 IF ( BuildExamples )
     SET(EXAMPLES_ENABLED ON)
 ELSE()
