@@ -69,8 +69,8 @@ jobs:
     - name: Build Package
       run: ./makedeb libcyberradio
     - name: Save Debian Archive
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: libcyberradio_ubuntu_jammy
-        path: ${{runner.workspace}}/libcyberradio*.deb
+        path: ./*.deb
 
