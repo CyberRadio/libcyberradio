@@ -2,7 +2,7 @@ name: libcyberradio build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, test_workflow ]
   pull_request:
     branches: [ main ]
 
