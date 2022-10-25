@@ -24,6 +24,11 @@ jobs:
       run: sudo apt-get install build-essential devscripts debhelper doxygen dh-python cmake
     - name: Save Debian Archive
       run: ./makedeb libcyberradio
+    - name: Save Debian Archive
+      uses: actions/upload-artifact@v2
+      with:
+        name: libcyberradio_ubuntu_bionic
+        path: ${{runner.workspace}}/libcyberradio*.deb
   build-ubuntu20-04:
     runs-on: ubuntu-20.04
     steps:
@@ -34,12 +39,18 @@ jobs:
     needs: ['build-ubuntu20-04']
     runs-on: ubuntu-20.04
     steps:
+    - uses: actions/checkout@v2
     - name: Install Build Deps
       run: sudo apt-get install libcurl4-openssl-dev libpcap-dev libjsoncpp-dev libboost-all-dev libvolk2-dev libvolk2.2
     - name: Install Package Deps
       run: sudo apt-get install build-essential devscripts debhelper doxygen dh-python cmake 
     - name: Build and Package
       run: ./makedeb libcyberradio
+    - name: Save Debian Archive
+      uses: actions/upload-artifact@v2
+      with:
+        name: libcyberradio_ubuntu_focal
+        path: ${{runner.workspace}}/libcyberradio*.deb
   build-ubuntu22-04:
     runs-on: ubuntu-22.04
     steps:
