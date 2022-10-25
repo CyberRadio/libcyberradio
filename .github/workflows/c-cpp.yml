@@ -34,14 +34,14 @@ jobs:
   #   - run: sudo apt-get install libcurl4-openssl-dev libpcap-dev libjsoncpp-dev libboost-all-dev libvolk2-dev libvolk2.5
   #   - run: sudo apt-get install build-essential devscripts debhelper doxygen dh-python
   #   - run: ./makedeb libcyberradio
-  build-ubuntu22-04:
-    runs-on: ubuntu-22.04
-    steps:
-    - uses: actions/checkout@v2
-    - run: sudo apt-get install libcurl4-openssl-dev libpcap-dev libjsoncpp-dev libboost-all-dev libvolk2-dev libvolk2.5
-    - run: cd libcyberradio/ && mkdir build && cd build && cmake ../ && make -j 10
+  # build-ubuntu22-04:
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - run: sudo apt-get install libcurl4-openssl-dev libpcap-dev libjsoncpp-dev libboost-all-dev libvolk2-dev libvolk2.5
+  #   - run: cd libcyberradio/ && mkdir build && cd build && cmake ../ && make -j 10
   release-ubuntu22-04:
-    needs: ['build-ubuntu22-04']
+    #needs: ['build-ubuntu22-04']
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
