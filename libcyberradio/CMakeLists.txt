@@ -12,13 +12,14 @@ IF("${PACKAGE_VERSION}" STREQUAL "")
 ENDIF("${PACKAGE_VERSION}" STREQUAL "")
 
 if (POLICY CMP0048)
-  cmake_policy(SET CMP0048 NEW)
-endif (POLICY CMP0048)
-
-# Set the project name and version
-PROJECT(libcyberradio 
+    cmake_policy(SET CMP0048 NEW)
+    # Set the project name and version
+    PROJECT(libcyberradio 
         VERSION ${PACKAGE_VERSION}
         LANGUAGES CXX C)
+else()
+    PROJECT(libcyberradio CXX C)
+endif (POLICY CMP0048)
 
 SET(PROJECT_NAME "libcyberradio"
     CACHE STRING "Project name" FORCE)
