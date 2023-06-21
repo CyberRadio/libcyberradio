@@ -19,7 +19,7 @@ Source: RPM_PKG_NAME-RPM_PKG_VERSION.tar.gz
 URL: http://www.cyberradiosolutions.com
 Vendor: CyberRadio Solutions, Inc.
 Packager: CyberRadio Solutions, Inc. <sales@cyberradiosolutions.com>
-BuildRequires: boost-devel >= 1.60
+BuildRequires: boost-devel >= 1.53
 BuildRequires: jsoncpp-devel
 BuildRequires: libpcap-devel
 BuildRequires: doxygen
