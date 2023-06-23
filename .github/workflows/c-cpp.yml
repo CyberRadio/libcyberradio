@@ -7,28 +7,28 @@ on:
   #  branches: [ main ]
 
 jobs:
-  build-ubuntu18-04:
-    runs-on: ubuntu-18.04
-    steps:
-    - uses: actions/checkout@v2
-    - run: sudo apt-get install libcurl4-openssl-dev libpcap-dev libjsoncpp-dev libboost-all-dev libvolk1-dev libvolk1.3 cmake
-    - run: cd libcyberradio/ && mkdir build && cd build && cmake ../ && make -j 10
-  release-ubuntu18-04:
-    needs: ['build-ubuntu18-04']
-    runs-on: ubuntu-18.04
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install Build Deps
-      run: sudo apt-get install libcurl4-openssl-dev libpcap-dev libjsoncpp-dev libboost-all-dev libvolk1-dev libvolk1.3
-    - name: Install Package Deps
-      run: sudo apt-get install build-essential devscripts debhelper doxygen dh-python cmake
-    - name: Save Debian Archive
-      run: ./makedeb libcyberradio
-    - name: Save Debian Archive
-      uses: actions/upload-artifact@v3
-      with:
-        name: libcyberradio_ubuntu_bionic
-        path: ./*.deb
+#   build-ubuntu18-04:
+#     runs-on: ubuntu-18.04
+#     steps:
+#     - uses: actions/checkout@v2
+#     - run: sudo apt-get install libcurl4-openssl-dev libpcap-dev libjsoncpp-dev libboost-all-dev libvolk1-dev libvolk1.3 cmake
+#     - run: cd libcyberradio/ && mkdir build && cd build && cmake ../ && make -j 10
+#   release-ubuntu18-04:
+#     needs: ['build-ubuntu18-04']
+#     runs-on: ubuntu-18.04
+#     steps:
+#     - uses: actions/checkout@v2
+#     - name: Install Build Deps
+#       run: sudo apt-get install libcurl4-openssl-dev libpcap-dev libjsoncpp-dev libboost-all-dev libvolk1-dev libvolk1.3
+#     - name: Install Package Deps
+#       run: sudo apt-get install build-essential devscripts debhelper doxygen dh-python cmake
+#     - name: Save Debian Archive
+#       run: ./makedeb libcyberradio
+#     - name: Save Debian Archive
+#       uses: actions/upload-artifact@v3
+#       with:
+#         name: libcyberradio_ubuntu_bionic
+#         path: ./*.deb
   build-ubuntu20-04:
     runs-on: ubuntu-20.04
     steps:
