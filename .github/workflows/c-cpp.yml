@@ -94,6 +94,6 @@ jobs:
     - name: Save Debian Archive
       uses: actions/upload-artifact@v3
       with:
-        name: libcyberradio_ubuntu_jammy
+        name: libcyberradio_ubuntu_nobel
         path: ./*.deb
 
