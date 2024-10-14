@@ -25,6 +25,7 @@
 #include "LibCyberRadio/Driver/VitaIfSpec.h"
 #include "LibCyberRadio/Driver/WbddcComponent.h"
 #include "LibCyberRadio/Driver/WbddcGroupComponent.h"
+#include <cstdint>
 #include <string>
 
 

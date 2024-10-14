@@ -185,28 +185,28 @@ IF( EXAMPLES_ENABLED )
         #    want, as nothing else in the library relies on it.
         #
         ########################################################################
-        LIST(APPEND ndr324example_sources NDR324Example.cpp)
-        SET(ndr324example_executable NDR324Example)
-        ADD_EXECUTABLE(${ndr324example_executable} ${ndr324example_sources})
-        find_package(Volk)
-        IF(VOLK_FOUND)
-        MESSAGE(STATUS "Found Volk")
-        ELSE()
-                MESSAGE(FATAL_ERROR "libvolk required to build ${PROJECT_NAME}")
-        ENDIF(VOLK_FOUND)
+	#LIST(APPEND ndr324example_sources NDR324Example.cpp)
+	#SET(ndr324example_executable NDR324Example)
+	#ADD_EXECUTABLE(${ndr324example_executable} ${ndr324example_sources})
+	#find_package(Volk)
+	#IF(VOLK_FOUND)
+	#MESSAGE(STATUS "Found Volk")
+	#ELSE()
+	#        MESSAGE(FATAL_ERROR "libvolk required to build ${PROJECT_NAME}")
+	#ENDIF(VOLK_FOUND)
 
-        TARGET_LINK_LIBRARIES(${ndr324example_executable}
-                        cyberradio
-                        volk
-                        )
-        LINK_DIRECTORIES(
-                ${CMAKE_BINARY_DIR}/libcyberradio}
-        )
-        INSTALL(TARGETS ${ndr324example_executable}
-                RUNTIME DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
-        )
-        INSTALL(FILES ${ndr324example_sources}
-                DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
-        )
+	#TARGET_LINK_LIBRARIES(${ndr324example_executable}
+	#                cyberradio
+	#                volk
+	#                )
+	#LINK_DIRECTORIES(
+	#        ${CMAKE_BINARY_DIR}/libcyberradio}
+	#)
+	#INSTALL(TARGETS ${ndr324example_executable}
+	#        RUNTIME DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
+	#)
+	#INSTALL(FILES ${ndr324example_sources}
+	#        DESTINATION ${LIBCYBERRADIO_EXAMPLES_DIR}
+	#)
                
 ENDIF( EXAMPLES_ENABLED )        
