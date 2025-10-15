@@ -80,6 +80,15 @@ if(OS_NAME MATCHES ".Ubuntu")
     elseif( OS_NAME MATCHES ".Ubuntu.18.04" )
         SET(BOOST_MIN_VERSION "1.65.1" CACHE STRING "boost min version" FORCE)
         message(STATUS "Detected Ubuntu 18.04, setting BOOST_MIN_VERSION: ${BOOST_MIN_VERSION}")
+    elseif( OS_NAME MATCHES ".Ubuntu.20.04" )
+        SET(BOOST_MIN_VERSION "1.71" CACHE STRING "boost min version" FORCE)
+        message(STATUS "Detected Ubuntu 20.04, setting BOOST_MIN_VERSION: ${BOOST_MIN_VERSION}")
+    elseif( OS_NAME MATCHES ".Ubuntu.22.04" )
+        SET(BOOST_MIN_VERSION "1.74" CACHE STRING "boost min version" FORCE)
+        message(STATUS "Detected Ubuntu 22.04, setting BOOST_MIN_VERSION: ${BOOST_MIN_VERSION}")
+    elseif( OS_NAME MATCHES ".Ubuntu.24.04" )
+        SET(BOOST_MIN_VERSION "1.83.0" CACHE STRING "boost min version" FORCE)
+        message(STATUS "Detected Ubuntu 24.04, setting BOOST_MIN_VERSION: ${BOOST_MIN_VERSION}")
     endif()
 elseif(OS_NAME MATCHES ".CentOS")
     SET(BOOST_MIN_VERSION "1.53" CACHE STRING "boost min version" FORCE)
@@ -111,7 +120,7 @@ SET(Boost_ADDITIONAL_VERSIONS
     "1.52.0" "1.52" "1.53.0" "1.53" "1.54.0" "1.54" "1.55.0" "1.55" "1.56.0" "1.56" 
     "1.57.0" "1.57" "1.58.0" "1.58" "1.59.0" "1.59" "1.60.0" "1.60" "1.61.0" "1.61" 
     "1.62.0" "1.62" "1.63.0" "1.63" "1.64.0" "1.64" "1.65" "1.65.1" "1.66.0" "1.66" 
-    "1.67.0" "1.67" "1.68.0" "1.68" "1.69.0" "1.69" "1.71.0" "1.71"
+    "1.67.0" "1.67" "1.68.0" "1.68" "1.69.0" "1.69" "1.71.0" "1.71" "1.83.0" "1.87"
 )
 message("Looking for boost minimum: ${BOOST_MIN_VERSION}")
 FIND_PACKAGE(Boost ${BOOST_MIN_VERSION} COMPONENTS filesystem system thread chrono)
