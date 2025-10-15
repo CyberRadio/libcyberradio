@@ -45,11 +45,12 @@ namespace LibCyberRadio
         if (host.size() > 0)
         {
             boost::asio::ip::udp::resolver resolver(io_service);
-            boost::asio::ip::udp::resolver::query query(boost::asio::ip::udp::v4(),
-                    host, s_port,
-                    boost::asio::ip::resolver_query_base::passive);
+            auto query = resolver.resolve(boost::asio::ip::udp::v4(),host, s_port, boost::asio::ip::resolver_base::passive);
+            // boost::asio::ip::udp::resolver::resolve_query query(boost::asio::ip::udp::v4(),
+            //         host, s_port,
+            //         boost::asio::ip::resolver_query_base::passive);
             io_service.run();
-            endpoint = *resolver.resolve(query);
+            endpoint = *query.begin();
             if (errno > 0)
             {
                 printf("cannot resolve host IP %s error: %s\n", host.c_str(),
@@ -80,7 +81,7 @@ namespace LibCyberRadio
     VitaIqUdpPort::~VitaIqUdpPort()
     {
         connected = false;
-        io_service.reset();
+        io_service.restart();
         io_service.stop();
         if (socket != NULL)
         {

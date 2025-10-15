@@ -43,7 +43,7 @@ namespace LibCyberRadio
             bool connected;    // are we connected?
             boost::asio::ip::udp::socket *socket;
             boost::asio::ip::udp::endpoint endpoint;
-            boost::asio::io_service io_service;
+            boost::asio::io_context io_service;
             unsigned char* recv_buffer;
             int bytes_recvd;
     };
